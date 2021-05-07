@@ -1,39 +1,26 @@
-#include <bootstrap/debug/debug.h>
-#include <bootstrap/debug/term.h>
-#include <bootstrap/debug/serial.h>
-#include <bootstrap/dev/pci.h>
-#include <bootstrap/io/port.h>
-#include <stdbool.h>
-#include <bootstrap/dev/ide.h>
-#include <bootstrap/types.h>
-#include <bootstrap/mm/paging.h>
+
+#include <debug/serial.h>
+#include <debug/term.h>
+#include <debug/debug.h>
+#include <io/port.h>
+#include <io/timer.h>
+#include <dev/pci.h>
+#include <dev/ide.h>
+#include <mm/paging.h>
 #include "gdt.h"
+#include "interrupts.h"
 
-uint32_t kernel_size() {
-    extern u32 _kernel_base;
-    extern u32 _kernel_end;
-    return (u32) &_kernel_end - (u32) &_kernel_base;
-}
-
-void _init(void) {
+void _boot(void) {
     serial_init();
-    serial_write("Hello from early init!\n");
-
-    // fix paging
-    paging_main_init();
-
     term_init();
 
-    map_page(0x4000000, 0x41414141, false, true);
-    while(1);
-    unmap_page(0x41414141);
+    init_gdt();
+    init_interrupts();
+    init_paging();
 
-    term_enable_cursor(0, 14);
-    term_update_cursor(0, 0);
+    dbg_logf(LOG_INFO, "Hello, World!\n");
 
     dbg_logf(LOG_INFO, "Welcome to {OS_NAME} Bootstrap Loader\n");
-
-    dbg_logf(LOG_DEBUG, "Kernel size: 0x%x\n", kernel_size());
 
     dbg_logf(LOG_INFO, "Initializing PCI...\n");
     if (!pci_init()) {

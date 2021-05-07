@@ -2,25 +2,23 @@
 
 #include <stdbool.h>
 #include <stdarg.h>
-#include <bootstrap/types.h>
-#include <bootstrap/io/port.h>
+#include <std/types.h>
+#include <io/port.h>
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 uint16_t *term_buffer = (uint16_t *) 0xB8000;
-static bool term_ready = false;
 
 size_t term_row;
 size_t term_col;
-uint8_t  term_default_color;
-uint8_t term_color;
+uint8_t term_default_color = VGA_COLOR(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLUE);
+uint8_t term_color = VGA_COLOR(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLUE);
 
 void term_init() {
-    term_default_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLUE);
-    term_color = term_default_color;
-
     term_clear();
-    term_ready = true;
+
+    term_enable_cursor(0, 14); // set block cursor
+    term_update_cursor(0, 0); // move to 0, 0
 }
 
 void term_clear() {
@@ -29,8 +27,7 @@ void term_clear() {
 
     for (size_t y = 0; y < VGA_HEIGHT; y++) {
         for (size_t x = 0; x < VGA_WIDTH; x++) {
-            const size_t index = y * VGA_WIDTH + x;
-            term_buffer[index] = vga_entry(' ', term_color);
+            term_buffer[y * VGA_WIDTH + x] = VGA_ENTRY(' ', term_color);
         }
     }
 }
@@ -41,7 +38,7 @@ void term_setcolor(uint8_t color) {
 
 void term_putcharat(char c, uint8_t color, size_t x, size_t y) {
     const size_t index = y * VGA_WIDTH + x;
-    term_buffer[index] = vga_entry(c, color);
+    term_buffer[index] = VGA_ENTRY(c, color);
 }
 
 void term_scroll() {
@@ -54,13 +51,11 @@ void term_scroll() {
     }
 
     for (size_t x = 0; x < VGA_WIDTH; x++) {
-        term_buffer[(VGA_HEIGHT - 2) * VGA_WIDTH + x] = vga_entry(' ', term_color);
+        term_buffer[(VGA_HEIGHT - 2) * VGA_WIDTH + x] = VGA_ENTRY(' ', term_color);
     }
 }
 
 void term_putchar(char c) {
-    if (!term_ready) return;
-
     if (term_col == VGA_WIDTH) {
         term_col = 0;
         term_row++;

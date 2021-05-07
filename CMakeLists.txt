@@ -11,24 +11,25 @@ set(CMAKE_ASM_NASM_COMPILER nasm)
 project(os C ASM_NASM)
 cmake_minimum_required(VERSION 3.14)
 
-set(CMAKE_C_FLAGS "-O0 -g -std=gnu11 -Wall -Wextra -pedantic -ffreestanding -I${CMAKE_SOURCE_DIR}")
+set(CMAKE_C_FLAGS "-O0 -g -std=gnu11 -Wall -Wextra -pedantic -ffreestanding -I${CMAKE_SOURCE_DIR}/bootstrap")
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -T ${CMAKE_SOURCE_DIR}/bootstrap/linker.ld")
 
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT  "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 set(BOOTSTRAP_SOURCES
+        bootstrap/std/types.h
         bootstrap/boot/gdt.asm bootstrap/boot/gdt.c bootstrap/boot/gdt.h
-        bootstrap/boot/irq.asm bootstrap/boot/irq.c bootstrap/boot/irq.h
-        bootstrap/boot/boot.asm bootstrap/boot/loader.c
+        bootstrap/boot/interrupts.asm bootstrap/boot/interrupts.c bootstrap/boot/interrupts.h
+        bootstrap/boot/boot.asm bootstrap/boot/boot.c
         bootstrap/debug/serial.c bootstrap/debug/serial.h
         bootstrap/debug/term.c bootstrap/debug/term.h
         bootstrap/dev/pci.c bootstrap/dev/pci.h
         bootstrap/io/port.c bootstrap/io/port.h
         bootstrap/debug/debug.c bootstrap/debug/debug.h
-        bootstrap/dev/ide.c bootstrap/dev/ide.h bootstrap/types.h
+        bootstrap/dev/ide.c bootstrap/dev/ide.h
         bootstrap/mm/kmem.c bootstrap/mm/kmem.h
-        bootstrap/mm/paging.c bootstrap/mm/paging.h)
+        bootstrap/mm/paging.c bootstrap/mm/paging.h bootstrap/io/timer.c bootstrap/io/timer.h bootstrap/debug/panic.c bootstrap/debug/panic.h bootstrap/std/stdio.c bootstrap/std/stdio.h)
 
 add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
 target_link_libraries(kernel.bin gcc)
@@ -46,15 +47,4 @@ add_custom_target(qemu
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS disk.img
         DEPENDS kernel.bin
-        VERBATIM
-        COMMAND qemu-system-i386
-            -no-reboot
-            -no-shutdown
-            -d guest_errors
-            -d cpu_reset
-            -serial stdio
-            -m 128M
-            -vga std
-            -drive id=disk,if=ide,file=disk.img,format=raw
-            -kernel kernel.bin
         )

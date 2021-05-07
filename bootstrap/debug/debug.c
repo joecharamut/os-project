@@ -23,7 +23,7 @@ void emit_str(const char *str) {
 }
 
 const char alphabet[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-void print_num(uint64_t input, int base) {
+void print_num(uint64_t input, int base, int padding, char pad_char) {
     int size = 64;
     char buf[size];
     for (int j = 0; j < size; j++) {
@@ -33,21 +33,35 @@ void print_num(uint64_t input, int base) {
     if (base < 2 || base > 36) return;
 
     int tmp = size;
-    while (input > 0) {
+    do {
         buf[--tmp] = alphabet[input % base];
         input = input / base;
-    }
+    } while (input > 0);
 
+    char rev[size];
+    int len = 0;
     for (int i = 0; i < size; i++) {
         if (buf[i]) {
-            emit_char(buf[i]);
+            rev[len++] = buf[i];
         }
+    }
+
+    if (padding > len) {
+        for (int i = 0; i < padding - len; i++) {
+            emit_char(pad_char);
+        }
+    }
+
+    for (int i = 0; i < len; i++) {
+        emit_char(rev[i]);
     }
 }
 
 void dbg_vprintf(const char *fmt, va_list ap) {
     bool in_format = false;
     int width_count = 0;
+    int pad_count = 0;
+    char pad_char = ' ';
 
     for (int i = 0; fmt[i]; i++) {
         char c = fmt[i];
@@ -65,7 +79,7 @@ void dbg_vprintf(const char *fmt, va_list ap) {
             } else if (c == 'd') {
                 uint64_t number = 0;
 
-                if (width_count == 0) {
+                if (width_count == 0 || width_count == 1) {
                     int tmp = va_arg(ap, int);
                     if (tmp < 0) {
                         tmp = -tmp;
@@ -81,35 +95,33 @@ void dbg_vprintf(const char *fmt, va_list ap) {
                     number = tmp;
                 }
 
-                if (number == 0) {
-                    emit_char('0');
-                } else {
-                    print_num(number, 10);
-                }
+                print_num(number, 10, pad_count, pad_char);
                 in_format = false;
             } else if (c == 'x') {
                 uint64_t number = 0;
 
-                if (width_count == 0) {
+                if (width_count == 0 || width_count == 1) {
                     number = va_arg(ap, int);
                 } else if (width_count == 2) {
                     number = va_arg(ap, long long);
                 }
 
-                if (number == 0) {
-                    emit_char('0');
-                } else {
-                    print_num(number, 16);
-                }
+                print_num(number, 16, pad_count, pad_char);
                 in_format = false;
             } else if (c == 'l') {
                 width_count++;
+            } else if (c == '0') {
+                pad_char = '0';
+            } else if (c == '*') {
+                pad_count = va_arg(ap, int);
             }
-        } else if (c == '%') {
-            in_format = true;
-            width_count = 0;
         } else {
-            emit_char(c);
+            if (c == '%') {
+                in_format = true;
+                width_count = 0;
+            } else {
+                emit_char(c);
+            }
         }
     }
 }
@@ -129,15 +141,15 @@ void dbg_logf(LOG_LEVEL level, const char *fmt, ...) {
     current_level = level;
     switch (level) {
         case LOG_WARN:
-            term_setcolor(vga_entry_color(VGA_COLOR_YELLOW, VGA_COLOR_BLUE));
+            term_setcolor(VGA_COLOR(VGA_COLOR_YELLOW, VGA_COLOR_BLUE));
             break;
 
         case LOG_ERROR:
-            term_setcolor(vga_entry_color(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLUE));
+            term_setcolor(VGA_COLOR(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLUE));
             break;
 
         case LOG_FATAL:
-            term_setcolor(vga_entry_color(VGA_COLOR_WHITE, VGA_COLOR_LIGHT_RED));
+            term_setcolor(VGA_COLOR(VGA_COLOR_WHITE, VGA_COLOR_LIGHT_RED));
             break;
 
         default:
@@ -147,7 +159,7 @@ void dbg_logf(LOG_LEVEL level, const char *fmt, ...) {
     dbg_printf("[%s] ", LOG_LEVEL_TO_STR[level]);
     dbg_vprintf(fmt, ap);
 
-    term_setcolor(vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLUE));
+    term_setcolor(VGA_COLOR(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLUE));
     current_level = LOG_INFO;
 
     va_end(ap);

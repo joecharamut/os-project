@@ -1,62 +1,45 @@
-#include <bootstrap/debug/serial.h>
-#include <bootstrap/debug/debug.h>
+#include <debug/serial.h>
+#include <debug/debug.h>
 #include <stdbool.h>
 #include "gdt.h"
 
-uint64_t encodeGdtEntry(uint32_t base, uint32_t limit, uint8_t type) {
-    uint64_t descriptor = 0;
-    uint8_t *target = &descriptor;
+extern void load_gdt_ptr(u32);
+static void set_gdt_entry(int index, u32 base, u32 limit, u8 privilege, bool data, bool executable, bool rw, bool kbGranularity);
 
-    // Check the limit to make sure that it can be encoded
-    if ((limit > 65536) && ((limit & 0xFFF) != 0xFFF)) {
-        dbg_logf(LOG_ERROR, "GDT Error\n");
-    }
+#define GDT_SIZE 5
+gdt_entry_t gdt_entries[GDT_SIZE];
+gdt_ptr_t gdt_ptr;
 
-    if (limit > 65536) {
-        // Adjust granularity if required
-        limit = limit >> 12;
-        target[6] = 0xC0;
-    } else {
-        target[6] = 0x40;
-    }
+void init_gdt() {
+    gdt_ptr.limit = sizeof(gdt_entry_t) * GDT_SIZE - 1;
+    gdt_ptr.base = (u32) &gdt_entries;
 
-    // Encode the limit
-    target[0] = limit & 0xFF;
-    target[1] = (limit >> 8) & 0xFF;
-    target[6] |= (limit >> 16) & 0xF;
+    gdt_entries[0] = (gdt_entry_t) { 0 }; // null segment
+    set_gdt_entry(1, 0, 0xFFFFFFFF, 0, true, true, true, true); // kernel code
+    set_gdt_entry(2, 0, 0xFFFFFFFF, 0, true, false, true, true); // kernel data
+    set_gdt_entry(3, 0, 0xFFFFFFFF, 3, true, true, true, true); // user code
+    set_gdt_entry(4, 0, 0xFFFFFFFF, 3, true, false, true, true); // user data
 
-    // Encode the base
-    target[2] = base & 0xFF;
-    target[3] = (base >> 8) & 0xFF;
-    target[4] = (base >> 16) & 0xFF;
-    target[7] = (base >> 24) & 0xFF;
-
-    // And... Type
-    target[5] = type;
-
-    return descriptor;
+    load_gdt_ptr((u32) &gdt_ptr);
 }
 
-#define GDT_SIZE 0xffff
-static uint64_t GDT[GDT_SIZE];
-static uint16_t GDT_Entries = 0;
+static void set_gdt_entry(int index, u32 base, u32 limit, u8 privilege, bool data, bool executable, bool rw, bool kbGranularity) {
+    gdt_entries[index] = (gdt_entry_t) {
+        .base_low = (base & 0xFFFF),
+        .base_mid = (base >> 16) & 0xFF,
+        .base_high = (base >> 24) & 0xFF,
 
-extern void gdt_load(uint64_t *gdt, uint16_t size);
-void gdt_init(void) {
-    GDT[GDT_Entries++] = encodeGdtEntry(0, 0, 0);
-    GDT[GDT_Entries++] = encodeGdtEntry(0, 0xffffffff, 0x9A);
-    GDT[GDT_Entries++] = encodeGdtEntry(0, 0xffffffff, 0x92);
-    gdt_load(GDT, GDT_Entries * 8);
-}
+        .limit_low = (limit & 0xFFFF),
+        .granularity.limit_high = (limit >> 16) & 0x0F,
 
-uint32_t gdt_add_entry(uint32_t base, uint32_t limit, uint8_t flag) {
-    uint64_t value = encodeGdtEntry(base, limit, flag);
-    dbg_logf(LOG_DEBUG, "Adding GDT Entry for {0x%x - 0x%x} type 0x%x = 0x%llx\n", base, limit, flag, value);
+        .granularity.is32bit = true,
+        .granularity.pageGranularity = kbGranularity,
 
-    uint32_t entry = GDT_Entries++;
-    GDT[entry] = value;
-    asm volatile ("cli\n");
-    gdt_load(GDT, GDT_Entries * 8);
-    asm volatile ("sti\n");
-    return entry << 3;
+        .access.present = true,
+        .access.data = data,
+        .access.direction = false,
+        .access.executable = executable,
+        .access.rw = rw,
+        .access.privilege = privilege,
+    };
 }

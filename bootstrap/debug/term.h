@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <bootstrap/types.h>
+#include <std/types.h>
 
 enum vga_color {
     VGA_COLOR_BLACK = 0,
@@ -25,15 +25,7 @@ enum vga_color {
 };
 
 #define VGA_COLOR(fg, bg) (fg | bg << 4)
-#define VGA_ENTRY(character, color) ((uint16_t) uc | (uint16_t) color << 8)
-
-static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) {
-    return fg | bg << 4;
-}
-
-static inline uint16_t vga_entry(unsigned char uc, uint8_t color) {
-    return (uint16_t) uc | (uint16_t) color << 8;
-}
+#define VGA_ENTRY(ch, color) ((uint16_t) ch | (uint16_t) color << 8)
 
 void term_init();
 void term_clear();

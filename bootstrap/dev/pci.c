@@ -1,9 +1,9 @@
 #include "pci.h"
-#include <bootstrap/debug/debug.h>
+#include <debug/debug.h>
 #include <stdint.h>
-#include <bootstrap/io/port.h>
+#include <io/port.h>
 #include <stdbool.h>
-#include <bootstrap/types.h>
+#include <std/types.h>
 
 #define PCI_ADDRESS(bus, device, function, offset) ((0x80000000) | (bus << 16) | (device << 11) | (function << 8) | (offset))
 #define PCI_ADDRESS_PORT 0xCF8

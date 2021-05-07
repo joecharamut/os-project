@@ -1,6 +1,6 @@
-#include <bootstrap/debug/debug.h>
-#include <bootstrap/io/port.h>
-#include <bootstrap/debug/serial.h>
+#include <debug/debug.h>
+#include <io/port.h>
+#include <debug/serial.h>
 #include "ide.h"
 #include "pci.h"
 

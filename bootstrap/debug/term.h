@@ -30,6 +30,7 @@ enum vga_color {
 void term_init();
 void term_clear();
 void term_setcolor(uint8_t);
+uint8_t term_getcolor();
 void term_write(const char *);
 void term_putchar(char);
 

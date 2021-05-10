@@ -10,6 +10,7 @@ MiB equ KiB * 1024
 
 section .boot_data
 multiboot_info:
+align 4
     dd MBMAGIC
     dd MBFLAGS
     dd MBCHECK
@@ -19,27 +20,35 @@ stack_bottom:
 resb 16*KiB
 stack_top:
 
-global heap_top
+global heap_ptr
+heap_ptr: resb 4
+
 heap_top:
 resb 16*KiB
 heap_bottom:
 
 section .text
+extern _boot
 global _start:function (_start.end - _start)
 _start:
     ; disable interrupts
     cli
 
+    ; set our own stack
     mov esp, $stack_top
-    push eax
+
+    ; set the heap ptr
+    mov dword [$heap_ptr], $heap_top
+
+    ; push multiboot info
     push ebx
-    extern _boot
+    push eax
+    ; call the kernel
     call _boot
 
     ; halt if we return
     cli
-.halt:
-    hlt
-    jmp .halt
+.h: hlt
+    jmp .h
 _start.end:
 

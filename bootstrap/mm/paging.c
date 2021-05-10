@@ -1,7 +1,7 @@
 #include <debug/debug.h>
 #include <debug/panic.h>
 #include <std/types.h>
-#include <std/stdio.h>
+#include <std/stdlib.h>
 #include <debug/term.h>
 #include "paging.h"
 #include "kmem.h"
@@ -12,10 +12,13 @@ u32 n_frames;
 page_directory_t *kernel_directory;
 page_directory_t *current_directory;
 
-extern u32 placement_address;
-
 #define INDEX_FROM_BIT(a) (a/(8*4))
 #define OFFSET_FROM_BIT(a) (a%(8*4))
+
+#define FLAG_PRESENT    1 << 0
+#define FLAG_RW         1 << 1
+#define FLAG_USER       1 << 2
+
 
 // Static function to set a bit in the frames bitset
 static void set_frame(u32 frame_addr) {
@@ -90,13 +93,13 @@ page_t *get_page(u32 address, bool create, page_directory_t *dir) {
     // Find the page table containing this address.
     u32 table_idx = address / 1024;
     if (dir->tables[table_idx]) {
-        return &dir->tables[table_idx]->pages[address%1024];
+        return &dir->tables[table_idx]->pages[address % 1024];
     } else if(create) {
         u32 tmp;
         dir->tables[table_idx] = (page_table_t*) kmalloc_physical_aligned(sizeof(page_table_t), &tmp);
         memset(dir->tables[table_idx], 0, 0x1000);
-        dir->tablesPhysical[table_idx] = tmp | 0x7; // PRESENT, RW, US.
-        return &dir->tables[table_idx]->pages[address%1024];
+        dir->tablesPhysical[table_idx] = tmp | FLAG_PRESENT | FLAG_RW;
+        return &dir->tables[table_idx]->pages[address % 1024];
     } else {
         return 0;
     }
@@ -113,7 +116,8 @@ void init_paging() {
     current_directory = kernel_directory;
 
     u32 i = 0;
-    while (i < placement_address) {
+    extern u32 heap_ptr;
+    while (i < heap_ptr) {
         allocate_frame(get_page(i, 1, kernel_directory), false, false);
         i += 0x1000;
     }
@@ -123,6 +127,7 @@ void init_paging() {
 }
 
 void page_fault_handler(registers_t registers) {
+//    asm volatile ("cli;hlt");
     u32 fault_addr;
     asm volatile ("mov %%cr2, %0" : "=r" (fault_addr));
 
@@ -145,8 +150,9 @@ void page_fault_handler(registers_t registers) {
 
 void set_page_directory(page_directory_t *dir) {
     current_directory = dir;
+
     asm volatile ("mov %0, %%cr3" :: "r" (&dir->tablesPhysical));
-    u32 cr0;
+    volatile u32 cr0;
     asm volatile ("mov %%cr0, %0" : "=r" (cr0));
     cr0 |= 1 << 31; // enable paging
     asm volatile ("mov %0, %%cr0" :: "r" (cr0));

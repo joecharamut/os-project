@@ -36,6 +36,10 @@ void term_setcolor(uint8_t color) {
     term_color = color;
 }
 
+uint8_t term_getcolor() {
+    return term_color;
+}
+
 void term_putcharat(char c, uint8_t color, size_t x, size_t y) {
     const size_t index = y * VGA_WIDTH + x;
     term_buffer[index] = VGA_ENTRY(c, color);

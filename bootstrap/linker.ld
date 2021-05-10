@@ -16,15 +16,13 @@ SECTIONS
     }
 
     .data : ALIGN(4K) {
-        _kernel_data = .;
         *(.data)
         *(.rodata)
     }
 
     .bss : ALIGN(4K) {
-        _kernel_bss = .;
-        *(.bss)
         *(COMMON)
+        *(.bss)
     }
 
     _kernel_end = .;

@@ -1,6 +1,10 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <std/stdlib.h>
+#include <std/string.h>
+#include <std/math.h>
+#include <mm/kmem.h>
 
 #include "debug.h"
 #include "term.h"
@@ -23,12 +27,10 @@ void emit_str(const char *str) {
 }
 
 const char alphabet[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-void print_num(uint64_t input, int base, int padding, char pad_char) {
+void print_num_old(uint64_t input, int base, int padding, char pad_char) {
     int size = 64;
-    char buf[size];
-    for (int j = 0; j < size; j++) {
-        buf[j] = 0;
-    }
+//    char buf[size];
+    char *buf = kmalloc(size * sizeof(char));
 
     if (base < 2 || base > 36) return;
 
@@ -57,11 +59,42 @@ void print_num(uint64_t input, int base, int padding, char pad_char) {
     }
 }
 
+void recursive_print_number(uint64_t input, int base) {
+    if (input < base) {
+        emit_char(alphabet[input]);
+    } else {
+        recursive_print_number(input / base, base);
+        emit_char(alphabet[input % base]);
+    }
+}
+
+int recursive_count_digits(uint64_t input, int base) {
+    if (input < base) {
+        return 1;
+    } else {
+        return recursive_count_digits(input / base, base) + 1;
+    }
+}
+
+void print_num(uint64_t input, int base, int padding, char pad_char) {
+    if (base < 2 || base > 36) return;
+
+    int places = recursive_count_digits(input, base);
+    if (padding > places) {
+        for (int i = 0; i < padding - places; i++) {
+            emit_char(pad_char);
+        }
+    }
+
+    recursive_print_number(input, base);
+}
+
 void dbg_vprintf(const char *fmt, va_list ap) {
     bool in_format = false;
+    bool in_length = false;
+    char pad_char = ' ';
     int width_count = 0;
     int pad_count = 0;
-    char pad_char = ' ';
 
     for (int i = 0; fmt[i]; i++) {
         char c = fmt[i];
@@ -110,8 +143,22 @@ void dbg_vprintf(const char *fmt, va_list ap) {
                 in_format = false;
             } else if (c == 'l') {
                 width_count++;
-            } else if (c == '0') {
-                pad_char = '0';
+            } else if (isdigit(c)) {
+                if (!in_length && c == '0') {
+                    pad_char = '0';
+                    in_length = true;
+                } else {
+                    int start = i;
+                    int end = i;
+
+                    for (int j = i; isdigit(fmt[j]); j++) {
+                        end = j;
+                    }
+
+                    for (int j = end; j >= start; j--) {
+                        pad_count += (fmt[j] - '0') * pow(10, abs(j - end));
+                    }
+                }
             } else if (c == '*') {
                 pad_count = va_arg(ap, int);
             }
@@ -119,6 +166,8 @@ void dbg_vprintf(const char *fmt, va_list ap) {
             if (c == '%') {
                 in_format = true;
                 width_count = 0;
+                pad_count = 0;
+                in_length = false;
             } else {
                 emit_char(c);
             }
@@ -163,4 +212,29 @@ void dbg_logf(LOG_LEVEL level, const char *fmt, ...) {
     current_level = LOG_INFO;
 
     va_end(ap);
+}
+
+void dump_registers(const registers_t *registers) {
+    term_setcolor(VGA_COLOR(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK));
+    dbg_printf("EAX=%08x EBX=%08x ECX=%08x EDX=%08x\nESI=%08x EDI=%08x EBP=%08x ESP=%08x\nEIP=%08x EFL=%08x ",
+               registers->eax, registers->ebx, registers->ecx, registers->edx,
+               registers->esi, registers->edi, registers->ebp, registers->esp,
+               registers->eip, registers->eflags);
+
+    bool carry = registers->eflags & 1 << 0;
+    bool parity = registers->eflags & 1 << 2;
+    bool adjust = registers->eflags & 1 << 4;
+    bool zero = registers->eflags & 1 << 6;
+    bool sign = registers->eflags & 1 << 7;
+    bool trap = registers->eflags & 1 << 8;
+    bool interrupt = registers->eflags & 1 << 9;
+    bool direction = registers->eflags & 1 << 10;
+    bool overflow = registers->eflags & 1 << 11;
+    dbg_printf("[%c%c%c%c%c]\n",
+               (overflow ? 'O' : '-'),
+               (interrupt ? 'I' : '-'),
+               (trap ? 'T' : '-'),
+               (zero ? 'Z' : '-'),
+               (carry ? 'C' : '-')
+    );
 }

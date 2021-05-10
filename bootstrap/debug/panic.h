@@ -3,9 +3,8 @@
 
 #include <boot/interrupts.h>
 
-#define PANIC(msg) panic_file(msg, __FILE__, __LINE__)
+#define PANIC(msg) panic("%s (in %s line %d)", 0, msg, __FILE__, __LINE__)
 
-void __attribute__ ((noreturn)) panic(const char *msg, const registers_t *registers);
-void __attribute__ ((noreturn)) panic_file(const char *msg, const char *file, int line);
+void __attribute__ ((noreturn)) panic(const char *msg, const registers_t *registers, ...);
 
 #endif //OS_PANIC_H

@@ -32,7 +32,7 @@ set(BOOTSTRAP_SOURCES
         bootstrap/mm/paging.c bootstrap/mm/paging.h
         bootstrap/io/timer.c bootstrap/io/timer.h
         bootstrap/debug/panic.c bootstrap/debug/panic.h
-        bootstrap/std/stdlib.c bootstrap/std/stdlib.h bootstrap/std/string.c bootstrap/std/string.h bootstrap/std/math.c bootstrap/std/math.h)
+        bootstrap/std/stdlib.c bootstrap/std/stdlib.h bootstrap/std/string.c bootstrap/std/string.h bootstrap/std/math.c bootstrap/std/math.h bootstrap/kernel/kernel.c bootstrap/kernel/kernel.h)
 
 add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
 target_link_libraries(kernel.bin gcc)

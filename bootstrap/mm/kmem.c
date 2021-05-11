@@ -1,22 +1,25 @@
 #include <stdbool.h>
 #include "kmem.h"
 
-static u32 kmalloc_internal(u32 size, bool align, u32 *phys) {
-    extern u32 heap_ptr;
+u32 heap_index = 0;
+u8 heap[16384];
 
-    if (align && (heap_ptr & 0xFFFFF000)) {
+static void *kmalloc_internal(u32 size, bool align, u32 *phys) {
+    if (heap_index == 0) heap_index = (u32) &heap;
+
+    if (align && (heap_index & 0xFFFFF000)) {
         // if we need to be aligned and are not already, align the placement address
-        heap_ptr &= 0xFFFFF000;
-        heap_ptr += 0x1000;
+        heap_index &= 0xFFFFF000;
+        heap_index += 0x1000;
     }
 
     if (phys) {
-        *phys = heap_ptr;
+        *phys = heap_index;
     }
 
-    u32 tmp = heap_ptr;
-    heap_ptr += size;
-    return tmp;
+    u32 tmp = heap_index;
+    heap_index += size;
+    return (void *) tmp;
 }
 
 void *kmalloc(u32 size) {

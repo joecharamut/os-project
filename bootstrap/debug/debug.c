@@ -134,9 +134,9 @@ void dbg_vprintf(const char *fmt, va_list ap) {
                 uint64_t number = 0;
 
                 if (width_count == 0 || width_count == 1) {
-                    number = va_arg(ap, int);
+                    number = (u32) va_arg(ap, int);
                 } else if (width_count == 2) {
-                    number = va_arg(ap, long long);
+                    number = (u64) va_arg(ap, long long);
                 }
 
                 print_num(number, 16, pad_count, pad_char);

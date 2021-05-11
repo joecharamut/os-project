@@ -86,7 +86,6 @@ void free_frame(page_t *page) {
     }
 }
 
-
 page_t *get_page(u32 address, bool create, page_directory_t *dir) {
     // Turn the address into an index.
     address /= 0x1000;
@@ -106,6 +105,15 @@ page_t *get_page(u32 address, bool create, page_directory_t *dir) {
 }
 
 void init_paging() {
+    extern u32 _kernel_code_base;
+    extern u32 _kernel_code_end;
+    extern u32 _kernel_data_base;
+    extern u32 _kernel_data_end;
+    u32 kernel_code_start = (u32) &_kernel_code_base;
+    u32 kernel_code_end = (u32) &_kernel_code_end;
+    u32 kernel_data_start = (u32) &_kernel_data_base;
+    u32 kernel_data_end = (u32) &_kernel_data_end;
+
     u32 mem_end_page = 0x1000000;
     n_frames = mem_end_page / 0x1000;
     frames = (u32*) kmalloc(INDEX_FROM_BIT(n_frames));
@@ -115,11 +123,19 @@ void init_paging() {
     memset(kernel_directory, 0, sizeof(page_directory_t));
     current_directory = kernel_directory;
 
-    u32 i = 0;
-    extern u32 heap_ptr;
-    while (i < heap_ptr) {
-        allocate_frame(get_page(i, 1, kernel_directory), false, false);
-        i += 0x1000;
+    // identity map first mb as read-write
+    for (u32 i = 0; i < 0x100000; i += 0x1000) {
+        allocate_frame(get_page(i, true, kernel_directory), false, true);
+    }
+
+    // map kernel .text and .rodata as read-only
+    for (u32 i = kernel_code_start; i < kernel_code_end; i += 0x1000) {
+        allocate_frame(get_page(i, true, kernel_directory), false, false);
+    }
+
+    // map .data and .bss as read-write
+    for (u32 i = kernel_data_start; i < kernel_data_end; i += 0x1000) {
+        allocate_frame(get_page(i, true, kernel_directory), false, true);
     }
 
     set_interrupt_handler(14, &page_fault_handler);
@@ -127,7 +143,6 @@ void init_paging() {
 }
 
 void page_fault_handler(registers_t registers) {
-//    asm volatile ("cli;hlt");
     u32 fault_addr;
     asm volatile ("mov %%cr2, %0" : "=r" (fault_addr));
 
@@ -137,15 +152,12 @@ void page_fault_handler(registers_t registers) {
     bool reserved = registers.error_code & 1 << 3;
     bool instruction_fetch = registers.error_code & 1 << 4;
 
-    term_setcolor(VGA_COLOR(VGA_COLOR_WHITE, VGA_COLOR_LIGHT_RED));
-    dbg_printf("Page Fault %s! ( %s%s%s) at 0x%0*x\n",
+    panic("Page Fault %s! ( %s%s%s) at 0x%08x", &registers,
                (instruction_fetch ? "on instruction fetch" : (on_write ? "on write" : "on read")),
                (present ? "present " : ""),
                (user ? "user-mode " : ""),
                (reserved ? "reserved " : ""),
-               8, fault_addr);
-
-    panic("Page Fault", &registers);
+               fault_addr);
 }
 
 void set_page_directory(page_directory_t *dir) {

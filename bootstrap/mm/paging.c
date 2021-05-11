@@ -105,41 +105,7 @@ page_t *get_page(u32 address, bool create, page_directory_t *dir) {
 }
 
 void init_paging() {
-    extern u32 _kernel_code_base;
-    extern u32 _kernel_code_end;
-    extern u32 _kernel_data_base;
-    extern u32 _kernel_data_end;
-    u32 kernel_code_start = (u32) &_kernel_code_base;
-    u32 kernel_code_end = (u32) &_kernel_code_end;
-    u32 kernel_data_start = (u32) &_kernel_data_base;
-    u32 kernel_data_end = (u32) &_kernel_data_end;
-
-    u32 mem_end_page = 0x1000000;
-    n_frames = mem_end_page / 0x1000;
-    frames = (u32*) kmalloc(INDEX_FROM_BIT(n_frames));
-    memset(frames, 0, INDEX_FROM_BIT(n_frames));
-
-    kernel_directory = (page_directory_t *) kmalloc_aligned(sizeof(page_directory_t));
-    memset(kernel_directory, 0, sizeof(page_directory_t));
-    current_directory = kernel_directory;
-
-    // identity map first mb as read-write
-    for (u32 i = 0; i < 0x100000; i += 0x1000) {
-        allocate_frame(get_page(i, true, kernel_directory), false, true);
-    }
-
-    // map kernel .text and .rodata as read-only
-    for (u32 i = kernel_code_start; i < kernel_code_end; i += 0x1000) {
-        allocate_frame(get_page(i, true, kernel_directory), false, false);
-    }
-
-    // map .data and .bss as read-write
-    for (u32 i = kernel_data_start; i < kernel_data_end; i += 0x1000) {
-        allocate_frame(get_page(i, true, kernel_directory), false, true);
-    }
-
     set_interrupt_handler(14, &page_fault_handler);
-    set_page_directory(kernel_directory);
 }
 
 void page_fault_handler(registers_t registers) {
@@ -161,11 +127,17 @@ void page_fault_handler(registers_t registers) {
 }
 
 void set_page_directory(page_directory_t *dir) {
-    current_directory = dir;
+    PANIC("set_page_directory");
+}
 
-    asm volatile ("mov %0, %%cr3" :: "r" (&dir->tablesPhysical));
-    volatile u32 cr0;
-    asm volatile ("mov %%cr0, %0" : "=r" (cr0));
-    cr0 |= 1 << 31; // enable paging
-    asm volatile ("mov %0, %%cr0" :: "r" (cr0));
+void flush_tlb() {
+    asm volatile (
+    "cli                \n"
+    "mov %%cr3, %%eax   \n"
+    "mov %%eax, %%cr3   \n"
+    "sti                \n"
+    :
+    :
+    : "%eax"
+    );
 }

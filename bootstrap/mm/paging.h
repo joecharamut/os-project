@@ -25,13 +25,14 @@ typedef struct {
 
 typedef struct {
     page_table_t *tables[1024];
-    phys_addr_t tablesPhysical[1024];
-    phys_addr_t physicalAddr;
+    u32 tablesPhysical[1024];
+    u32 physicalAddr;
 } page_directory_t;
 
 void init_paging();
 void set_page_directory(page_directory_t *dir);
 page_t *get_page(u32 address, bool create, page_directory_t *dir);
 void page_fault_handler(registers_t registers);
+void flush_tlb();
 
 #endif //OS_PAGING_H

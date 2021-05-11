@@ -19,7 +19,4 @@ typedef uint64_t u64;
 typedef int64_t s64;
 typedef uint64_t qword;
 
-typedef uint32_t phys_addr_t;
-typedef uint32_t virt_addr_t;
-
 #endif //OS_TYPES_H

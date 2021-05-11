@@ -5,34 +5,24 @@ MB_FLAGS equ PAGE_ALIGNED | MEMORY_INFO
 MB_MAGIC equ 0x1BADB002
 MB_CHECK equ -(MB_MAGIC + MB_FLAGS)
 
-section .boot
+section .boot_data
+align 4
     dd MB_MAGIC
     dd MB_FLAGS
     dd MB_CHECK
 
-section .bss
-stack_bottom:
-resb 0x4000
-stack_top:
+section .boot_bss nobits
+    resb 0x1000
+    boot_stack:
 
-section .text
-extern _boot
+section .boot_text
+extern _early_boot
 global _start:function (_start.end - _start)
 _start:
     ; disable interrupts
     cli
-
     ; set the stack
-    mov esp, $stack_top
-
-    ; push multiboot info
-    push ebx
-    push eax
-    ; call the kernel
-    call _boot
-
-    ; halt if we return
-    cli
-.h: hlt
-    jmp .h
+    mov esp, $boot_stack
+    ; jump to c code as fast as possible
+    jmp _early_boot
 .end:

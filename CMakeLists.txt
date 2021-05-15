@@ -2,7 +2,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM Generic)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-set(CMAKE_C_COMPILER i686-elf-gcc)
+set(CMAKE_C_COMPILER /home/joseph/opt/cross/prefix/bin/i686-elf-gcc)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -18,10 +18,10 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT  "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 set(BOOTSTRAP_SOURCES
-        bootstrap/std/types.h
+        bootstrap/std/types.h bootstrap/std/attributes.h bootstrap/std/attributes.h
         bootstrap/boot/gdt.asm bootstrap/boot/gdt.c bootstrap/boot/gdt.h
         bootstrap/boot/interrupts.asm bootstrap/boot/interrupts.c bootstrap/boot/interrupts.h
-        bootstrap/boot/boot.asm bootstrap/boot/boot.c
+        bootstrap/boot/boot.asm bootstrap/boot/boot.c bootstrap/boot/multiboot.h
         bootstrap/debug/serial.c bootstrap/debug/serial.h
         bootstrap/debug/term.c bootstrap/debug/term.h
         bootstrap/dev/pci.c bootstrap/dev/pci.h
@@ -35,7 +35,9 @@ set(BOOTSTRAP_SOURCES
         bootstrap/std/stdlib.c bootstrap/std/stdlib.h
         bootstrap/std/string.c bootstrap/std/string.h
         bootstrap/std/math.c bootstrap/std/math.h
-        bootstrap/kernel/kernel.c bootstrap/kernel/kernel.h)
+        bootstrap/kernel/kernel.c bootstrap/kernel/kernel.h
+        bootstrap/std/bitset.c bootstrap/std/bitset.h
+        bootstrap/io/ps2.c bootstrap/io/ps2.h)
 
 add_custom_target(linker.ld
         BYPRODUCTS linker.ld

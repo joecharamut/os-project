@@ -17,21 +17,18 @@ typedef struct {
     bool global: 1;
     u8 os: 3;
     u32 address: 20;
-} __attribute__ ((packed)) page_t;
+} __attribute__ ((packed)) page_table_entry_t;
+typedef page_table_entry_t page_directory_entry_t;
 
 typedef struct {
-    page_t pages[1024];
+    page_table_entry_t pages[1024];
 } page_table_t;
 
 typedef struct {
-    page_table_t *tables[1024];
-    u32 tablesPhysical[1024];
-    u32 physicalAddr;
+    page_directory_entry_t tables[1024];
 } page_directory_t;
 
 void init_paging();
-void set_page_directory(page_directory_t *dir);
-page_t *get_page(u32 address, bool create, page_directory_t *dir);
 void page_fault_handler(registers_t registers);
 void flush_tlb();
 

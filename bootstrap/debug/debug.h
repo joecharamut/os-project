@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <boot/interrupts.h>
+#include "panic.h"
 
 typedef enum LOG_LEVEL { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL } LOG_LEVEL;
 
@@ -14,8 +15,13 @@ void dump_registers(const registers_t *registers);
 
 #define BREAKPOINT(MSG) do { \
     asm volatile ("int $0x3" :: "d" (MSG)); \
-    extern volatile bool keypress_flag; \
-    while (!keypress_flag) asm volatile ("pause"); \
+    while (1) asm volatile ("pause"); \
+} while (0)
+
+#define ASSERT(condition) do { \
+    if (!(condition)) { \
+        panic("ASSERTION FAILED: " #condition " (in %s line %d)", 0, __FILE__, __LINE__); \
+    } \
 } while (0)
 
 #endif //OS_DEBUG_H

@@ -3,109 +3,72 @@
 #include <std/types.h>
 #include <std/stdlib.h>
 #include <debug/term.h>
+#include <std/bitset.h>
 #include "paging.h"
 #include "kmem.h"
 
-u32 *frames;
-u32 n_frames;
+bitset_t *page_set;
 
-page_directory_t *kernel_directory;
-page_directory_t *current_directory;
+void *get_physaddr(void *virtualaddr) {
+    u32 pdindex = (u32) virtualaddr >> 22;
+    u32 ptindex = (u32) virtualaddr >> 12 & 0x03FF;
 
-#define INDEX_FROM_BIT(a) (a/(8*4))
-#define OFFSET_FROM_BIT(a) (a%(8*4))
+    u32 *pd = (u32 *) 0xFFFFF000;
 
-#define FLAG_PRESENT    1 << 0
-#define FLAG_RW         1 << 1
-#define FLAG_USER       1 << 2
-
-
-// Static function to set a bit in the frames bitset
-static void set_frame(u32 frame_addr) {
-    u32 frame = frame_addr / 0x1000;
-    u32 idx = INDEX_FROM_BIT(frame);
-    u32 off = OFFSET_FROM_BIT(frame);
-    frames[idx] |= (0x1 << off);
-}
-
-// Static function to clear a bit in the frames bitset
-static void clear_frame(u32 frame_addr) {
-    u32 frame = frame_addr / 0x1000;
-    u32 idx = INDEX_FROM_BIT(frame);
-    u32 off = OFFSET_FROM_BIT(frame);
-    frames[idx] &= ~(0x1 << off);
-}
-
-// Static function to test if a bit is set.
-static u32 test_frame(u32 frame_addr) {
-    u32 frame = frame_addr / 0x1000;
-    u32 idx = INDEX_FROM_BIT(frame);
-    u32 off = OFFSET_FROM_BIT(frame);
-    return (frames[idx] & (0x1 << off));
-}
-
-// Static function to find the first free frame.
-static u32 first_frame() {
-    for (u32 i = 0; i < INDEX_FROM_BIT(n_frames); i++) {
-        // nothing free, exit early.
-        if (frames[i] != 0xFFFFFFFF) {
-            // at least one bit is free here.
-            for (u32 j = 0; j < 32; j++) {
-                u32 test = 0x1 << j;
-                if (!(frames[i] & test)) {
-                    return i * 4 * 8 + j;
-                }
-            }
-        }
+    // if page dir entry does not exist, return -1
+    if (!(pd[pdindex] & 1)) {
+        return (void *) 0xFFFFFFFF;
     }
 
-    PANIC("first_frame() end of func");
+    u32 *pt = ((u32 *) 0xFFC00000) + (0x400 * pdindex);
+    // Here you need to check whether the PT entry is present.
+
+    return (void *)((pt[ptindex] & ~0xFFF) + ((unsigned long)virtualaddr & 0xFFF));
 }
 
-void allocate_frame(page_t *page, bool user_page, bool writeable) {
-    if (page->address) {
-        return;
-    } else {
-        u32 idx = first_frame();
-        if (idx == 0xFFFFFFFF) {
-            PANIC("No free frames!");
-        }
-        set_frame(idx * 0x1000);
-        page->present = true;
-        page->rw = writeable;
-        page->user = user_page;
-        page->address = idx;
-    }
-}
+void map_page(void *physaddr, void *virtualaddr) {
+    // Make sure that both addresses are page-aligned.
 
-void free_frame(page_t *page) {
-    u32 frame = page->address;
-    if (frame) {
-        clear_frame(frame);
-        page->address = 0;
-    }
-}
+    u32 pdindex = (u32) virtualaddr >> 22;
+    u32 ptindex = (u32) virtualaddr >> 12 & 0x03FF;
 
-page_t *get_page(u32 address, bool create, page_directory_t *dir) {
-    // Turn the address into an index.
-    address /= 0x1000;
-    // Find the page table containing this address.
-    u32 table_idx = address / 1024;
-    if (dir->tables[table_idx]) {
-        return &dir->tables[table_idx]->pages[address % 1024];
-    } else if(create) {
-        u32 tmp;
-        dir->tables[table_idx] = (page_table_t*) kmalloc_physical_aligned(sizeof(page_table_t), &tmp);
-        memset(dir->tables[table_idx], 0, 0x1000);
-        dir->tablesPhysical[table_idx] = tmp | FLAG_PRESENT | FLAG_RW;
-        return &dir->tables[table_idx]->pages[address % 1024];
-    } else {
-        return 0;
+    dbg_logf(LOG_DEBUG, "mapping 0x%08x to 0x%08x (dir %d table %d)\n", physaddr, virtualaddr, pdindex, ptindex);
+
+    page_directory_t *pd = (page_directory_t *) 0xFFFFF000;
+    // Here you need to check whether the PD entry is present.
+    // When it is not present, you need to create a new empty PT and
+    // adjust the PDE accordingly.
+    // if page dir entry does not exist, create one
+    if (!pd->tables[pdindex].present) {
+        pd->tables[pdindex].address = (u32) (0x01000000 + pdindex*0x1000) >> 12;
+        pd->tables[pdindex].present = true;
+        pd->tables[pdindex].rw = true;
     }
+
+    page_table_t *pt = ((u32 *) 0xFFC00000 + (0x400 * pdindex));
+    // Here you need to check whether the PT entry is present.
+    // When it is, then there is already a mapping present. What do you do now?
+
+    if (pt->pages[ptindex].present) {
+        PANIC("Page already mapped!");
+    }
+
+    pt->pages[ptindex].address = (u32) physaddr >> 12;
+    pt->pages[ptindex].present = true;
+    pt->pages[ptindex].rw = true;
+//    flush_tlb();
 }
 
 void init_paging() {
     set_interrupt_handler(14, &page_fault_handler);
+
+    u32 heap_vaddr_base = (1023 - (HEAP_SIZE >> 22)) << 22;
+    for (u32 offset = 0; offset < HEAP_SIZE; offset += 0x1000) {
+        map_page(HEAP_BASE + offset, heap_vaddr_base + offset);
+    }
+    set_heap_address(heap_vaddr_base);
+
+    flush_tlb();
 }
 
 void page_fault_handler(registers_t registers) {
@@ -124,10 +87,6 @@ void page_fault_handler(registers_t registers) {
                (user ? "user-mode " : ""),
                (reserved ? "reserved " : ""),
                fault_addr);
-}
-
-void set_page_directory(page_directory_t *dir) {
-    PANIC("set_page_directory");
 }
 
 void flush_tlb() {

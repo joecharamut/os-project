@@ -12,6 +12,7 @@ SECTIONS
     _boot_base = .;
 
     .boot_data : {
+        *(.boot_magic)
         *(.boot_data)
     }
 

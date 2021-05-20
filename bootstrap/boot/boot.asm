@@ -13,8 +13,9 @@ align 4
 
 section .boot_bss nobits
 global boot_stack_top
+global boot_stack_bottom
     boot_stack_top:
-    resb 0x1000
+    resb 256
     boot_stack_bottom:
 
 section .boot_text

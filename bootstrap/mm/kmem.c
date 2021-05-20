@@ -1,28 +1,64 @@
-#include <stdbool.h>
 #include "kmem.h"
+#include "kheap.h"
+#include "paging.h"
+#include <std/string.h>
+#include <debug/panic.h>
+#include <debug/debug.h>
 
-u32 heap_ptr = 0;
+heap_t *kernel_heap = NULL;
+u32 placement_phys = 0;
+u32 placement_addr = 0;
 
-static void *kmalloc_internal(u32 size, bool align, u32 *phys) {
-    if (align && (heap_ptr & 0xFFFFF000)) {
-        // if we need to be aligned and are not already, align the placement address
-        heap_ptr &= 0xFFFFF000;
-        heap_ptr += 0x1000;
+void init_kmem() {
+    for (u32 i = 0; i < HEAP_SIZE; i += 0x1000) {
+        map_page((void *) (MEMORY_BASE_PHYS + i), (void *) (HEAP_BASE_ADDR + i));
     }
+    placement_phys = MEMORY_BASE_PHYS;
+    placement_addr = HEAP_BASE_ADDR;
 
-    if (phys) {
-        *phys = heap_ptr;
-    }
-
-    u32 tmp = heap_ptr;
-    heap_ptr += size;
-    return (void *) tmp;
+    u32 start = kmalloc(HEAP_SIZE - 0x1000);
+    heap_t *new_heap = kmalloc(sizeof(heap_t));
+    heap_create(new_heap, start, start + 0x1000, start + HEAP_SIZE, true, false);
+    kernel_heap = new_heap;
 }
 
-void *kmalloc(u32 size) {
-    return kmalloc_internal(size, false, 0);
+static void *internal_kmalloc(size_t size, bool aligned, int *physical_addr) {
+    if (kernel_heap) {
+        return heap_alloc(kernel_heap, size, false);
+    } else {
+        if (aligned && placement_addr % 1024 != 0) {
+            placement_addr &= 0xFFFFF000;
+            placement_addr += 0x1000;
+        }
+
+        if (physical_addr) {
+            TODO();
+        }
+
+        u32 tmp = placement_addr;
+        placement_addr += size;
+        return (void *) tmp;
+    }
 }
 
-void set_heap_address(void *addr) {
-    heap_ptr = (u32) addr;
+void *kmalloc(size_t size) {
+    return internal_kmalloc(size, false, NULL);
+}
+
+void *kcalloc(size_t elements, size_t element_size) {
+    void *ptr = kmalloc(elements * element_size);
+    memset(ptr, 0, elements * element_size);
+    return ptr;
+}
+
+void *kmalloc_a(size_t size) {
+    return internal_kmalloc(size, true, NULL);
+}
+
+void kfree(void *ptr) {
+    if (kernel_heap) {
+        heap_free(kernel_heap, ptr);
+    } else {
+        PANIC("kmalloc: no heap");
+    }
 }

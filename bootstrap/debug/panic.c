@@ -1,18 +1,16 @@
 #include <stdbool.h>
 #include <stdarg.h>
+#include <std/attributes.h>
 #include "panic.h"
 #include "term.h"
 #include "debug.h"
 
-static __attribute__ ((noreturn)) void halt() {
-    asm volatile (
-    "\n cli"
-    "\n panic_halt: hlt"
-    "\n jmp panic_halt"
-    );
+static NORETURN void halt() {
+    asm volatile ("1: cli; hlt; jmp 1");
+    __builtin_unreachable();
 }
 
-void panic(const char *msg, const registers_t *registers, ...) {
+void NORETURN panic(const char *msg, const registers_t *registers, ...) {
     term_setcolor(VGA_COLOR(VGA_COLOR_WHITE, VGA_COLOR_LIGHT_RED));
 
     dbg_printf("KERNEL PANIC: ");

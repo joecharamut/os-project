@@ -1,7 +1,5 @@
 #include "term.h"
 
-#include <stdbool.h>
-#include <stdarg.h>
 #include <std/types.h>
 #include <io/port.h>
 
@@ -78,6 +76,10 @@ void term_putchar(char c) {
 
         case '\r':
             term_col = 0;
+            break;
+
+        case '\b':
+            if (term_col > 0) term_col--;
             break;
 
         default:

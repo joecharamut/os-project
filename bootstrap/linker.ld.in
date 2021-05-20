@@ -11,9 +11,8 @@ SECTIONS
 
     _boot_base = .;
 
-    .boot_data : {
+    .boot_magic : {
         *(.boot_magic)
-        *(.boot_data)
     }
 
     .boot_text : ALIGN(4K) {
@@ -27,42 +26,27 @@ SECTIONS
     _boot_end = .;
 
     . += KERNEL_OFFSET;
-    _kernel_code_base = .;
 
     .text ALIGN(4K) : AT(ADDR(.text) - KERNEL_OFFSET) {
+        _kernel_code_base = .;
         *(.text)
     }
 
     .rodata ALIGN(4K) : AT(ADDR(.rodata) - KERNEL_OFFSET) {
         *(.rodata)
+        _kernel_code_end = .;
     }
 
-    _kernel_code_end = .;
-    _kernel_data_base = .;
-
     .data ALIGN(4K) : AT(ADDR(.data) - KERNEL_OFFSET) {
+        _kernel_data_base = .;
         *(.data)
     }
 
     .bss ALIGN(4K) : AT(ADDR(.bss) - KERNEL_OFFSET) {
         *(COMMON)
         *(.bss)
+        _kernel_data_end = .;
     }
-
-    _kernel_data_end = .;
-
-    . -= KERNEL_OFFSET;
-    _page_base = .;
-
-    .paging : ALIGN(4K) {
-        _page_dir_addr = .;
-        *(.page_directory)
-        _page_tabs_addr = .;
-        *(.page_tables)
-    }
-
-    _page_end = .;
-
 
     _kernel_end = .;
 }

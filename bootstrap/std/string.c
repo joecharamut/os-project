@@ -9,8 +9,21 @@ size_t strlen(const char *str) {
 }
 
 void memset(void *ptr, u8 value, size_t count) {
-    for (size_t i = 0; i < count; i++) {
-        ((u8 *) ptr)[i] = value;
+    // todo align then rep stosl for all sets
+    if ((u32) ptr & 0x3 || count % 4) {
+        dbg_logf(LOG_WARN, "memset: not 32 bit aligned\n");
+        for (size_t i = 0; i < count; i++) {
+            ((u8 *) ptr)[i] = value;
+        }
+    } else {
+        asm volatile (
+        "cld    \n"
+        "rep    \n"
+        "stosl  \n"
+        :
+        : "a" (value), "D" (ptr), "c" (count / 4)
+        : "memory"
+        );
     }
 }
 

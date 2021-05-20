@@ -13,15 +13,27 @@ void dbg_vprintf(const char *fmt, va_list ap);
 
 void dump_registers(const registers_t *registers);
 
-#define BREAKPOINT(MSG) do { \
+#define TODO() \
+do { \
+    panic("TODO in %s:%d %s()", 0, __FILE__, __LINE__, __func__); \
+} while (0)
+
+#ifndef NDEBUG
+#define BREAKPOINT(MSG) \
+do { \
     asm volatile ("int $0x3" :: "d" (MSG)); \
     while (1) asm volatile ("pause"); \
 } while (0)
 
-#define ASSERT(condition) do { \
+#define ASSERT(condition) \
+do { \
     if (!(condition)) { \
-        panic("ASSERTION FAILED: " #condition " (in %s line %d)", 0, __FILE__, __LINE__); \
+        panic("ASSERTION FAILED: %s (in %s:%d %s())", 0, #condition, __FILE__, __LINE__, __func__); \
     } \
 } while (0)
+#else
+#define BREAKPOINT(MSG) do {} while (0)
+#define ASSERT(condition) do {} while (0)
+#endif
 
 #endif //OS_DEBUG_H

@@ -28,8 +28,12 @@ typedef struct {
     page_directory_entry_t tables[1024];
 } page_directory_t;
 
-void init_paging();
+void map_page(void *physaddr, void *virtualaddr);
+void munmap(void *vaddr);
+bool is_paging_enabled();
 void page_fault_handler(registers_t registers);
+
+void flush_page(u32 addr);
 void flush_tlb();
 
 #endif //OS_PAGING_H

@@ -37,7 +37,7 @@ set(BOOTSTRAP_SOURCES
         bootstrap/std/math.c bootstrap/std/math.h
         bootstrap/kernel/kernel.c bootstrap/kernel/kernel.h
         bootstrap/std/bitset.c bootstrap/std/bitset.h
-        bootstrap/io/ps2.c bootstrap/io/ps2.h bootstrap/std/ordered_array.c bootstrap/std/ordered_array.h bootstrap/mm/kheap.c bootstrap/mm/kheap.h)
+        bootstrap/io/ps2.c bootstrap/io/ps2.h bootstrap/std/ordered_array.c bootstrap/std/ordered_array.h bootstrap/mm/kheap.c bootstrap/mm/kheap.h bootstrap/io/acpi.c bootstrap/io/acpi.h)
 
 add_custom_target(linker.ld
         BYPRODUCTS linker.ld

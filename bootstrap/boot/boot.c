@@ -5,13 +5,18 @@
 #include <kernel/kernel.h>
 #include <std/attributes.h>
 #include <mm/kmem.h>
-#include <io/ps2.h>
 #include <std/string.h>
 #include "interrupts.h"
 #include "multiboot.h"
 #include "gdt.h"
 
-void irq0_handler(registers_t regs) { }
+u32 timer = 0;
+void irq0_handler(registers_t regs) {
+    timer++;
+    if (timer % 1000) {
+        dbg_logf(LOG_INFO, "Timer: %d\n", timer);
+    }
+}
 
 void int3_handler(registers_t regs) {
     term_setcolor(VGA_COLOR(VGA_COLOR_WHITE, VGA_COLOR_LIGHT_RED));
@@ -19,24 +24,18 @@ void int3_handler(registers_t regs) {
     dump_registers(&regs);
 }
 
-#define BOOT_MEMSET(ptr, value, count) \
-do { \
-    for (u32 i = 0; i < count; i++) { \
-        ((u8 *) ptr)[i] = value; \
-    } \
-} while (0)
-
+#define MEMSET(ptr, val, count) asm volatile ("cld ; rep stosb" :: "D" (ptr), "a" (val), "c" (count) : "memory")
 #define PAGE_CEIL(addr) ((addr) & 0x00000FFF ? (((addr) & 0xFFFFF000) + 0x1000) : (addr))
 #define PAGE_FLOOR(addr) ((addr) & 0x00000FFF ? (((addr) & 0xFFFFF000)) : (addr))
 
-static void SECTION(".boot_text") _early_page_map(page_directory_t *page_dir, u32 physical_addr, u32 virtual_addr, bool writeable) {
-    int dir_index = virtual_addr >> 22;
-    int table_index = (virtual_addr >> 12) & 0x3FF;
+static void SECTION(".boot_text") early_page_map(page_directory_t *page_dir, u32 physical_addr, u32 virtual_addr, bool writeable) {
+    u32 dir_index = virtual_addr >> 22;
+    u32 table_index = (virtual_addr >> 12) & 0x3FF;
 
     // allocate if not there
     if (!page_dir->tables[dir_index].present) {
         page_table_t *table = (void *) (PAGE_TABLE_BASE + sizeof(page_directory_t) + (dir_index * sizeof(page_table_t)));
-        BOOT_MEMSET(table, 0, sizeof(page_table_t));
+        MEMSET(table, 0, sizeof(page_table_t));
 
         page_dir->tables[dir_index].address = (u32) table >> 12;
         page_dir->tables[dir_index].present = true;
@@ -57,17 +56,9 @@ void USED NORETURN SECTION(".boot_text") _early_boot(u32 multiboot_magic, multib
     u32 page_table_base = PAGE_TABLE_BASE;
 
     page_directory_t *kernel_page_dir = (page_directory_t *) page_table_base;
-    BOOT_MEMSET(kernel_page_dir, 0, sizeof(page_directory_t));
+    MEMSET(kernel_page_dir, 0, sizeof(page_directory_t));
     page_table_base += sizeof(page_directory_t);
-
-    asm volatile (
-        "cld              \n" // clear direction flag
-        "xor %%eax, %%eax \n" // set eax to 0
-        "rep stosl        \n" // store long words
-        :
-        : "D" (page_table_base), "c" (sizeof(page_table_t) * 1024 / 4)
-        : "eax", "memory", "cc"
-    );
+    MEMSET(page_table_base, 0, sizeof(page_table_t) * 1024);
     page_table_base += sizeof(page_table_t) * 1024;
 
     // set last page directory entry to the page directory itself
@@ -92,22 +83,22 @@ void USED NORETURN SECTION(".boot_text") _early_boot(u32 multiboot_magic, multib
 
     // identity map first mb (for display and stuff)
     for (int i = 0; i < 0x100000; i += 0x1000) {
-        _early_page_map(kernel_page_dir, i, i, true);
+        early_page_map(kernel_page_dir, i, i, true);
     }
 
     // identity map the bootcode
     for (u32 i = PAGE_FLOOR(boot_base); i < PAGE_CEIL(boot_end); i += 0x1000) {
-        _early_page_map(kernel_page_dir, i, i, true);
+        early_page_map(kernel_page_dir, i, i, true);
     }
 
     // map .text and .rodata as read-only
     for (u32 i = PAGE_FLOOR(kernel_code_start); i < PAGE_CEIL(kernel_code_end); i += 0x1000) {
-        _early_page_map(kernel_page_dir, i - KERNEL_BASE_ADDR, i, false);
+        early_page_map(kernel_page_dir, i - KERNEL_BASE_ADDR, i, false);
     }
 
     // map .data and .bss as read-write
     for (u32 i = PAGE_FLOOR(kernel_data_start); i < PAGE_CEIL(kernel_data_end); i += 0x1000) {
-        _early_page_map(kernel_page_dir, i - KERNEL_BASE_ADDR, i, true);
+        early_page_map(kernel_page_dir, i - KERNEL_BASE_ADDR, i, true);
     }
 
     // load cr3 with the page table
@@ -182,11 +173,9 @@ static void USED NORETURN _boot(multiboot_info_t *multiboot_info) {
     set_interrupt_handler(3, int3_handler);
     set_interrupt_handler(14, page_fault_handler);
     init_kmem();
-    init_ps2();
 
     move_kernel_stack();
     unmap_bootcode();
-
     kernel_main();
 
     dbg_printf("System Halted.");

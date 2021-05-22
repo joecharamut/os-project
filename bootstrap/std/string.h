@@ -5,6 +5,8 @@
 #include "types.h"
 
 size_t strlen(const char *str);
+int strcmp(const char *str1, const char *str2);
+int strncmp(const char *str1, const char *str2, size_t count);
 
 void memset(void *ptr, u8 value, size_t count);
 void *memcpy(void *dest, const void *src, size_t count);

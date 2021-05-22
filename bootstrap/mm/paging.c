@@ -26,15 +26,13 @@ void *get_physaddr(void *virtualaddr) {
     return (void *)((pt[ptindex] & ~0xFFF) + ((unsigned long)virtualaddr & 0xFFF));
 }
 
-void map_page(void *physaddr, void *virtualaddr) {
+static void internal_map_page(void *physaddr, void *virtualaddr, bool readonly, bool user) {
     // Make sure that both addresses are page-aligned.
     ASSERT((u32) physaddr % 0x1000 == 0);
     ASSERT((u32) virtualaddr % 0x1000 == 0);
 
     u32 pdindex = (u32) virtualaddr >> 22;
     u32 ptindex = (u32) virtualaddr >> 12 & 0x03FF;
-
-//    dbg_logf(LOG_DEBUG, "mapping 0x%08x to 0x%08x (dir %d table %d)\n", physaddr, virtualaddr, pdindex, ptindex);
 
     page_directory_t *pd = (page_directory_t *) 0xFFFFF000;
     // Here you need to check whether the PD entry is present.
@@ -57,7 +55,8 @@ void map_page(void *physaddr, void *virtualaddr) {
 
     pt->pages[ptindex].address = (u32) physaddr >> 12;
     pt->pages[ptindex].present = true;
-    pt->pages[ptindex].rw = true;
+    pt->pages[ptindex].rw = !readonly;
+    pt->pages[ptindex].user = user;
 
     flush_page((u32) virtualaddr);
 }
@@ -68,8 +67,6 @@ static void internal_unmap_page(void *vaddr) {
 
     u32 pdindex = (u32) vaddr >> 22;
     u32 ptindex = (u32) vaddr >> 12 & 0x03FF;
-
-    dbg_logf(LOG_DEBUG, "unmapping 0x%08x (dir %d table %d)\n", vaddr, pdindex, ptindex);
 
     page_directory_t *pd = (page_directory_t *) 0xFFFFF000;
     // if page dir entry does not exist, exit
@@ -89,11 +86,13 @@ static void internal_unmap_page(void *vaddr) {
     flush_page((u32) vaddr);
 }
 
-void mmap(void *paddr, void *vaddr, bool readonly, bool supervisor) {
-
+void mmap(void *paddr, void *vaddr, bool readonly, bool user) {
+//    dbg_logf(LOG_DEBUG, "mapping 0x%08x to 0x%08x\n", paddr, vaddr);
+    internal_map_page(paddr, vaddr, readonly, user);
 }
 
 void munmap(void *vaddr) {
+    dbg_logf(LOG_DEBUG, "unmapping 0x%08x\n", vaddr);
     internal_unmap_page(vaddr);
 }
 

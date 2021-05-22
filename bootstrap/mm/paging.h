@@ -28,7 +28,7 @@ typedef struct {
     page_directory_entry_t tables[1024];
 } page_directory_t;
 
-void map_page(void *physaddr, void *virtualaddr);
+void mmap(void *paddr, void *vaddr, bool readonly, bool user);
 void munmap(void *vaddr);
 bool is_paging_enabled();
 void page_fault_handler(registers_t registers);

@@ -1,17 +1,13 @@
-#include <debug/serial.h>
 #include <debug/term.h>
 #include <debug/debug.h>
-#include <io/port.h>
-#include <io/timer.h>
 #include <dev/pci.h>
 #include <dev/ide.h>
-#include <mm/paging.h>
-#include <std/string.h>
-#include <std/stdlib.h>
-#include <debug/panic.h>
+#include <io/acpi.h>
 
 void kernel_main() {
     dbg_logf(LOG_INFO, "Welcome to {OS_NAME} Bootstrap Loader\n");
+
+    init_acpi();
 
     dbg_logf(LOG_INFO, "Initializing PCI...\n");
     if (!pci_init()) {
@@ -41,4 +37,6 @@ void kernel_main() {
     }
 
     dbg_printf("Hello World!\n");
+
+
 }

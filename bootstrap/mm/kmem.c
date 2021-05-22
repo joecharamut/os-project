@@ -11,7 +11,7 @@ u32 placement_addr = 0;
 
 void init_kmem() {
     for (u32 i = 0; i < HEAP_SIZE; i += 0x1000) {
-        map_page((void *) (MEMORY_BASE_PHYS + i), (void *) (HEAP_BASE_ADDR + i));
+        mmap((void *) (MEMORY_BASE_PHYS + i), (void *) (HEAP_BASE_ADDR + i), false, false);
     }
     placement_phys = MEMORY_BASE_PHYS;
     placement_addr = HEAP_BASE_ADDR;

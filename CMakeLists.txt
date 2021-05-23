@@ -37,7 +37,11 @@ set(BOOTSTRAP_SOURCES
         bootstrap/std/math.c bootstrap/std/math.h
         bootstrap/kernel/kernel.c bootstrap/kernel/kernel.h
         bootstrap/std/bitset.c bootstrap/std/bitset.h
-        bootstrap/io/ps2.c bootstrap/io/ps2.h bootstrap/std/ordered_array.c bootstrap/std/ordered_array.h bootstrap/mm/kheap.c bootstrap/mm/kheap.h bootstrap/io/acpi.c bootstrap/io/acpi.h)
+        bootstrap/io/ps2.c bootstrap/io/ps2.h
+        bootstrap/std/ordered_array.c bootstrap/std/ordered_array.h
+        bootstrap/mm/kheap.c bootstrap/mm/kheap.h
+        bootstrap/io/acpi.c bootstrap/io/acpi.h
+        )
 
 add_custom_target(linker.ld
         BYPRODUCTS linker.ld
@@ -58,9 +62,13 @@ add_custom_command(OUTPUT grub.img
         COMMAND grub-mkimage -o grub.img -p \(hd0,msdos1\)/boot -c ${CMAKE_SOURCE_DIR}/grub.cfg --format=i386-pc ${GRUB_MODULES}
         )
 
+set(PYTHON_SOURCES
+        python/test.py
+        )
+list(TRANSFORM PYTHON_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
 add_custom_command(OUTPUT disk.img
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS HELLO.TXT
+        DEPENDS ${PYTHON_SOURCES}
         DEPENDS grub.img
         DEPENDS grub.cfg
         DEPENDS kernel.bin
@@ -71,10 +79,13 @@ add_custom_command(OUTPUT disk.img
         dd conv=notrunc if=/usr/lib/grub/i386-pc/boot.img of=disk.img bs=440 count=1 &&
         dd conv=notrunc if=grub.img of=disk.img bs=512 seek=1 count=1024 &&
         mkfs.vfat --offset=2048 -F32 disk.img &&
+
         mmd -i disk.img@@2048S ::/boot &&
         mcopy -i disk.img@@2048S ${CMAKE_BINARY_DIR}/kernel.bin ::/boot &&
         mcopy -i disk.img@@2048S ${CMAKE_SOURCE_DIR}/grub.cfg ::/boot &&
-        mcopy -i disk.img@@2048S ${CMAKE_SOURCE_DIR}/HELLO.TXT ::
+
+        mmd -i disk.img@@2048S ::/python &&
+        mcopy -i disk.img@@2048S ${PYTHON_SOURCES} ::/python
         )
 
 add_custom_target(qemu

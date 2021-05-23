@@ -6,5 +6,6 @@
 #define NORETURN __attribute__((noreturn))
 #define UNUSED __attribute__((unused))
 #define USED __attribute__((used))
+#define PACKED __attribute__((packed))
 
 #endif //OS_ATTRIBUTES_H

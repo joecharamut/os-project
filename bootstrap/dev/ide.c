@@ -1,100 +1,108 @@
 #include <debug/debug.h>
 #include <io/port.h>
-#include <debug/serial.h>
 #include <debug/panic.h>
+#include <std/attributes.h>
 #include "ide.h"
 #include "pci.h"
 
-#define IDE_PCI_NATIVE_MODE_PRIMARY 1 << 0
-#define IDE_PCI_NATIVE_MODE_PRIMARY_WRITEABLE 1 << 1
-#define IDE_PCI_NATIVE_MODE_SECONDARY 1 << 2
-#define IDE_PCI_NATIVE_MODE_SECONDARY_WRITEABLE 1 << 3
-#define IDE_PCI_BUS_MASTER_CONTROLLER 1 << 7
+typedef enum {
+    ATA_OFFSET_DATA         = 0,
+    ATA_OFFSET_ERROR        = 1,
+    ATA_OFFSET_SECTOR_COUNT = 2,
+    ATA_OFFSET_LBA_LO       = 3,
+    ATA_OFFSET_LBA_MID      = 4,
+    ATA_OFFSET_LBA_HI       = 5,
+    ATA_OFFSET_DRIVE_SELECT = 6,
+    ATA_OFFSET_COMMAND      = 7,
+} ata_bus_offset_t;
 
-#define IDE_PRIMARY_CONTROL_REGISTER    0x3F6
-#define IDE_PRIMARY_DATA_PORT           0x1F0
-#define IDE_PRIMARY_ERROR_REGISTER      0x1F1
-#define IDE_PRIMARY_SECTORCOUNT         0x1F2
-#define IDE_PRIMARY_LBA_LO              0x1F3
-#define IDE_PRIMARY_LBA_MID             0x1F4
-#define IDE_PRIMARY_LBA_HI              0x1F5
-#define IDE_PRIMARY_DRIVE_SELECT        0x1F6
-#define IDE_PRIMARY_COMMAND_IO          0x1F7
+typedef union {
+    struct {
+        u8 lba1 : 8;
+        u8 lba2 : 8;
+        u8 lba3 : 8;
+        u8 lba4 : 8;
+        u8 lba5 : 8;
+        u8 lba6 : 8;
+        u16 _unused : 16;
+    } PACKED bytes;
+    u64 value;
+} ata_lba_t;
 
-#define ATA_COMMAND_READ_SECTORS_EXT    0x24
-#define ATA_COMMAND_IDENTIFY_DEVICE     0xEC
+void ata_send_command(ata_bus_t bus, ata_command_t command) {
+    outb(bus + ATA_OFFSET_COMMAND, command);
+}
 
-#define ATA_STATUS_ERR                  1 << 0
-#define ATA_STATUS_DRQ                  1 << 3
-#define ATA_STATUS_BSY                  1 << 7
+ata_status_t read_status(ata_bus_t bus) {
+    return (ata_status_t) { .value = inb(bus + ATA_OFFSET_COMMAND) };
+}
 
-u8 wait_poll() {
-    u8 status = 0;
-    while (((status = inb(IDE_PRIMARY_COMMAND_IO)) & (ATA_STATUS_DRQ | ATA_STATUS_ERR)) == 0) {
+ata_status_t wait_poll(ata_bus_t bus) {
+    ata_status_t status;
+
+    do {
+        status = read_status(bus);
         asm volatile ("pause");
-    }
+    } while (status.fields.busy && !(status.fields.error || status.fields.drive_request || status.fields.drive_fault));
+
     return status;
 }
 
-void ata_read_sectors(u16 sectorCount, u64 lba, u16 *buffer) {
-    uint8_t sectorCount_hi = (sectorCount >> 8) & 0xff;
-    uint8_t sectorCount_lo = (sectorCount >> 0) & 0xff;
-    uint8_t lba1 = (lba >> 0) & 0xff;
-    uint8_t lba2 = (lba >> 8) & 0xff;
-    uint8_t lba3 = (lba >> 16) & 0xff;
-    uint8_t lba4 = (lba >> 24) & 0xff;
-    uint8_t lba5 = (lba >> 32) & 0xff;
-    uint8_t lba6 = (lba >> 40) & 0xff;
+void ata_read_sectors(ata_bus_t bus, ata_drive_t drive, u64 lba_value, u16 count, u16 *buffer) {
+    ata_lba_t lba = (ata_lba_t) { .value = lba_value };
 
-    outb(IDE_PRIMARY_DRIVE_SELECT, 0x40);
-    outb(IDE_PRIMARY_SECTORCOUNT, sectorCount_hi);
-    outb(IDE_PRIMARY_LBA_LO, lba4);
-    outb(IDE_PRIMARY_LBA_MID, lba5);
-    outb(IDE_PRIMARY_LBA_HI, lba6);
-    outb(IDE_PRIMARY_SECTORCOUNT, sectorCount_lo);
-    outb(IDE_PRIMARY_LBA_LO, lba1);
-    outb(IDE_PRIMARY_LBA_MID, lba2);
-    outb(IDE_PRIMARY_LBA_HI, lba3);
-    outb(IDE_PRIMARY_COMMAND_IO, ATA_COMMAND_READ_SECTORS_EXT);
-    wait_poll();
+    // use lba instead of chs
+    outb(bus + ATA_OFFSET_DRIVE_SELECT, drive == ATA_PRIMARY_DRIVE ? 0x40 : 0x50);
 
+    outb(bus + ATA_OFFSET_SECTOR_COUNT, (count >> 8) & 0xFF);
+    outb(bus + ATA_OFFSET_LBA_LO, lba.bytes.lba4);
+    outb(bus + ATA_OFFSET_LBA_MID, lba.bytes.lba5);
+    outb(bus + ATA_OFFSET_LBA_HI, lba.bytes.lba6);
+
+    outb(bus + ATA_OFFSET_SECTOR_COUNT, (count >> 0) & 0xFF);
+    outb(bus + ATA_OFFSET_LBA_LO, lba.bytes.lba1);
+    outb(bus + ATA_OFFSET_LBA_MID, lba.bytes.lba2);
+    outb(bus + ATA_OFFSET_LBA_HI, lba.bytes.lba3);
+
+    outb(bus + ATA_OFFSET_COMMAND, ATA_READ_SECTORS_EXT);
+
+    wait_poll(bus);
     for (int i = 0; i < 256; i++) {
-        buffer[i] = inw(IDE_PRIMARY_DATA_PORT);
+        buffer[i] = inw(bus + ATA_OFFSET_DATA);
     }
 }
 
-bool ata_identify_device(u16 *buffer) {
-    outb(IDE_PRIMARY_DRIVE_SELECT, 0xA0);
-    outb(IDE_PRIMARY_SECTORCOUNT, 0x00);
-    outb(IDE_PRIMARY_LBA_LO, 0x00);
-    outb(IDE_PRIMARY_LBA_MID, 0x00);
-    outb(IDE_PRIMARY_LBA_HI, 0x00);
-    outb(IDE_PRIMARY_COMMAND_IO, ATA_COMMAND_IDENTIFY_DEVICE);
+int ata_identify(ata_bus_t bus, ata_drive_t drive, u16 *buffer) {
+    outb(bus + ATA_OFFSET_DRIVE_SELECT, drive);
+    outb(bus + ATA_OFFSET_SECTOR_COUNT, 0);
+    outb(bus + ATA_OFFSET_LBA_LO, 0);
+    outb(bus + ATA_OFFSET_LBA_MID, 0);
+    outb(bus + ATA_OFFSET_LBA_HI, 0);
+    outb(bus + ATA_OFFSET_COMMAND, ATA_IDENTIFY_DEVICE);
 
-    if (inb(IDE_PRIMARY_COMMAND_IO) == 0) {
-        return false;
-    } else {
-        while ((inb(IDE_PRIMARY_COMMAND_IO) & ATA_STATUS_BSY) != 0); // wait for BSY clear
+    if (inb(bus + ATA_OFFSET_COMMAND) == 0) {
+        return -1;
     }
 
-    uint8_t lbamid = inb(IDE_PRIMARY_LBA_MID);
-    uint8_t lbahi = inb(IDE_PRIMARY_LBA_HI);
-    if (lbamid != 0 || lbahi != 0) {
-        dbg_logf(LOG_ERROR, "Not ATA: 0x%x 0x%x\n", lbahi, lbamid);
-        return false;
+    while (read_status(bus).fields.busy); // wait until not busy
+
+    u8 lba_mid = inb(bus + ATA_OFFSET_LBA_MID);
+    u8 lba_hi = inb(bus + ATA_OFFSET_LBA_HI);
+    if (lba_hi || lba_mid) {
+        dbg_logf(LOG_ERROR, "Not ATA: 0x%x 0x%x\n", lba_hi, lba_mid);
+        return -2;
     }
 
-    if (wait_poll() & ATA_STATUS_ERR) {
+    if (wait_poll(ATA_PRIMARY_BUS).fields.error) {
         dbg_logf(LOG_ERROR, "Drive Reported Error\n");
-        return false;
+        return -3;
     }
-
 
     for (int i = 0; i < 256; i++) {
-        buffer[i] = inw(IDE_PRIMARY_DATA_PORT);
+        buffer[i] = inw(bus + ATA_OFFSET_DATA);
     }
 
-    return true;
+    return 0;
 }
 
 bool ide_init() {
@@ -102,46 +110,45 @@ bool ide_init() {
     for (size_t i = 0; i < pci_num_devs(); i++) {
         PCI_Header hdr = pci_dev_list()[i];
         if (hdr.classCode == PCI_MASS_STORAGE_CONTROLLER && hdr.subclass == 0x01) {
-            if (!(hdr.programmingInterface & IDE_PCI_NATIVE_MODE_PRIMARY)) {
+            if ((hdr.programmingInterface & 1) == 0) {
                 usable_controller = true;
             }
         }
     }
 
     if (!usable_controller) {
-        dbg_logf(LOG_FATAL, "No IDE Controllers in Compatibility mode, bailing out\n");
+        dbg_logf(LOG_FATAL, "No Supported IDE Controllers, bailing out\n");
         return false;
     }
 
     u16 transfer_buffer[256];
 
-    if (ata_identify_device(transfer_buffer)) {
-        if (transfer_buffer[83] & (1 << 10)) {
-            dbg_logf(LOG_DEBUG, "ATA Identify Success\n");
-            uint64_t word0 = transfer_buffer[100];
-            uint64_t word1 = transfer_buffer[101];
-            uint64_t word2 = transfer_buffer[102];
-            uint64_t word3 = transfer_buffer[103];
-
-            uint64_t sectors = (word0 << 0) | (word1 << 16) | (word2 << 32) | (word3 << 48);
-            dbg_logf(LOG_DEBUG, "Drive supports LBA48, Sectors: %lld\n", sectors);
-
-            dbg_logf(LOG_DEBUG, "Attempting to read Sector 0...\n");
-            ata_read_sectors(1, 0, transfer_buffer);
-
-            if (transfer_buffer[255] == 0xAA55) {
-                dbg_logf(LOG_DEBUG, "MBR Signature Present!\n");
-                return true;
-            } else {
-                dbg_logf(LOG_DEBUG, "MBR Signature invalid (0x%04x)\n", transfer_buffer[255]);
-                return false;
-            }
-        } else {
-            dbg_logf(LOG_DEBUG, "Drive does not support LBA48\n");
-            return false;
-        }
-    } else {
+    if (ata_identify(ATA_PRIMARY_BUS, ATA_PRIMARY_DRIVE, transfer_buffer)) {
         dbg_logf(LOG_FATAL, "ATA Identify Failed\n");
+        return false;
+    }
+    dbg_logf(LOG_DEBUG, "ATA Identify Success\n");
+
+    if ((transfer_buffer[83] & (1 << 10)) == 0) {
+        dbg_logf(LOG_DEBUG, "Drive does not support LBA48\n");
+        return false;
+    }
+
+    uint64_t word0 = transfer_buffer[100];
+    uint64_t word1 = transfer_buffer[101];
+    uint64_t word2 = transfer_buffer[102];
+    uint64_t word3 = transfer_buffer[103];
+    uint64_t sectors = (word0 << 0) | (word1 << 16) | (word2 << 32) | (word3 << 48);
+    dbg_logf(LOG_DEBUG, "Drive supports LBA48, Sectors: %lld\n", sectors);
+
+    dbg_logf(LOG_DEBUG, "Attempting to read Sector 0...\n");
+    ata_read_sectors(ATA_PRIMARY_BUS, ATA_PRIMARY_DRIVE, 0, 1, transfer_buffer);
+
+    if (transfer_buffer[255] == 0xAA55) {
+        dbg_logf(LOG_DEBUG, "MBR Signature Present!\n");
+        return true;
+    } else {
+        dbg_logf(LOG_DEBUG, "MBR Signature invalid (0x%04x)\n", transfer_buffer[255]);
         return false;
     }
 }

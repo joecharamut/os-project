@@ -13,19 +13,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="heap? sorta">
-      <change afterPath="$PROJECT_DIR$/bootstrap/io/acpi.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootstrap/io/acpi.h" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="something">
+      <change afterPath="$PROJECT_DIR$/python/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/boot/boot.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/boot.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/mm/kmem.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/kmem.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/mm/paging.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/paging.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/mm/paging.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/paging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/string.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/string.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/string.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/string.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/dev/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/dev/ide.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/dev/ide.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/dev/ide.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/attributes.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/attributes.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,12 +29,13 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
-    <option name="clangWarnings" value="-Wno-unused-variable,-Werror=implicit-function-declaration,-Wshadow,-Wno-shadow-field-in-constructor-modified,-Wno-shadow-ivar,-Wno-language-extension-token" />
+    <option name="clangWarnings" value="" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CMakeLists.txt" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -227,7 +223,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="language.cpp.clangd" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -235,11 +231,11 @@
       <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/disk/boot" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/disk" />
+      <recent name="$PROJECT_DIR$/disk/boot" />
       <recent name="$PROJECT_DIR$/bootstrap/std" />
       <recent name="$PROJECT_DIR$/bootstrap/boot" />
-      <recent name="$PROJECT_DIR$/kernel" />
     </key>
   </component>
   <component name="RunManager" selected="GDB Remote Debug.GDB qemu">
@@ -307,7 +303,7 @@
       <workItem from="1620603565162" duration="74277000" />
       <workItem from="1620921781019" duration="60660000" />
       <workItem from="1621458263897" duration="50000" />
-      <workItem from="1621458448266" duration="31670000" />
+      <workItem from="1621458448266" duration="42416000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -372,7 +368,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621545074350</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="something">
+      <created>1621707878412</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1621707878412</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -456,7 +459,8 @@
     <MESSAGE value="add gitignore" />
     <MESSAGE value="stacker" />
     <MESSAGE value="heap? sorta" />
-    <option name="LAST_COMMIT_MESSAGE" value="heap? sorta" />
+    <MESSAGE value="something" />
+    <option name="LAST_COMMIT_MESSAGE" value="something" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -468,6 +472,10 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/bootstrap/std/math.c">

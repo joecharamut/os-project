@@ -4,6 +4,7 @@
 #include <std/stdlib.h>
 #include <debug/term.h>
 #include <std/bitset.h>
+#include <debug/assert.h>
 #include "paging.h"
 #include "kmem.h"
 
@@ -28,8 +29,8 @@ void *get_physaddr(void *virtualaddr) {
 
 static void internal_map_page(void *physaddr, void *virtualaddr, bool readonly, bool user) {
     // Make sure that both addresses are page-aligned.
-    ASSERT((u32) physaddr % 0x1000 == 0);
-    ASSERT((u32) virtualaddr % 0x1000 == 0);
+    assert((u32) physaddr % 0x1000 == 0);
+    assert((u32) virtualaddr % 0x1000 == 0);
 
     u32 pdindex = (u32) virtualaddr >> 22;
     u32 ptindex = (u32) virtualaddr >> 12 & 0x03FF;
@@ -63,7 +64,7 @@ static void internal_map_page(void *physaddr, void *virtualaddr, bool readonly, 
 
 static void internal_unmap_page(void *vaddr) {
     // Make sure that both addresses are page-aligned.
-    ASSERT((u32) vaddr % 0x1000 == 0);
+    assert((u32) vaddr % 0x1000 == 0);
 
     u32 pdindex = (u32) vaddr >> 22;
     u32 ptindex = (u32) vaddr >> 12 & 0x03FF;

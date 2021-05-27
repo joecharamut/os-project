@@ -1,4 +1,5 @@
 #include <debug/debug.h>
+#include <debug/assert.h>
 #include "kheap.h"
 #include "kmem.h"
 
@@ -17,8 +18,8 @@ typedef struct {
 } footer_t;
 
 static int heap_header_compare(void *a, void *b) {
-    ASSERT(((header_t *) a)->magic == HEAP_MAGIC);
-    ASSERT(((header_t *) b)->magic == HEAP_MAGIC);
+    assert(((header_t *) a)->magic == HEAP_MAGIC);
+    assert(((header_t *) b)->magic == HEAP_MAGIC);
     return (((header_t *) a)->size < ((header_t *) b)->size) ? 1 : 0;
 }
 
@@ -48,14 +49,14 @@ static int find_hole(heap_t *heap, u32 size, bool aligned) {
 }
 
 static void expand_heap(heap_t *heap, u32 new_size) {
-    ASSERT(new_size > heap->end_address - heap->start_address);
+    assert(new_size > heap->end_address - heap->start_address);
 
     if (new_size & 0xFFFFF000) {
         new_size &= 0xFFFFF000;
         new_size += 0x1000;
     }
 
-    ASSERT(heap->start_address+new_size <= heap->max_address);
+    assert(heap->start_address+new_size <= heap->max_address);
 
     u32 old_size = heap->end_address-heap->start_address;
     u32 i = old_size;
@@ -67,7 +68,7 @@ static void expand_heap(heap_t *heap, u32 new_size) {
 }
 
 static u32 contract_heap(heap_t *heap, u32 new_size) {
-    ASSERT(new_size < heap->end_address - heap->start_address);
+    assert(new_size < heap->end_address - heap->start_address);
 
     if (new_size & 0x1000) {
         new_size &= 0x1000;
@@ -90,8 +91,8 @@ static u32 contract_heap(heap_t *heap, u32 new_size) {
 }
 
 heap_t *heap_create(heap_t *heap, u32 start, u32 end, u32 max, bool supervisor, bool readonly) {
-    ASSERT(start % 0x1000 == 0);
-    ASSERT(end % 0x1000 == 0);
+    assert(start % 0x1000 == 0);
+    assert(end % 0x1000 == 0);
 
     heap->index = ordered_array_create_at((void *) start, HEAP_INDEX_SIZE, &heap_header_compare);
     start += HEAP_INDEX_SIZE * sizeof(type_t);
@@ -177,8 +178,8 @@ void heap_free(heap_t *heap, void *ptr) {
     header_t *header = (header_t *) ((u32) ptr - sizeof(header_t));
     footer_t *footer = (footer_t *) ((u32) header + header->size - sizeof(footer_t));
 
-    ASSERT(header->magic == HEAP_MAGIC);
-    ASSERT(footer->magic == HEAP_MAGIC);
+    assert(header->magic == HEAP_MAGIC);
+    assert(footer->magic == HEAP_MAGIC);
 
     header->is_hole = true;
     bool add_to_index = true;
@@ -202,7 +203,7 @@ void heap_free(heap_t *heap, void *ptr) {
         while ((i < heap->index.size) && (ordered_array_get(&heap->index, i) != check_right)) {
             i++;
         }
-        ASSERT(i < heap->index.size);
+        assert(i < heap->index.size);
         ordered_array_remove(&heap->index, i);
     }
 

@@ -19,7 +19,7 @@ global boot_stack_bottom
     boot_stack_bottom:
 
 section .boot_text
-extern _early_boot
+extern boot_entrypoint
 global _start
 _start:
     ; disable interrupts
@@ -30,4 +30,4 @@ _start:
     push ebx
     push eax
     ; jump to c code as fast as possible
-    call _early_boot
+    call boot_entrypoint

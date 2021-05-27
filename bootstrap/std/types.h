@@ -19,4 +19,6 @@ typedef uint64_t u64;
 typedef int64_t s64;
 typedef uint64_t qword;
 
+typedef uint64_t time_t;
+
 #endif //OS_TYPES_H

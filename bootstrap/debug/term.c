@@ -3,8 +3,6 @@
 #include <std/types.h>
 #include <io/port.h>
 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
 uint16_t *term_buffer = (uint16_t *) 0xB8000;
 
 size_t term_row;

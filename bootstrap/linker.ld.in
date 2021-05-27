@@ -7,9 +7,9 @@ ENTRY(_start)
 SECTIONS
 {
     . = 0x00100000;
-    _kernel_base = .;
+    kernel_base_addr = .;
 
-    _boot_base = .;
+    boot_base_addr = .;
 
     .boot_magic : {
         *(.boot_magic)
@@ -19,34 +19,38 @@ SECTIONS
         *(.boot_text)
     }
 
+    .boot_data : ALIGN(4K) {
+        *(.boot_data)
+    }
+
     .boot_bss : ALIGN(4K) {
         *(.boot_bss)
     }
 
-    _boot_end = .;
+    boot_end_addr = .;
 
     . += KERNEL_OFFSET;
 
     .text ALIGN(4K) : AT(ADDR(.text) - KERNEL_OFFSET) {
-        _kernel_code_base = .;
+        kernel_code_base = .;
         *(.text)
     }
 
     .rodata ALIGN(4K) : AT(ADDR(.rodata) - KERNEL_OFFSET) {
         *(.rodata)
-        _kernel_code_end = .;
+        kernel_code_end = .;
     }
 
     .data ALIGN(4K) : AT(ADDR(.data) - KERNEL_OFFSET) {
-        _kernel_data_base = .;
+        kernel_data_base = .;
         *(.data)
     }
 
     .bss ALIGN(4K) : AT(ADDR(.bss) - KERNEL_OFFSET) {
         *(COMMON)
         *(.bss)
-        _kernel_data_end = .;
+        kernel_data_end = .;
     }
 
-    _kernel_end = .;
+    kernel_end_addr = .;
 }

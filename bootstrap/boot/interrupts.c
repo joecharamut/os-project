@@ -1,6 +1,5 @@
 #include <debug/debug.h>
 #include <io/port.h>
-#include <debug/panic.h>
 #include "interrupts.h"
 
 #define IDT_SIZE 256
@@ -8,7 +7,7 @@ isr_t interrupt_handlers[IDT_SIZE];
 idt_entry_t idt_entries[IDT_SIZE];
 idt_ptr_t idt_ptr;
 
-void isr_handler(registers_t registers) {
+void __attribute__((used)) isr_handler(registers_t registers) {
     if (interrupt_handlers[registers.interrupt_num]) {
         interrupt_handlers[registers.interrupt_num](registers);
     } else {
@@ -16,7 +15,7 @@ void isr_handler(registers_t registers) {
     }
 }
 
-void irq_handler(registers_t registers) {
+void __attribute__((used)) irq_handler(registers_t registers) {
     if (registers.interrupt_num >= 40) {
         // send reset to PIC2
         outb(0xA0, 0x20);

@@ -26,6 +26,8 @@ enum vga_color {
 
 #define VGA_COLOR(fg, bg) (fg | bg << 4)
 #define VGA_ENTRY(ch, color) ((uint16_t) ch | (uint16_t) color << 8)
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
 
 void term_init();
 void term_clear();

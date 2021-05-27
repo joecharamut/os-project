@@ -13,14 +13,31 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="something">
-      <change afterPath="$PROJECT_DIR$/python/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="move ide">
+      <change afterPath="$PROJECT_DIR$/bootstrap/debug/assert.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/fs/fat32.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/fs/fat32.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/std/list.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/std/list.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/dev/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/dev/ide.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/dev/ide.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/dev/ide.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/attributes.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/attributes.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/boot/boot.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/boot.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/boot/boot.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/boot.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/boot/interrupts.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/interrupts.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/term.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/term.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/term.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/term.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/fs/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ide.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/fs/ide.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ide.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/linker.ld.in" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/linker.ld.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/mm/kheap.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/kheap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/mm/paging.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/paging.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/attributes.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/ordered_array.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/ordered_array.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/string.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/string.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/types.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/types.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +46,7 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
-    <option name="clangWarnings" value="" />
+    <option name="clangWarnings" value="-Wno-language-extension-token" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -223,7 +240,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="language.cpp.clangd" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -231,11 +248,11 @@
       <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bootstrap/fs" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/disk" />
       <recent name="$PROJECT_DIR$/disk/boot" />
       <recent name="$PROJECT_DIR$/bootstrap/std" />
-      <recent name="$PROJECT_DIR$/bootstrap/boot" />
     </key>
   </component>
   <component name="RunManager" selected="GDB Remote Debug.GDB qemu">
@@ -264,8 +281,8 @@
       </method>
     </configuration>
     <configuration default="true" type="CompoundRunConfigurationType">
-      <toRun name="qemu" type="CMakeRunConfiguration" />
       <toRun name="GDB qemu" type="CLion_Remote" />
+      <toRun name="qemu" type="CMakeRunConfiguration" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
@@ -303,7 +320,9 @@
       <workItem from="1620603565162" duration="74277000" />
       <workItem from="1620921781019" duration="60660000" />
       <workItem from="1621458263897" duration="50000" />
-      <workItem from="1621458448266" duration="42416000" />
+      <workItem from="1621458448266" duration="72601000" />
+      <workItem from="1622062087946" duration="872000" />
+      <workItem from="1622063244392" duration="8487000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -375,7 +394,21 @@
       <option name="project" value="LOCAL" />
       <updated>1621707878412</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="make ide better">
+      <created>1621737151477</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1621737151477</updated>
+    </task>
+    <task id="LOCAL-00012" summary="move ide">
+      <created>1621737277436</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1621737277436</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -460,7 +493,9 @@
     <MESSAGE value="stacker" />
     <MESSAGE value="heap? sorta" />
     <MESSAGE value="something" />
-    <option name="LAST_COMMIT_MESSAGE" value="something" />
+    <MESSAGE value="make ide better" />
+    <MESSAGE value="move ide" />
+    <option name="LAST_COMMIT_MESSAGE" value="move ide" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

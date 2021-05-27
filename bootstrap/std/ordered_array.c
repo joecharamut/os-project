@@ -1,6 +1,7 @@
 #include <debug/panic.h>
 #include <debug/debug.h>
 #include <mm/kmem.h>
+#include <debug/assert.h>
 #include "ordered_array.h"
 #include "string.h"
 
@@ -32,7 +33,7 @@ void ordered_array_destroy(ordered_array_t *array) {
 }
 
 void ordered_array_insert(ordered_array_t *array, type_t item) {
-    ASSERT(array->compare_function);
+    assert(array->compare_function);
 
     u32 i = 0;
     while (i < array->size && array->compare_function(array->array[i], item)) {
@@ -55,7 +56,7 @@ void ordered_array_insert(ordered_array_t *array, type_t item) {
 }
 
 type_t ordered_array_get(ordered_array_t *array, u32 index) {
-    ASSERT(index < array->size);
+    assert(index < array->size);
     return array->array[index];
 }
 

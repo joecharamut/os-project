@@ -18,7 +18,7 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT  "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 set(BOOTSTRAP_SOURCES
-        bootstrap/std/types.h bootstrap/std/attributes.h bootstrap/std/attributes.h
+        bootstrap/std/types.h bootstrap/debug/assert.h
         bootstrap/boot/gdt.asm bootstrap/boot/gdt.c bootstrap/boot/gdt.h
         bootstrap/boot/interrupts.asm bootstrap/boot/interrupts.c bootstrap/boot/interrupts.h
         bootstrap/boot/boot.asm bootstrap/boot/boot.c bootstrap/boot/multiboot.h
@@ -27,7 +27,7 @@ set(BOOTSTRAP_SOURCES
         bootstrap/dev/pci.c bootstrap/dev/pci.h
         bootstrap/io/port.c bootstrap/io/port.h
         bootstrap/debug/debug.c bootstrap/debug/debug.h
-        bootstrap/dev/ide.c bootstrap/dev/ide.h
+        bootstrap/fs/ide.c bootstrap/fs/ide.h
         bootstrap/mm/kmem.c bootstrap/mm/kmem.h
         bootstrap/mm/paging.c bootstrap/mm/paging.h
         bootstrap/io/timer.c bootstrap/io/timer.h
@@ -41,7 +41,8 @@ set(BOOTSTRAP_SOURCES
         bootstrap/std/ordered_array.c bootstrap/std/ordered_array.h
         bootstrap/mm/kheap.c bootstrap/mm/kheap.h
         bootstrap/io/acpi.c bootstrap/io/acpi.h
-        )
+        bootstrap/fs/fat32.c bootstrap/fs/fat32.h
+        bootstrap/std/list.c bootstrap/std/list.h)
 
 add_custom_target(linker.ld
         BYPRODUCTS linker.ld
@@ -78,7 +79,7 @@ add_custom_command(OUTPUT disk.img
         parted disk.img mkpart primary fat32 1MiB 100% &&
         dd conv=notrunc if=/usr/lib/grub/i386-pc/boot.img of=disk.img bs=440 count=1 &&
         dd conv=notrunc if=grub.img of=disk.img bs=512 seek=1 count=1024 &&
-        mkfs.vfat --offset=2048 -F32 disk.img &&
+        mkfs.vfat -i0xB007C0DE -nBLASTOISE --offset=2048 -F32 disk.img &&
 
         mmd -i disk.img@@2048S ::/boot &&
         mcopy -i disk.img@@2048S ${CMAKE_BINARY_DIR}/kernel.bin ::/boot &&

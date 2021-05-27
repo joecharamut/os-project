@@ -24,16 +24,8 @@ do { \
     asm volatile ("int $0x3" :: "d" (MSG)); \
     while (1) asm volatile ("pause"); \
 } while (0)
-
-#define ASSERT(condition) \
-do { \
-    if (!(condition)) { \
-        panic("ASSERTION FAILED: %s (in %s:%d %s())", 0, #condition, __FILE__, __LINE__, __func__); \
-    } \
-} while (0)
 #else
 #define BREAKPOINT(MSG) do {} while (0)
-#define ASSERT(condition) do {} while (0)
 #endif
 
 #endif //OS_DEBUG_H

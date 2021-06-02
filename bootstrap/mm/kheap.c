@@ -126,6 +126,10 @@ void *heap_alloc(heap_t *heap, u32 size, bool aligned) {
         TODO();
     }
 
+#ifdef KHEAP_LOGGING
+    dbg_logf(LOG_DEBUG, "allocating %d bytes\n", size);
+#endif
+
     header_t *original_hole = (header_t *) ordered_array_get(&heap->index, i);
     u32 original_hole_addr = (u32) original_hole;
     u32 original_hole_size = original_hole->size;
@@ -180,6 +184,10 @@ void heap_free(heap_t *heap, void *ptr) {
 
     assert(header->magic == HEAP_MAGIC);
     assert(footer->magic == HEAP_MAGIC);
+
+#ifdef KHEAP_LOGGING
+    dbg_logf(LOG_DEBUG, "freeing %d bytes\n", header->size - sizeof(header_t) - sizeof(footer_t));
+#endif
 
     header->is_hole = true;
     bool add_to_index = true;

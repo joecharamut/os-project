@@ -7,11 +7,46 @@ isr_t interrupt_handlers[IDT_SIZE];
 idt_entry_t idt_entries[IDT_SIZE];
 idt_ptr_t idt_ptr;
 
+const char *exception_strings[] = {
+        "Divide-By-Zero",
+        "Debug",
+        "NMI",
+        "Breakpoint",
+        "Overflow",
+        "Bound Range Exceeded",
+        "Invalid Opcode",
+        "Device Not Available",
+        "Double Fault",
+        "Coprocessor Segment Overrun",
+        "Invalid TSS",
+        "Segment Not Present",
+        "Stack-Segment Fault",
+        "General Protection Fault",
+        "Page Fault",
+        "RESERVED",
+        "Floating-Point Exception",
+        "Alignment Check",
+        "Machine Check",
+        "SIMD Floating-Point Exception",
+        "Virtualization Exception",
+        "RESERVED",
+        "RESERVED",
+        "RESERVED",
+        "RESERVED",
+        "RESERVED",
+        "RESERVED",
+        "RESERVED",
+        "RESERVED",
+        "RESERVED",
+        "Security Exception",
+        "RESERVED"
+};
+
 void __attribute__((used)) isr_handler(registers_t registers) {
     if (interrupt_handlers[registers.interrupt_num]) {
         interrupt_handlers[registers.interrupt_num](registers);
     } else {
-        dbg_logf(LOG_ERROR, "Unhandled Exception: int%xh (Err Code: 0x%x)\n", registers.interrupt_num, registers.error_code);
+        panic("Unhandled Exception: %s", &registers, exception_strings[registers.interrupt_num]);
     }
 }
 

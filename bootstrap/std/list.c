@@ -4,12 +4,6 @@
 #include "list.h"
 #include "string.h"
 
-typedef struct list_object {
-    u32 size;
-    u32 backing_size;
-    list_item_t *items;
-} list_t;
-
 list_t *list_create() {
     return list_create_size(4);
 }
@@ -44,7 +38,7 @@ void list_append(list_t *this, list_item_t item) {
         assert(new_size > this->backing_size);
 
         list_item_t *new_array = kcalloc(new_size, sizeof(list_item_t));
-        memcpy(new_array, this->items, this->size);
+        memcpy(new_array, this->items, this->size * sizeof(list_item_t));
 
         kfree(this->items);
         this->items = new_array;

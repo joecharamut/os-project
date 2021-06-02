@@ -27,39 +27,8 @@ void emit_str(const char *str) {
 }
 
 const char alphabet[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-void print_num_old(uint64_t input, int base, int padding, char pad_char) {
-    int size = 64;
-//    char buf[size];
-    char *buf = kmalloc(size * sizeof(char));
 
-    if (base < 2 || base > 36) return;
-
-    int tmp = size;
-    do {
-        buf[--tmp] = alphabet[input % base];
-        input = input / base;
-    } while (input > 0);
-
-    char rev[size];
-    int len = 0;
-    for (int i = 0; i < size; i++) {
-        if (buf[i]) {
-            rev[len++] = buf[i];
-        }
-    }
-
-    if (padding > len) {
-        for (int i = 0; i < padding - len; i++) {
-            emit_char(pad_char);
-        }
-    }
-
-    for (int i = 0; i < len; i++) {
-        emit_char(rev[i]);
-    }
-}
-
-void recursive_print_number(uint64_t input, int base) {
+void recursive_print_number(uint64_t input, u64 base) {
     if (input < base) {
         emit_char(alphabet[input]);
     } else {
@@ -68,7 +37,7 @@ void recursive_print_number(uint64_t input, int base) {
     }
 }
 
-int recursive_count_digits(uint64_t input, int base) {
+int recursive_count_digits(uint64_t input, u64 base) {
     if (input < base) {
         return 1;
     } else {
@@ -141,6 +110,17 @@ void dbg_vprintf(const char *fmt, va_list ap) {
 
                 print_num(number, 16, pad_count, pad_char);
                 in_format = false;
+            } else if (c == 'o') {
+                uint64_t number = 0;
+
+                if (width_count == 0 || width_count == 1) {
+                    number = (u32) va_arg(ap, int);
+                } else if (width_count == 2) {
+                    number = (u64) va_arg(ap, long long);
+                }
+
+                print_num(number, 8, pad_count, pad_char);
+                in_format = false;
             } else if (c == 'l') {
                 width_count++;
             } else if (isdigit(c)) {
@@ -156,7 +136,7 @@ void dbg_vprintf(const char *fmt, va_list ap) {
                     }
 
                     for (int j = end; j >= start; j--) {
-                        pad_count += (fmt[j] - '0') * pow(10, abs(j - end));
+                        pad_count += (fmt[j] - '0') * (int) pow(10, abs(j - end));
                     }
                 }
             } else if (c == '*') {

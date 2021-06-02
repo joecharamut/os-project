@@ -41,8 +41,8 @@ set(BOOTSTRAP_SOURCES
         bootstrap/std/ordered_array.c bootstrap/std/ordered_array.h
         bootstrap/mm/kheap.c bootstrap/mm/kheap.h
         bootstrap/io/acpi.c bootstrap/io/acpi.h
-        bootstrap/fs/fat32.c bootstrap/fs/fat32.h
-        bootstrap/std/list.c bootstrap/std/list.h)
+        bootstrap/std/list.c bootstrap/std/list.h
+        bootstrap/fs/ext2.c bootstrap/fs/ext2.h)
 
 add_custom_target(linker.ld
         BYPRODUCTS linker.ld
@@ -55,12 +55,12 @@ add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
 add_dependencies(kernel.bin linker.ld)
 target_link_libraries(kernel.bin gcc)
 
-set(GRUB_MODULES acpi biosdisk boot cat configfile cpuid datetime drivemap echo elf ext2 fat fshelp halt hdparm hello help loadenv ls msdospart multiboot normal part_msdos pci probe read reboot scsi search serial sleep terminal usb vbe vga video)
+set(GRUB_MODULES acpi biosdisk boot configfile echo elf ext2 hello help ls multiboot normal part_msdos sleep terminal vbe vga video)
 add_custom_command(OUTPUT grub.img
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS grub.cfg
+        DEPENDS grub_img.cfg
         VERBATIM
-        COMMAND grub-mkimage -o grub.img -p \(hd0,msdos1\)/boot -c ${CMAKE_SOURCE_DIR}/grub.cfg --format=i386-pc ${GRUB_MODULES}
+        COMMAND grub-mkimage -o grub.img -p \(hd0,msdos1\)/boot -c ${CMAKE_SOURCE_DIR}/grub_img.cfg --format=i386-pc ${GRUB_MODULES}
         )
 
 set(PYTHON_SOURCES
@@ -73,20 +73,22 @@ add_custom_command(OUTPUT disk.img
         DEPENDS grub.img
         DEPENDS grub.cfg
         DEPENDS kernel.bin
+        BYPRODUCTS ext2.img
         VERBATIM
         COMMAND dd if=/dev/zero of=disk.img bs=1M count=8 &&
-        parted disk.img mklabel msdos &&
-        parted disk.img mkpart primary fat32 1MiB 100% &&
+        parted -s disk.img mklabel msdos &&
+        parted -s disk.img mkpart primary ext2 1MiB 100% &&
         dd conv=notrunc if=/usr/lib/grub/i386-pc/boot.img of=disk.img bs=440 count=1 &&
         dd conv=notrunc if=grub.img of=disk.img bs=512 seek=1 count=1024 &&
-        mkfs.vfat -i0xB007C0DE -nBLASTOISE --offset=2048 -F32 disk.img &&
-
-        mmd -i disk.img@@2048S ::/boot &&
-        mcopy -i disk.img@@2048S ${CMAKE_BINARY_DIR}/kernel.bin ::/boot &&
-        mcopy -i disk.img@@2048S ${CMAKE_SOURCE_DIR}/grub.cfg ::/boot &&
-
-        mmd -i disk.img@@2048S ::/python &&
-        mcopy -i disk.img@@2048S ${PYTHON_SOURCES} ::/python
+        dd if=/dev/zero of=ext2.img bs=1M count=7 &&
+        mkfs.ext2 -L "RAGU" -M "/" -q ext2.img 7M &&
+        e2cp ${CMAKE_SOURCE_DIR}/HELLO.TXT ext2.img: &&
+        e2mkdir ext2.img:/boot &&
+        e2cp ${CMAKE_BINARY_DIR}/kernel.bin ext2.img:/boot &&
+        e2cp ${CMAKE_SOURCE_DIR}/grub.cfg ext2.img:/boot &&
+        e2mkdir ext2.img:/python &&
+        e2cp ${PYTHON_SOURCES} ext2.img:/python &&
+        dd conv=notrunc if=ext2.img of=disk.img bs=1M seek=1 count=7
         )
 
 add_custom_target(qemu

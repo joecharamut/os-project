@@ -4,7 +4,12 @@
 #include "types.h"
 
 typedef void* list_item_t;
-typedef struct list_object list_t;
+
+typedef struct list_object {
+    u32 size;
+    u32 backing_size;
+    list_item_t *items;
+} list_t;
 
 list_t *list_create();
 list_t *list_create_size(u32 initial_size);

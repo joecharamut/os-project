@@ -1,12 +1,13 @@
 PAGE_ALIGNED equ 1 << 0
 MEMORY_INFO equ 1 << 1
 
-MB_FLAGS equ PAGE_ALIGNED | MEMORY_INFO
 MB_MAGIC equ 0x1BADB002
+MB_FLAGS equ PAGE_ALIGNED|MEMORY_INFO
 MB_CHECK equ -(MB_MAGIC + MB_FLAGS)
 
 section .boot_magic
 align 4
+multiboot_header:
     dd MB_MAGIC
     dd MB_FLAGS
     dd MB_CHECK

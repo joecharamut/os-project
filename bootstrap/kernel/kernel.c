@@ -5,6 +5,7 @@
 #include <fs/ide.h>
 #include <debug/assert.h>
 #include <fs/ext2.h>
+#include <std/string.h>
 
 void kernel_main() {
     dbg_logf(LOG_INFO, "Welcome to {OS_NAME} Bootstrap Loader\n");

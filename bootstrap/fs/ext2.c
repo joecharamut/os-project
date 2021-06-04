@@ -3,6 +3,7 @@
 #include <mm/kmem.h>
 #include <std/string.h>
 #include <std/list.h>
+#include <std/math.h>
 #include "ext2.h"
 #include "ide.h"
 
@@ -10,66 +11,15 @@
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 
-typedef enum inode_type {
-    EXT2_INODE_FIFO = 0x1,
-    EXT2_INODE_CHARDEV = 0x2,
-    EXT2_INODE_DIR = 0x4,
-    EXT2_INODE_BLOCKDEV = 0x6,
-    EXT2_INODE_FILE = 0x8,
-    EXT2_INODE_LINK = 0xA,
-    EXT2_INODE_SOCKET = 0xC,
-} __attribute__((packed)) inode_type_t;
-static_assert(sizeof(inode_type_t) == 1, "inode_type_t invalid size");
-
-typedef enum file_type {
-    EXT2_FT_UNKNOWN,
-    EXT2_FT_REG_FILE,
-    EXT2_FT_DIR,
-    EXT2_FT_CHARDEV,
-    EXT2_FT_BLOCKDEV,
-    EXT2_FT_FIFO,
-    EXT2_FT_SOCK,
-    EXT2_FT_SYMLINK,
-} __attribute__((packed)) file_type_t;
-static_assert(sizeof(file_type_t) == 1, "file_type_t invalid size");
-
-typedef struct ext2_inode {
-    struct {
-        u16 permissions : 12;
-        inode_type_t type : 4;
-    } __attribute__((packed)) type_and_permissions;
-    u16 user_id;
-    u32 filesize_lo;
-    u32 access_time;
-    u32 creation_time;
-    u32 modification_time;
-    u32 deletion_time;
-    u16 group_id;
-    u16 hard_links;
-    u32 sectors_used;
-    u32 flags;
-    u32 os_specific_1;
-    u32 direct_block_pointers[12];
-    u32 indirect_block_pointer;
-    u32 doubly_indirect_block_pointer;
-    u32 triply_indirect_block_pointer;
-    u32 generation_number;
-    u32 extended_attribute_block;
-    u32 filesize_hi;
-    u32 fragment_block;
-    u8 os_specific_2[12];
-} __attribute__((packed)) ext2_inode_t;
-static_assert(sizeof(ext2_inode_t) == 128, "ext2_inode_t invalid size");
-
 typedef struct ext2_directory_entry {
     u32 inode;
     u8 type;
     char *name;
 } ext2_directory_entry_t;
 
-
 void ext2_read_block(ext2_volume_t *volume, u32 block, u8 *buffer) {
     assert(block > 0);
+    dbg_logf(LOG_DEBUG, "Reading block %d\n", block);
     u32 sector = (block * volume->block_size) / volume->sector_size;
     u32 count = (volume->block_size / volume->sector_size);
     ata_read_sectors(volume->ata_bus, volume->ata_drive, volume->partition_offset + sector, count, (u16 *) buffer);
@@ -95,7 +45,7 @@ ext2_inode_t ext2_read_inode(ext2_volume_t *volume, u32 inode) {
     return inode_data;
 }
 
-u32 ext2_read_directory_block(ext2_volume_t *volume, u32 block, list_t *entries) {
+static u32 read_directory_block(ext2_volume_t *volume, u32 block, list_t *entries) {
     typedef struct {
         u32 inode;
         u16 entry_length;
@@ -129,15 +79,13 @@ u32 ext2_read_directory_block(ext2_volume_t *volume, u32 block, list_t *entries)
     return count;
 }
 
-void ext2_read_directory(ext2_volume_t *volume, u32 inode) {
+void ext2_stat_directory(ext2_volume_t *volume, u32 inode, list_t *dir) {
     ext2_inode_t directory_node = ext2_read_inode(volume, inode);
     assert(directory_node.type_and_permissions.type == EXT2_INODE_DIR);
 
-    list_t *dir = list_create();
-
     for (int i = 0; i < 12; i++) {
         if (directory_node.direct_block_pointers[i] == 0) continue;
-        ext2_read_directory_block(volume, directory_node.direct_block_pointers[i], dir);
+        read_directory_block(volume, directory_node.direct_block_pointers[i], dir);
     }
 
     if (directory_node.indirect_block_pointer) {
@@ -156,6 +104,144 @@ void ext2_read_directory(ext2_volume_t *volume, u32 inode) {
         ext2_directory_entry_t *entry = list_get(dir, i);
         dbg_logf(LOG_DEBUG, "dir entry %d: inode %d, type %d, name '%s'\n", i, entry->inode, entry->type, entry->name);
     }
+}
+
+static void destroy_directory_list(list_t *dir) {
+    for (u32 i = 0; i < dir->size; ++i) {
+        ext2_directory_entry_t *entry = list_get(dir, i);
+        kfree(entry->name);
+    }
+    list_destroy(dir);
+}
+
+u32 ext2_resolve_path(ext2_volume_t *volume, const char *path) {
+    // special case: path "/"
+    if (strcmp("/", path) == 0) {
+        return 2;
+    }
+
+    // read the root dir
+    list_t *dir = list_create();
+    ext2_stat_directory(volume, 2, dir);
+
+    // tokenize the path
+    char *path_copy = strdup(path);
+    char *token = strtok(path_copy, "/");
+
+    u32 return_val = 0;
+
+    if (token != NULL) {
+        start:
+        for (u32 i = 0; i < dir->size; i++) {
+            // if the entry matches the current token
+            ext2_directory_entry_t *entry = list_get(dir, i);
+            if (strcmp(token, entry->name) == 0) {
+                // store its inode
+                u32 inode = entry->inode;
+                token = strtok(NULL, "/");
+
+                // if no more tokens, exit
+                if (token == NULL) {
+                    return_val = inode;
+                    goto end;
+                }
+
+                // otherwise if the current token was a directory, search it
+                if (entry->type == EXT2_FT_DIR) {
+                    // get that directory's contents
+                    destroy_directory_list(dir);
+                    dir = list_create();
+                    ext2_stat_directory(volume, inode, dir);
+
+                    // search the list again
+                    goto start;
+                } else {
+                    // if it isn't, the path is invalid
+                    return_val = 0;
+                    goto end;
+                }
+            }
+        }
+    }
+
+    end:
+    destroy_directory_list(dir);
+    return return_val;
+}
+
+ext2_file_t *ext2_open(ext2_volume_t *volume, const char *path) {
+    u32 inode = ext2_resolve_path(volume, path);
+
+    if (inode == 0) {
+        return NULL;
+    }
+
+    ext2_inode_t inode_data = ext2_read_inode(volume, inode);
+    if (inode_data.type_and_permissions.type != EXT2_INODE_FILE) {
+        return NULL;
+    }
+
+    ext2_file_t *file = kcalloc(1, sizeof(ext2_file_t));
+
+    file->inode = inode_data;
+    file->volume = volume;
+    file->buffer = kmalloc(volume->block_size);
+
+    return file;
+}
+
+size_t ext2_fread(u8 *ptr, size_t count, ext2_file_t *file) {
+    ext2_inode_t node = file->inode;
+    assert(node.type_and_permissions.type == EXT2_INODE_FILE);
+
+    u32 block_size = file->volume->block_size;
+    u32 read = 0;
+
+    u32 pointers_per_block = (block_size / sizeof(u32));
+    u32 indirect = 12 + (pointers_per_block);
+    u32 dbl_indirect = indirect + (u32) pow(pointers_per_block, 2);
+    u32 tpl_indirect = dbl_indirect + (u32) pow(pointers_per_block, 3);
+
+    do {
+        if (file->position >= node.filesize_lo) {
+            break;
+        }
+
+        u32 block_index = file->position / block_size;
+        u32 offset = file->position % block_size;
+        u32 real_block;
+
+        if (block_index <= 12) {
+            // direct block
+            real_block = node.direct_block_pointers[block_index];
+        } else if (block_index <= indirect) {
+            // indirect block
+            TODO();
+        } else if (block_index <= dbl_indirect) {
+            // doubly indirect block
+            TODO();
+        } else if (block_index <= tpl_indirect) {
+            // triply indirect block
+            TODO();
+        } else {
+            assert_not_reached();
+        }
+
+        if (real_block != file->buffered_block) {
+            ext2_read_block(file->volume, real_block, file->buffer);
+            file->buffered_block = real_block;
+        }
+
+        while (offset < block_size && read < count && read < node.filesize_lo) {
+            *(ptr + read) = *(file->buffer + offset);
+
+            offset++;
+            read++;
+        }
+        file->position += read;
+    } while (read < count);
+
+    return read;
 }
 
 ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition) {
@@ -192,8 +278,18 @@ ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition) {
     memcpy(volume->block_group_descriptor_table, descriptor_table, n_descriptors * sizeof(ext2_block_group_descriptor_t));
     kfree(descriptor_table);
 
-    // read root dir
-    ext2_read_directory(volume, 2);
+    ext2_file_t *fp = ext2_open(volume, "/HELLO.TXT");
+    char *buf = kcalloc(16, sizeof(char));
+    if (fp) {
+        u32 read;
+        while ((read = ext2_fread(buf, 16, fp)) > 0) {
+            dbg_logf(LOG_DEBUG, "Read %d bytes: [", read);
+            for (int i = 0; i < 16; ++i) {
+                dbg_printf("%c", buf[i]);
+            }
+            dbg_printf("]\n");
+        }
+    }
 
     return volume;
 }

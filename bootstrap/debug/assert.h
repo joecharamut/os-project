@@ -12,8 +12,13 @@ do { \
         panic("ASSERTION FAILED: %s (in %s:%d %s())", 0, #condition, __FILE__, __LINE__, __func__); \
     } \
 } while (0)
+#define assert_not_reached() \
+do { \
+    panic("ASSERTION FAILED: assert_not_reached() (in %s:%d %s())", 0, __FILE__, __LINE__, __func__); \
+} while (0)
 #else
 #define assert(condition) do {} while (0)
+#define assert_not_reached() do {} while (0)
 #endif
 
 #endif //OS_ASSERT_H

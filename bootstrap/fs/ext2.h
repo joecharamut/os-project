@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "ide.h"
 
-typedef struct ext2_superblock {
+typedef struct {
     u32 total_inodes;
     u32 total_blocks;
     u32 reserved_blocks;
@@ -71,7 +71,7 @@ typedef struct ext2_superblock {
 } __attribute__((packed)) ext2_superblock_t;
 static_assert(sizeof(ext2_superblock_t) == 1024, "ext2_superblock_t invalid size");
 
-typedef struct ext2_block_group_descriptor {
+typedef struct {
     u32 usage_bitmap_block;
     u32 inode_bitmap_block;
     u32 inode_table_start_block;
@@ -82,7 +82,58 @@ typedef struct ext2_block_group_descriptor {
 } __attribute__((packed)) ext2_block_group_descriptor_t;
 static_assert(sizeof(ext2_block_group_descriptor_t) == 32, "ext2_block_group_descriptor_t invalid size");
 
-typedef struct ext2_volume {
+typedef enum {
+    EXT2_INODE_FIFO = 0x1,
+    EXT2_INODE_CHARDEV = 0x2,
+    EXT2_INODE_DIR = 0x4,
+    EXT2_INODE_BLOCKDEV = 0x6,
+    EXT2_INODE_FILE = 0x8,
+    EXT2_INODE_LINK = 0xA,
+    EXT2_INODE_SOCKET = 0xC,
+} __attribute__((packed)) inode_type_t;
+static_assert(sizeof(inode_type_t) == 1, "inode_type_t invalid size");
+
+typedef enum {
+    EXT2_FT_UNKNOWN,
+    EXT2_FT_REG_FILE,
+    EXT2_FT_DIR,
+    EXT2_FT_CHARDEV,
+    EXT2_FT_BLOCKDEV,
+    EXT2_FT_FIFO,
+    EXT2_FT_SOCK,
+    EXT2_FT_SYMLINK,
+} __attribute__((packed)) file_type_t;
+static_assert(sizeof(file_type_t) == 1, "file_type_t invalid size");
+
+typedef struct {
+    struct {
+        u16 permissions : 12;
+        inode_type_t type : 4;
+    } __attribute__((packed)) type_and_permissions;
+    u16 user_id;
+    u32 filesize_lo;
+    u32 access_time;
+    u32 creation_time;
+    u32 modification_time;
+    u32 deletion_time;
+    u16 group_id;
+    u16 hard_links;
+    u32 sectors_used;
+    u32 flags;
+    u32 os_specific_1;
+    u32 direct_block_pointers[12];
+    u32 indirect_block_pointer;
+    u32 doubly_indirect_block_pointer;
+    u32 triply_indirect_block_pointer;
+    u32 generation_number;
+    u32 extended_attribute_block;
+    u32 filesize_hi;
+    u32 fragment_block;
+    u8 os_specific_2[12];
+} __attribute__((packed)) ext2_inode_t;
+static_assert(sizeof(ext2_inode_t) == 128, "ext2_inode_t invalid size");
+
+typedef struct {
     u16 ata_bus;
     u8 ata_drive;
     u32 sector_size;
@@ -96,8 +147,12 @@ typedef struct ext2_volume {
     ext2_block_group_descriptor_t *block_group_descriptor_table;
 } ext2_volume_t;
 
-typedef struct ext2_file {
+typedef struct {
+    ext2_inode_t inode;
+    ext2_volume_t *volume;
     u32 position;
+    u32 buffered_block;
+    u8 *buffer;
 } ext2_file_t;
 
 ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition);

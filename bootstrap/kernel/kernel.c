@@ -6,6 +6,7 @@
 #include <debug/assert.h>
 #include <fs/ext2.h>
 #include <std/string.h>
+#include <mm/kmem.h>
 
 void kernel_main() {
     dbg_logf(LOG_INFO, "Welcome to {OS_NAME} Bootstrap Loader\n");
@@ -56,7 +57,18 @@ found_drive:
     ext2_volume_t *volume = ext2_open_volume(drive, partition);
     dbg_logf(LOG_DEBUG, "Found EXT2 Volume, Name: '%s'\n", volume->superblock.volume_name);
 
-
+    ext2_file_t *fp = ext2_open(volume, "/HELLO.TXT");
+    char *buf = kcalloc(16, sizeof(char));
+    if (fp) {
+        u32 read;
+        while ((read = ext2_fread(buf, 16, fp)) > 0) {
+            dbg_logf(LOG_DEBUG, "Read %d bytes: [", read);
+            for (int i = 0; i < 16; ++i) {
+                dbg_printf("%c", buf[i]);
+            }
+            dbg_printf("]\n");
+        }
+    }
 
     dbg_printf("Hello World!\n");
 }

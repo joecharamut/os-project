@@ -278,19 +278,6 @@ ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition) {
     memcpy(volume->block_group_descriptor_table, descriptor_table, n_descriptors * sizeof(ext2_block_group_descriptor_t));
     kfree(descriptor_table);
 
-    ext2_file_t *fp = ext2_open(volume, "/HELLO.TXT");
-    char *buf = kcalloc(16, sizeof(char));
-    if (fp) {
-        u32 read;
-        while ((read = ext2_fread(buf, 16, fp)) > 0) {
-            dbg_logf(LOG_DEBUG, "Read %d bytes: [", read);
-            for (int i = 0; i < 16; ++i) {
-                dbg_printf("%c", buf[i]);
-            }
-            dbg_printf("]\n");
-        }
-    }
-
     return volume;
 }
 

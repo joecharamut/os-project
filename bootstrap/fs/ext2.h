@@ -158,7 +158,7 @@ typedef struct {
 ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition);
 
 ext2_file_t *ext2_open(ext2_volume_t *volume, const char *path);
-size_t ext2_read(void *ptr, size_t bytes, ext2_file_t *file);
+size_t ext2_fread(u8 *ptr, size_t count, ext2_file_t *file);
 int ext2_close(ext2_file_t *file);
 
 #endif //OS_EXT2_H

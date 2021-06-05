@@ -68,13 +68,18 @@ found_drive:
     ext2_volume_t *volume = ext2_open_volume(drive, partition);
     dbg_logf(LOG_DEBUG, "Found EXT2 Volume, Name: '%s'\n", volume->superblock.volume_name);
 
-    ext2_file_t *fp = ext2_fopen(volume, "/boot/config.ini");
+    ext2_file_t *fp = ext2_fopen(volume, "/boot/config.txt");
     if (fp) {
         u32 size = fp->inode.filesize_lo;
         u8 *buf = kcalloc(size+1, sizeof(u8));
         u32 read = ext2_fread(buf, size, fp);
         dbg_logf(LOG_DEBUG, "Read %lu bytes\n", read);
-        dbg_logf(LOG_DEBUG, "File contents: %s\n", buf);
+        dbg_logf(LOG_DEBUG, "File contents: [");
+        for (u32 i = 0; i < size; ++i) {
+            dbg_printf("%02x ", buf[i]);
+        }
+        dbg_printf("\b]\n");
+        kfree(buf);
         ext2_fclose(fp);
     }
 

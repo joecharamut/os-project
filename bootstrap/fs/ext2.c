@@ -249,16 +249,16 @@ size_t ext2_fread(u8 *ptr, size_t count, ext2_file_t *file) {
         u32 offset = file->position % block_size;
         u32 real_block;
 
-        if (block_index <= 12) {
+        if (block_index < 12) {
             // direct block
             real_block = node.direct_block_pointers[block_index];
-        } else if (block_index <= indirect) {
+        } else if (block_index < indirect) {
             // indirect block
             TODO();
-        } else if (block_index <= dbl_indirect) {
+        } else if (block_index < dbl_indirect) {
             // doubly indirect block
             TODO();
-        } else if (block_index <= tpl_indirect) {
+        } else if (block_index < tpl_indirect) {
             // triply indirect block
             TODO();
         } else {
@@ -276,7 +276,7 @@ size_t ext2_fread(u8 *ptr, size_t count, ext2_file_t *file) {
             offset++;
             read++;
         }
-        file->position += read;
+        file->position = read;
     } while (read < count);
 
     return read;

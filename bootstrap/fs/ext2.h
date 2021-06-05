@@ -2,6 +2,7 @@
 #define OS_EXT2_H
 
 #include <stdbool.h>
+#include <debug/assert.h>
 #include "ide.h"
 
 typedef struct {

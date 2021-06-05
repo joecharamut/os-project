@@ -67,15 +67,18 @@ add_custom_command(OUTPUT grub.img
         COMMAND grub-mkimage -o grub.img -p \(hd0,msdos1\)/boot -c ${CMAKE_SOURCE_DIR}/grub_img.cfg --format=i386-pc ${GRUB_MODULES}
         )
 
-set(PYTHON_SOURCES
-        python/test.py
-        )
-list(TRANSFORM PYTHON_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
+set(IMAGE_PYTHON_SOURCES
+        image/python/test.py)
+set(IMAGE_BOOT_SOURCES
+        image/boot/grub.cfg
+        image/boot/config.ini)
+list(TRANSFORM IMAGE_PYTHON_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
+list(TRANSFORM IMAGE_BOOT_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
 add_custom_command(OUTPUT disk.img
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS ${PYTHON_SOURCES}
+        DEPENDS ${IMAGE_PYTHON_SOURCES}
+        DEPENDS ${IMAGE_BOOT_SOURCES}
         DEPENDS grub.img
-        DEPENDS grub.cfg
         DEPENDS kernel.bin
         BYPRODUCTS ext2.img
         VERBATIM
@@ -86,12 +89,11 @@ add_custom_command(OUTPUT disk.img
         dd conv=notrunc if=grub.img of=disk.img bs=512 seek=1 count=1024 &&
         dd if=/dev/zero of=ext2.img bs=1M count=7 &&
         mkfs.ext2 -L "RAGU" -M "/" -q ext2.img 7M &&
-        e2cp ${CMAKE_SOURCE_DIR}/HELLO.TXT ext2.img: &&
         e2mkdir ext2.img:/boot &&
         e2cp ${CMAKE_BINARY_DIR}/kernel.bin ext2.img:/boot &&
-        e2cp ${CMAKE_SOURCE_DIR}/grub.cfg ext2.img:/boot &&
+        e2cp ${IMAGE_BOOT_SOURCES} ext2.img:/boot &&
         e2mkdir ext2.img:/python &&
-        e2cp ${PYTHON_SOURCES} ext2.img:/python &&
+        e2cp ${IMAGE_PYTHON_SOURCES} ext2.img:/python &&
         dd conv=notrunc if=ext2.img of=disk.img bs=1M seek=1 count=7
         )
 

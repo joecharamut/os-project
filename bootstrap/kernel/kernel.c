@@ -68,7 +68,7 @@ found_drive:
     ext2_volume_t *volume = ext2_open_volume(drive, partition);
     dbg_logf(LOG_DEBUG, "Found EXT2 Volume, Name: '%s'\n", volume->superblock.volume_name);
 
-    ext2_file_t *fp = ext2_fopen(volume, "/HELLO.TXT");
+    ext2_file_t *fp = ext2_fopen(volume, "/boot/config.ini");
     if (fp) {
         u32 size = fp->inode.filesize_lo;
         u8 *buf = kcalloc(size+1, sizeof(u8));

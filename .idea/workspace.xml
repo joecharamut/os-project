@@ -13,17 +13,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="math">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="files">
+      <change afterPath="$PROJECT_DIR$/image/boot/config.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/boot/boot.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/boot.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/fs/ext2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ext2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HELLO.TXT" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/fs/ext2.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ext2.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/stdlib.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/stdlib.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/mm/kheap.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/kheap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grub.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/image/boot/grub.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/image/python/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -242,11 +241,11 @@
       <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/image" />
+      <recent name="$PROJECT_DIR$/image/boot" />
       <recent name="$PROJECT_DIR$/bootstrap/fs" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/disk" />
-      <recent name="$PROJECT_DIR$/disk/boot" />
-      <recent name="$PROJECT_DIR$/bootstrap/std" />
     </key>
   </component>
   <component name="RunManager" selected="GDB Remote Debug.GDB qemu">
@@ -317,7 +316,7 @@
       <workItem from="1621458448266" duration="72601000" />
       <workItem from="1622062087946" duration="872000" />
       <workItem from="1622063244392" duration="109299000" />
-      <workItem from="1622852694059" duration="6518000" />
+      <workItem from="1622852694059" duration="9487000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -445,7 +444,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622865672758</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="files">
+      <created>1622905846600</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1622905846600</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -537,7 +543,8 @@
     <MESSAGE value="can sorta read files" />
     <MESSAGE value="whoops" />
     <MESSAGE value="math" />
-    <option name="LAST_COMMIT_MESSAGE" value="math" />
+    <MESSAGE value="files" />
+    <option name="LAST_COMMIT_MESSAGE" value="files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -546,6 +553,21 @@
           <url>file://$PROJECT_DIR$/bootstrap/debug/panic.c</url>
           <line>27</line>
           <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/bootstrap/fs/ext2.c</url>
+          <line>127</line>
+          <option name="timeStamp" value="114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/bootstrap/fs/ext2.c</url>
+          <line>124</line>
+          <option name="timeStamp" value="116" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/bootstrap/fs/ext2.c</url>
+          <line>132</line>
+          <option name="timeStamp" value="117" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

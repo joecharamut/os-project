@@ -6,6 +6,8 @@
 #define HEAP_MIN_SIZE 0
 #define HEAP_INDEX_SIZE 0x1000
 
+#define KHEAP_LOGGING 1
+
 typedef struct {
     u32 magic;
     bool is_hole;
@@ -45,7 +47,11 @@ static int find_hole(heap_t *heap, u32 size, bool aligned) {
         i++;
     }
 
-    return i == heap->index.size ? -1 : i;
+    if (i == heap->index.size) {
+        return -1;
+    } else {
+        return (int) i;
+    }
 }
 
 static void expand_heap(heap_t *heap, u32 new_size) {
@@ -121,14 +127,10 @@ heap_t *heap_create(heap_t *heap, u32 start, u32 end, u32 max, bool supervisor, 
 void *heap_alloc(heap_t *heap, u32 size, bool aligned) {
     u32 real_size = size + sizeof(header_t) + sizeof(footer_t);
 
-    int i = find_hole(heap, size, aligned);
+    int i = find_hole(heap, real_size, aligned);
     if (i == -1) {
         TODO();
     }
-
-#ifdef KHEAP_LOGGING
-    dbg_logf(LOG_DEBUG, "allocating %d bytes\n", size);
-#endif
 
     header_t *original_hole = (header_t *) ordered_array_get(&heap->index, i);
     u32 original_hole_addr = (u32) original_hole;
@@ -171,6 +173,11 @@ void *heap_alloc(heap_t *heap, u32 size, bool aligned) {
         ordered_array_insert(&heap->index, hole_header);
     }
 
+#ifdef KHEAP_LOGGING
+    dbg_logf(LOG_DEBUG, "heap_alloc: %lu bytes [mem 0x%08lx to 0x%08lx]\n",
+             size, (u32) block, (u32) block_footer + sizeof(footer_t));
+#endif
+
     return (void *) ((u32) block + sizeof(header_t));
 }
 
@@ -186,7 +193,8 @@ void heap_free(heap_t *heap, void *ptr) {
     assert(footer->magic == HEAP_MAGIC);
 
 #ifdef KHEAP_LOGGING
-    dbg_logf(LOG_DEBUG, "freeing %d bytes\n", header->size - sizeof(header_t) - sizeof(footer_t));
+    dbg_logf(LOG_DEBUG, "heap_free: %lu bytes [mem 0x%08lx to 0x%08lx]\n",
+             header->size - sizeof(header_t) - sizeof(footer_t), (u32) header, (u32) header + header->size);
 #endif
 
     header->is_hole = true;

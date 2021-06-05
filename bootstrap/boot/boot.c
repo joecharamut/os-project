@@ -187,6 +187,5 @@ noreturn static void boot_final() {
     kernel_main();
 
     dbg_printf("System Halted.");
-    asm volatile ("cli; hlt; jmp .");
-    __builtin_unreachable();
+    halt();
 }

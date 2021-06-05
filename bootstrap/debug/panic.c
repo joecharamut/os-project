@@ -4,8 +4,8 @@
 #include "term.h"
 #include "debug.h"
 
-noreturn static void halt() {
-    asm volatile ("1: cli; hlt; jmp 1");
+noreturn void halt() {
+    asm volatile ("cli; hlt; jmp .");
     __builtin_unreachable();
 }
 

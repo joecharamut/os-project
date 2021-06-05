@@ -169,6 +169,43 @@ u32 ext2_resolve_path(ext2_volume_t *volume, const char *path) {
     return return_val;
 }
 
+ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition) {
+    ext2_volume_t *volume = kmalloc(sizeof(ext2_volume_t));
+
+    volume->ata_bus = drive.ata_bus;
+    volume->ata_drive = drive.ata_drive;
+    volume->sector_size = 512; // todo fix this
+    volume->partition_offset = drive.partition_info[partition].lba_first_sector;
+    volume->partition_size = drive.partition_info[partition].sector_count;
+    ata_read_sectors(drive.ata_bus, drive.ata_drive, volume->partition_offset + 2, 2, (u16 *) &volume->superblock);
+
+    if (volume->superblock.ext2_signature != 0xEF53) {
+        dbg_logf(LOG_ERROR, "ext2 Signature Invalid\n");
+        return NULL;
+    }
+
+    if (volume->superblock.version_major < 1) {
+        dbg_logf(LOG_ERROR, "Unsupported ext2 version\n");
+        return NULL;
+    }
+
+    volume->block_size = 1024 << volume->superblock.log_block_size;
+
+    u32 n_descriptors = (volume->superblock.total_blocks / volume->superblock.blocks_per_group) + 1;
+    u32 descriptor_start = volume->block_size == 1024 ? 2 : 1;
+
+    dbg_logf(LOG_DEBUG, "Block group descriptor table has %d entries\n", n_descriptors);
+
+    ext2_block_group_descriptor_t *descriptor_table = kmalloc(volume->block_size);
+    ext2_read_block(volume, descriptor_start, (u8 *) descriptor_table);
+    volume->block_group_descriptor_count = n_descriptors;
+    volume->block_group_descriptor_table = kcalloc(n_descriptors, sizeof(ext2_block_group_descriptor_t));
+    memcpy(volume->block_group_descriptor_table, descriptor_table, n_descriptors * sizeof(ext2_block_group_descriptor_t));
+    kfree(descriptor_table);
+
+    return volume;
+}
+
 ext2_file_t *ext2_fopen(ext2_volume_t *volume, const char *path) {
     u32 inode = ext2_resolve_path(volume, path);
 
@@ -184,6 +221,7 @@ ext2_file_t *ext2_fopen(ext2_volume_t *volume, const char *path) {
     ext2_file_t *file = kcalloc(1, sizeof(ext2_file_t));
 
     file->inode = inode_data;
+    file->inode_number = inode;
     file->volume = volume;
     file->buffer = kmalloc(volume->block_size);
 
@@ -244,41 +282,9 @@ size_t ext2_fread(u8 *ptr, size_t count, ext2_file_t *file) {
     return read;
 }
 
-ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition) {
-    ext2_volume_t *volume = kmalloc(sizeof(ext2_volume_t));
-
-    volume->ata_bus = drive.ata_bus;
-    volume->ata_drive = drive.ata_drive;
-    volume->sector_size = 512; // todo fix this
-    volume->partition_offset = drive.partition_info[partition].lba_first_sector;
-    volume->partition_size = drive.partition_info[partition].sector_count;
-    ata_read_sectors(drive.ata_bus, drive.ata_drive, volume->partition_offset + 2, 2, (u16 *) &volume->superblock);
-
-    if (volume->superblock.ext2_signature != 0xEF53) {
-        dbg_logf(LOG_ERROR, "ext2 Signature Invalid\n");
-        return NULL;
-    }
-
-    if (volume->superblock.version_major < 1) {
-        dbg_logf(LOG_ERROR, "Unsupported ext2 version\n");
-        return NULL;
-    }
-
-    volume->block_size = 1024 << volume->superblock.log_block_size;
-
-    u32 n_descriptors = (volume->superblock.total_blocks / volume->superblock.blocks_per_group) + 1;
-    u32 descriptor_start = volume->block_size == 1024 ? 2 : 1;
-
-    dbg_logf(LOG_DEBUG, "Block group descriptor table has %d entries\n", n_descriptors);
-
-    ext2_block_group_descriptor_t *descriptor_table = kmalloc(volume->block_size);
-    ext2_read_block(volume, descriptor_start, (u8 *) descriptor_table);
-    volume->block_group_descriptor_count = n_descriptors;
-    volume->block_group_descriptor_table = kcalloc(n_descriptors, sizeof(ext2_block_group_descriptor_t));
-    memcpy(volume->block_group_descriptor_table, descriptor_table, n_descriptors * sizeof(ext2_block_group_descriptor_t));
-    kfree(descriptor_table);
-
-    return volume;
+void ext2_fclose(ext2_file_t *file) {
+    kfree(file->buffer);
+    kfree(file);
 }
 
 #pragma GCC diagnostic pop

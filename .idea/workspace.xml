@@ -13,18 +13,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="whoops">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="math">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/boot/boot.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/boot.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/fs/ext2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ext2.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/fs/ext2.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ext2.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/fs/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ide.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/math.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/math.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/math.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/math.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/stdlib.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/stdlib.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -255,6 +254,11 @@
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -313,7 +317,7 @@
       <workItem from="1621458448266" duration="72601000" />
       <workItem from="1622062087946" duration="872000" />
       <workItem from="1622063244392" duration="109299000" />
-      <workItem from="1622852694059" duration="1557000" />
+      <workItem from="1622852694059" duration="6518000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -427,7 +431,21 @@
       <option name="project" value="LOCAL" />
       <updated>1622820549549</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="math">
+      <created>1622865471998</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1622865471998</updated>
+    </task>
+    <task id="LOCAL-00018" summary="math">
+      <created>1622865672758</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1622865672758</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -518,15 +536,16 @@
     <MESSAGE value="misc work on ext2" />
     <MESSAGE value="can sorta read files" />
     <MESSAGE value="whoops" />
-    <option name="LAST_COMMIT_MESSAGE" value="whoops" />
+    <MESSAGE value="math" />
+    <option name="LAST_COMMIT_MESSAGE" value="math" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/bootstrap/debug/panic.c</url>
-          <line>11</line>
-          <option name="timeStamp" value="30" />
+          <line>27</line>
+          <option name="timeStamp" value="94" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

@@ -7,5 +7,6 @@
 #define PANIC(msg, ...) panic(msg, 0, ##__VA_ARGS__)
 
 noreturn __attribute__((format(printf, 1, 3))) void panic(const char *msg, const registers_t *registers, ...);
+noreturn void halt();
 
 #endif //OS_PANIC_H

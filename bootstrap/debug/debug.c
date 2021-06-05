@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <std/stdlib.h>
 #include <std/math.h>
+#include <std/string.h>
 
 #include "debug.h"
 #include "term.h"
@@ -10,6 +11,10 @@
 
 static LOG_LEVEL current_level = LOG_INFO;
 static LOG_LEVEL min_level = LOG_DEBUG;
+
+void dbg_set_level(LOG_LEVEL level) {
+    min_level = level;
+}
 
 void emit_char(char c) {
     if (current_level >= min_level) {
@@ -68,9 +73,13 @@ void print_number(va_list *ap, int width, bool signed_format, int base, int padd
         input = -input;
     }
 
-    int places = recursive_count_digits(input, base);
-    if (padding_count > places) {
-        for (int i = 0; i < padding_count - places; i++) {
+    int digits = 1;
+    if (input > 0) {
+        digits = ((int) logb(base, (double) input)) + 1;
+    }
+
+    if (padding_count > digits) {
+        for (int i = 0; i < padding_count - digits; i++) {
             emit_char(padding_char);
         }
     }
@@ -147,13 +156,11 @@ void dbg_vprintf(const char *fmt, va_list ap) {
                         pad_char = '0';
                         in_length = true;
                     } else {
-                        int end;
-                        for (end = i; isdigit(fmt[end]); end++);
-                        end--;
-
-                        for (int j = end; j >= i; j--) {
-                            pad_count += (fmt[j] - '0') * (int) pow(10, abs(j - end));
-                        }
+                        int length = 0;
+                        for (int j = i; isdigit(fmt[j]); j++, length++);
+                        char pad_str[length + 1];
+                        memcpy(pad_str, &fmt[i], length);
+                        pad_count = atoi(pad_str);
                     }
                     in_format = true;
                     break;

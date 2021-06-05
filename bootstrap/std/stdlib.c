@@ -1,17 +1,17 @@
-#include <debug/panic.h>
 #include "stdlib.h"
-#include "math.h"
 #include "string.h"
 
-
-
 int atoi(const char *str) {
-    int place = 0;
     int value = 0;
-    bool negative = (str[0] == '-');
+    bool negative = false;
+    if (str[0] == '-') {
+        negative = true;
+        str++;
+    }
 
-    for (int i = strlen(str) - 1; i >= 0; i--) {
-        value += (str[i] - '0') * pow(10, place++);
+    for (size_t i = 0; i < strlen(str); i++) {
+        value *= 10;
+        value += str[i] - '0';
     }
 
     return (negative ? -value : value);

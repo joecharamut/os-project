@@ -149,6 +149,7 @@ typedef struct {
 
 typedef struct {
     ext2_inode_t inode;
+    u32 inode_number;
     ext2_volume_t *volume;
     u32 position;
     u32 buffered_block;
@@ -159,6 +160,6 @@ ext2_volume_t *ext2_open_volume(mbr_drive_t drive, u8 partition);
 
 ext2_file_t *ext2_fopen(ext2_volume_t *volume, const char *path);
 size_t ext2_fread(u8 *ptr, size_t count, ext2_file_t *file);
-int ext2_fclose(ext2_file_t *file);
+void ext2_fclose(ext2_file_t *file);
 
 #endif //OS_EXT2_H

@@ -3,12 +3,9 @@
 #include <dev/pci.h>
 #include <io/acpi.h>
 #include <fs/ide.h>
-#include <debug/assert.h>
 #include <fs/ext2.h>
-#include <std/string.h>
 #include <mm/kmem.h>
 #include <cpuid.h>
-#include <std/math.h>
 
 void kernel_main() {
     dbg_logf(LOG_INFO, "Welcome to {OS_NAME} Bootstrap Loader\n");
@@ -32,7 +29,7 @@ void kernel_main() {
         dbg_logf(LOG_FATAL, "BOOT FAILURE: PCI Initialization Failed\n");
         return;
     }
-    dbg_logf(LOG_INFO, "Bus Scan found %d device(s).\n", pci_num_devs());
+    dbg_logf(LOG_INFO, "PCI Bus Scan found %d device(s).\n", pci_num_devs());
 
     for (size_t i = 0; i < pci_num_devs(); i++) {
         PCI_Header hdr = pci_dev_list()[i];
@@ -72,16 +69,13 @@ found_drive:
     dbg_logf(LOG_DEBUG, "Found EXT2 Volume, Name: '%s'\n", volume->superblock.volume_name);
 
     ext2_file_t *fp = ext2_fopen(volume, "/HELLO.TXT");
-    u8 *buf = kcalloc(16, sizeof(char));
     if (fp) {
-        u32 read;
-        while ((read = ext2_fread(buf, 16, fp)) > 0) {
-//            dbg_logf(LOG_DEBUG, "Read %d bytes: [", read);
-//            for (int i = 0; i < 16; ++i) {
-//                dbg_printf("%c", buf[i]);
-//            }
-//            dbg_printf("]\n");
-        }
+        u32 size = fp->inode.filesize_lo;
+        u8 *buf = kcalloc(size+1, sizeof(u8));
+        u32 read = ext2_fread(buf, size, fp);
+        dbg_logf(LOG_DEBUG, "Read %lu byes\n", read);
+        dbg_logf(LOG_DEBUG, "File contents: %s\n", buf);
+        ext2_fclose(fp);
     }
 
     dbg_printf("Hello World!\n");

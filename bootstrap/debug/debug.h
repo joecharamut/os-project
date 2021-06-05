@@ -7,6 +7,8 @@
 
 typedef enum LOG_LEVEL { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL } LOG_LEVEL;
 
+void dbg_set_level(LOG_LEVEL level);
+
 __attribute__((format(printf, 2, 3))) void dbg_logf(LOG_LEVEL level, const char *fmt, ...);
 __attribute__((format(printf, 1, 2))) void dbg_printf(const char *fmt, ...);
 __attribute__((format(printf, 1, 0))) void dbg_vprintf(const char *fmt, va_list ap);

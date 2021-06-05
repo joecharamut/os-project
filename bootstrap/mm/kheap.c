@@ -6,7 +6,7 @@
 #define HEAP_MIN_SIZE 0
 #define HEAP_INDEX_SIZE 0x1000
 
-#define KHEAP_LOGGING 1
+//#define KHEAP_LOGGING
 
 typedef struct {
     u32 magic;

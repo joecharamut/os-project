@@ -73,7 +73,7 @@ found_drive:
         u32 size = fp->inode.filesize_lo;
         u8 *buf = kcalloc(size+1, sizeof(u8));
         u32 read = ext2_fread(buf, size, fp);
-        dbg_logf(LOG_DEBUG, "Read %lu byes\n", read);
+        dbg_logf(LOG_DEBUG, "Read %lu bytes\n", read);
         dbg_logf(LOG_DEBUG, "File contents: %s\n", buf);
         ext2_fclose(fp);
     }

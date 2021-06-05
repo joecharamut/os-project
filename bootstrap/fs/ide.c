@@ -50,7 +50,7 @@ ata_status_t ata_poll_device(ata_bus_t bus) {
 }
 
 void ata_read_sectors(ata_bus_t bus, ata_drive_t drive, u64 lba_value, u16 count, u16 *buffer) {
-    dbg_logf(LOG_DEBUG, "ATA: Reading %d sectors, starting at %lld\n", count, lba_value);
+    dbg_logf(LOG_DEBUG, "ATA: Reading %d sectors, starting at %llu\n", count, lba_value);
     ata_lba_t lba = (ata_lba_t) { .value = lba_value };
 
     // use lba instead of chs

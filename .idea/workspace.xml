@@ -13,14 +13,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="misc work on ext2">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="whoops">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/assert.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/assert.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/fs/ext2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ext2.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/fs/ext2.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ext2.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/fs/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ide.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/string.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/string.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/std/string.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/string.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/math.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/math.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootstrap/std/math.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/std/math.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -247,11 +251,6 @@
     </key>
   </component>
   <component name="RunManager" selected="GDB Remote Debug.GDB qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
@@ -313,7 +312,8 @@
       <workItem from="1621458263897" duration="50000" />
       <workItem from="1621458448266" duration="72601000" />
       <workItem from="1622062087946" duration="872000" />
-      <workItem from="1622063244392" duration="93865000" />
+      <workItem from="1622063244392" duration="109299000" />
+      <workItem from="1622852694059" duration="1557000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -413,7 +413,21 @@
       <option name="project" value="LOCAL" />
       <updated>1622639401244</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="can sorta read files">
+      <created>1622820471875</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1622820471875</updated>
+    </task>
+    <task id="LOCAL-00016" summary="whoops">
+      <created>1622820549549</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1622820549549</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -502,7 +516,9 @@
     <MESSAGE value="move ide" />
     <MESSAGE value="before i mess stuff up" />
     <MESSAGE value="misc work on ext2" />
-    <option name="LAST_COMMIT_MESSAGE" value="misc work on ext2" />
+    <MESSAGE value="can sorta read files" />
+    <MESSAGE value="whoops" />
+    <option name="LAST_COMMIT_MESSAGE" value="whoops" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

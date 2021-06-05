@@ -169,7 +169,7 @@ u32 ext2_resolve_path(ext2_volume_t *volume, const char *path) {
     return return_val;
 }
 
-ext2_file_t *ext2_open(ext2_volume_t *volume, const char *path) {
+ext2_file_t *ext2_fopen(ext2_volume_t *volume, const char *path) {
     u32 inode = ext2_resolve_path(volume, path);
 
     if (inode == 0) {

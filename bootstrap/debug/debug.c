@@ -2,9 +2,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <std/stdlib.h>
-#include <std/string.h>
 #include <std/math.h>
-#include <mm/kmem.h>
 
 #include "debug.h"
 #include "term.h"
@@ -45,13 +43,35 @@ int recursive_count_digits(uint64_t input, u64 base) {
     }
 }
 
-void print_num(uint64_t input, int base, int padding, char pad_char) {
-    if (base < 2 || base > 36) return;
+void print_number(va_list *ap, int width, bool signed_format, int base, int padding_count, char padding_char) {
+    bool input_negative;
+    u64 input;
+
+    if (width == 0) {
+        unsigned int arg = va_arg(*ap, int);
+        input_negative = (signed int) arg < 0;
+        input = (u64) arg;
+    } else if (width == 1) {
+        unsigned long arg = va_arg(*ap, long);
+        input_negative = (signed long) arg < 0;
+        input = (u64) arg;
+    } else if (width == 2) {
+        unsigned long long arg = va_arg(*ap, long long);
+        input_negative = (signed long long) arg < 0;
+        input = (u64) arg;
+    } else {
+        PANIC("Invalid width specifier");
+    }
+
+    if (signed_format && input_negative) {
+        emit_char('-');
+        input = -input;
+    }
 
     int places = recursive_count_digits(input, base);
-    if (padding > places) {
-        for (int i = 0; i < padding - places; i++) {
-            emit_char(pad_char);
+    if (padding_count > places) {
+        for (int i = 0; i < padding_count - places; i++) {
+            emit_char(padding_char);
         }
     }
 
@@ -69,78 +89,74 @@ void dbg_vprintf(const char *fmt, va_list ap) {
         char c = fmt[i];
 
         if (in_format) {
-            if (c == '%') {
-                emit_char('%');
-                in_format = false;
-            } else if (c == 's') {
-                emit_str(va_arg(ap, const char *));
-                in_format = false;
-            } else if (c == 'c') {
-                emit_char(va_arg(ap, int));
-                in_format = false;
-            } else if (c == 'd') {
-                uint64_t number = 0;
+            in_format = false;
+            switch (c) {
+                default:
+                    PANIC("Invalid format character: %c\n", c);
 
-                if (width_count == 0 || width_count == 1) {
-                    int tmp = va_arg(ap, int);
-                    if (tmp < 0) {
-                        tmp = -tmp;
-                        emit_char('-');
+                case '%':
+                    emit_char('%');
+                    break;
+
+                case 's':
+                    emit_str(va_arg(ap, const char *));
+                    break;
+
+                case 'c':
+                    emit_char(va_arg(ap, int));
+                    break;
+
+                case 'd':
+                    print_number(&ap, width_count, true, 10, pad_count, pad_char);
+                    break;
+
+                case 'x':
+                    print_number(&ap, width_count, false, 16, pad_count, pad_char);
+                    break;
+
+                case 'u':
+                    print_number(&ap, width_count, false, 10, pad_count, pad_char);
+                    break;
+
+                case 'o':
+                    print_number(&ap, width_count, false, 8, pad_count, pad_char);
+                    break;
+
+                case 'l':
+                    width_count++;
+                    in_format = true;
+                    break;
+
+                case '*':
+                    pad_count = va_arg(ap, int);
+                    in_length = false;
+                    in_format = true;
+                    break;
+
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    if (!in_length && c == '0') {
+                        pad_char = '0';
+                        in_length = true;
+                    } else {
+                        int end;
+                        for (end = i; isdigit(fmt[end]); end++);
+                        end--;
+
+                        for (int j = end; j >= i; j--) {
+                            pad_count += (fmt[j] - '0') * (int) pow(10, abs(j - end));
+                        }
                     }
-                    number = tmp;
-                } else if (width_count == 2) {
-                    long long tmp = va_arg(ap, long long);
-                    if (tmp < 0) {
-                        tmp = -tmp;
-                        emit_char('-');
-                    }
-                    number = tmp;
-                }
-
-                print_num(number, 10, pad_count, pad_char);
-                in_format = false;
-            } else if (c == 'x') {
-                uint64_t number = 0;
-
-                if (width_count == 0 || width_count == 1) {
-                    number = (u32) va_arg(ap, int);
-                } else if (width_count == 2) {
-                    number = (u64) va_arg(ap, long long);
-                }
-
-                print_num(number, 16, pad_count, pad_char);
-                in_format = false;
-            } else if (c == 'o') {
-                uint64_t number = 0;
-
-                if (width_count == 0 || width_count == 1) {
-                    number = (u32) va_arg(ap, int);
-                } else if (width_count == 2) {
-                    number = (u64) va_arg(ap, long long);
-                }
-
-                print_num(number, 8, pad_count, pad_char);
-                in_format = false;
-            } else if (c == 'l') {
-                width_count++;
-            } else if (isdigit(c)) {
-                if (!in_length && c == '0') {
-                    pad_char = '0';
-                    in_length = true;
-                } else {
-                    int start = i;
-                    int end = i;
-
-                    for (int j = i; isdigit(fmt[j]); j++) {
-                        end = j;
-                    }
-
-                    for (int j = end; j >= start; j--) {
-                        pad_count += (fmt[j] - '0') * (int) pow(10, abs(j - end));
-                    }
-                }
-            } else if (c == '*') {
-                pad_count = va_arg(ap, int);
+                    in_format = true;
+                    break;
             }
         } else {
             if (c == '%') {
@@ -196,7 +212,7 @@ void dbg_logf(LOG_LEVEL level, const char *fmt, ...) {
 
 void dump_registers(const registers_t *registers) {
     term_setcolor(VGA_COLOR(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK));
-    dbg_printf("EAX=%08x EBX=%08x ECX=%08x EDX=%08x\nESI=%08x EDI=%08x EBP=%08x ESP=%08x\nEIP=%08x EFL=%08x ",
+    dbg_printf("EAX=%08lx EBX=%08lx ECX=%08lx EDX=%08lx\nESI=%08lx EDI=%08lx EBP=%08lx ESP=%08lx\nEIP=%08lx EFL=%08lx ",
                registers->eax, registers->ebx, registers->ecx, registers->edx,
                registers->esi, registers->edi, registers->ebp, registers->esp,
                registers->eip, registers->eflags);

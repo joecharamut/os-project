@@ -11,7 +11,11 @@ set(CMAKE_ASM_NASM_COMPILER nasm)
 project(os C ASM_NASM)
 cmake_minimum_required(VERSION 3.14)
 
-set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=gnu11 -Wall -Wextra -pedantic -ffreestanding -I${CMAKE_SOURCE_DIR}/bootstrap")
+set(WARNING_FLAGS "-Wall -Wextra -Wpedantic -Wformat")
+set(SUPPRESS_FLAGS "")
+set(ERROR_FLAGS "-Werror=implicit-function-declaration")
+
+set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS} -ffreestanding -I${CMAKE_SOURCE_DIR}/bootstrap")
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -T linker.ld")
 
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)

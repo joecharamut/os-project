@@ -10,16 +10,10 @@
 #include "gdt.h"
 #include <stdnoreturn.h>
 #include <debug/assert.h>
+#include <io/timer.h>
+#include <std/registers.h>
 
-u32 timer = 0;
-void irq0_handler(registers_t regs) {
-    timer++;
-    if (timer % 1000) {
-        dbg_logf(LOG_INFO, "Timer: %d\n", timer);
-    }
-}
-
-void int3_handler(registers_t regs) {
+void int3_handler(interrupt_registers_t regs) {
     term_setcolor(VGA_COLOR(VGA_COLOR_WHITE, VGA_COLOR_LIGHT_RED));
     dbg_printf("BREAKPOINT HIT: \"%s\"\n", regs.edx);
     dump_registers(&regs);
@@ -136,6 +130,9 @@ noreturn static void boot_main(multiboot_info_t *multiboot_info) {
     serial_init();
     term_init();
 
+    // init timer for 1ms
+    init_timer(1000);
+
     dbg_logf(LOG_INFO, "Hello World!\n");
 
     u32 eip;
@@ -144,7 +141,6 @@ noreturn static void boot_main(multiboot_info_t *multiboot_info) {
 
     init_gdt();
     init_interrupts();
-    set_interrupt_handler(IRQ0, irq0_handler);
     set_interrupt_handler(3, int3_handler);
     set_interrupt_handler(14, page_fault_handler);
     init_kmem();
@@ -168,7 +164,7 @@ noreturn static void boot_main(multiboot_info_t *multiboot_info) {
     "add %1, %%eax          \n" // add offset to new_stack
     "mov %%eax, %%ebp       \n" // save new base pointer
     ""
-    "call *%2               \n" // absolute jump to boot_final
+    "jmp *%2                \n" // absolute jump to boot_final
     :
     : "r" (old_stack), "r" (new_stack), "r" (&boot_final)
     : "memory", "%eax"
@@ -185,7 +181,5 @@ static void unmap_bootcode() {
 noreturn static void boot_final() {
     unmap_bootcode();
     kernel_main();
-
-    dbg_printf("System Halted.");
-    halt();
+    PANIC("Kernel Returned");
 }

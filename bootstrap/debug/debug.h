@@ -1,9 +1,9 @@
 #ifndef OS_DEBUG_H
 #define OS_DEBUG_H
 
-#include <stdarg.h>
-#include <boot/interrupts.h>
 #include "panic.h"
+#include <std/registers.h>
+#include <stdarg.h>
 
 typedef enum LOG_LEVEL { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL } LOG_LEVEL;
 

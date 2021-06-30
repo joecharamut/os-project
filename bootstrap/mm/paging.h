@@ -31,7 +31,7 @@ typedef struct {
 void mmap(void *paddr, void *vaddr, bool readonly, bool user);
 void munmap(void *vaddr);
 bool is_paging_enabled();
-void page_fault_handler(registers_t registers);
+void page_fault_handler(interrupt_registers_t registers);
 
 void flush_page(u32 addr);
 void flush_tlb();

@@ -1,5 +1,6 @@
 #include <debug/debug.h>
 #include <io/port.h>
+#include <std/registers.h>
 #include "interrupts.h"
 
 #define IDT_SIZE 256
@@ -42,15 +43,27 @@ const char *exception_strings[] = {
         "RESERVED"
 };
 
-void __attribute__((used)) isr_handler(registers_t registers) {
-    if (interrupt_handlers[registers.interrupt_num]) {
-        interrupt_handlers[registers.interrupt_num](registers);
+void __attribute__((used)) isr_handler(interrupt_registers_t interruptRegisters) {
+    if (interrupt_handlers[interruptRegisters.interrupt_num]) {
+        interrupt_handlers[interruptRegisters.interrupt_num](interruptRegisters);
     } else {
-        panic("Unhandled Exception: %s", &registers, exception_strings[registers.interrupt_num]);
+        registers_t registers = {
+                .edi = interruptRegisters.edi,
+                .esi = interruptRegisters.esi,
+                .ebp = interruptRegisters.ebp,
+                .esp = interruptRegisters.esp,
+                .ebx = interruptRegisters.ebx,
+                .edx = interruptRegisters.edx,
+                .ecx = interruptRegisters.ecx,
+                .eax = interruptRegisters.eax,
+                .eflags = interruptRegisters.eflags,
+                .eip = interruptRegisters.eip,
+        };
+        panic("Unhandled Exception: %s", &registers, exception_strings[interruptRegisters.interrupt_num]);
     }
 }
 
-void __attribute__((used)) irq_handler(registers_t registers) {
+void __attribute__((used)) irq_handler(interrupt_registers_t registers) {
     if (registers.interrupt_num >= 40) {
         // send reset to PIC2
         outb(0xA0, 0x20);

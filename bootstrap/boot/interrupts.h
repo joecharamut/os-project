@@ -25,7 +25,7 @@ typedef struct {
     u32 edi, esi, ebp, esp, ebx, edx, ecx, eax;
     u32 interrupt_num, error_code;
     u32 eip, cs, eflags, user_esp, ss;
-} registers_t;
+} interrupt_registers_t;
 
 typedef struct {
     u16 base_lo;
@@ -40,7 +40,7 @@ typedef struct {
     u32 base;
 } __attribute__ ((packed)) idt_ptr_t;
 
-typedef void (*isr_t)(registers_t);
+typedef void (*isr_t)(interrupt_registers_t);
 
 void init_interrupts();
 void set_interrupt_handler(u8 number, isr_t handler);

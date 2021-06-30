@@ -22,13 +22,13 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT  "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 set(BOOTSTRAP_SOURCES
-        bootstrap/std/types.h bootstrap/debug/assert.h
+        bootstrap/std/types.h bootstrap/debug/assert.h bootstrap/std/registers.h
         bootstrap/boot/gdt.asm bootstrap/boot/gdt.c bootstrap/boot/gdt.h
         bootstrap/boot/interrupts.asm bootstrap/boot/interrupts.c bootstrap/boot/interrupts.h
         bootstrap/boot/boot.asm bootstrap/boot/boot.c bootstrap/boot/multiboot.h
         bootstrap/debug/serial.c bootstrap/debug/serial.h
         bootstrap/debug/term.c bootstrap/debug/term.h
-        bootstrap/dev/pci.c bootstrap/dev/pci.h
+        bootstrap/io/pci.c bootstrap/io/pci.h
         bootstrap/io/port.c bootstrap/io/port.h
         bootstrap/debug/debug.c bootstrap/debug/debug.h
         bootstrap/fs/ide.c bootstrap/fs/ide.h
@@ -58,6 +58,13 @@ add_custom_target(linker.ld
 add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
 add_dependencies(kernel.bin linker.ld)
 target_link_libraries(kernel.bin gcc)
+
+add_custom_command(TARGET kernel.bin POST_BUILD
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS kernel.bin
+        VERBATIM
+        COMMAND objdump -M intel -d kernel.bin > kernel.asm
+        )
 
 set(GRUB_MODULES acpi biosdisk boot configfile echo elf ext2 hello help ls multiboot normal part_msdos sleep terminal vbe vga video)
 add_custom_command(OUTPUT grub.img

@@ -1,7 +1,7 @@
 #include <debug/debug.h>
 #include <io/port.h>
 #include <debug/panic.h>
-#include <dev/pci.h>
+#include <io/pci.h>
 #include <std/string.h>
 #include <debug/assert.h>
 #include "ide.h"

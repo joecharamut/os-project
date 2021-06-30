@@ -1,11 +1,11 @@
+#include "debug.h"
+
 #include <stdbool.h>
-#include <stdarg.h>
 #include <stdint.h>
 #include <std/stdlib.h>
 #include <std/math.h>
-#include <std/string.h>
 
-#include "debug.h"
+#include <std/string.h>
 #include "term.h"
 #include "serial.h"
 

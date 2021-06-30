@@ -1,11 +1,12 @@
 #include <debug/term.h>
 #include <debug/debug.h>
-#include <dev/pci.h>
+#include <io/pci.h>
 #include <io/acpi.h>
 #include <fs/ide.h>
 #include <fs/ext2.h>
 #include <mm/kmem.h>
 #include <cpuid.h>
+#include <std/string.h>
 
 void kernel_main() {
     dbg_logf(LOG_INFO, "Welcome to {OS_NAME} Bootstrap Loader\n");
@@ -68,20 +69,25 @@ found_drive:
     ext2_volume_t *volume = ext2_open_volume(drive, partition);
     dbg_logf(LOG_DEBUG, "Found EXT2 Volume, Name: '%s'\n", volume->superblock.volume_name);
 
-    ext2_file_t *fp = ext2_fopen(volume, "/boot/config.txt");
-    if (fp) {
-        u32 size = fp->inode.filesize_lo;
-        u8 *buf = kcalloc(size+1, sizeof(u8));
-        u32 read = ext2_fread(buf, size, fp);
-        dbg_logf(LOG_DEBUG, "Read %lu bytes\n", read);
-        dbg_logf(LOG_DEBUG, "File contents: [");
-        for (u32 i = 0; i < size; ++i) {
-            dbg_printf("%02x ", buf[i]);
-        }
-        dbg_printf("\b]\n");
-        kfree(buf);
-        ext2_fclose(fp);
+    ext2_file_t *fp = ext2_fopen(volume, "/python/test.py");
+    if (!fp) {
+        dbg_logf(LOG_FATAL, "Could not load file\n");
+        return;
     }
 
-    dbg_printf("Hello World!\n");
+    u32 size = fp->inode.filesize_lo;
+    char *buf = kcalloc(size+1, sizeof(char));
+    u32 read = ext2_fread((void *) buf, size, fp);
+    assert(read == size);
+    ext2_fclose(fp);
+
+
+
+    char *token = strtok(buf, "\n");
+    while (token) {
+        dbg_logf(LOG_DEBUG, "line: %s\n", token);
+        token = strtok(NULL, "\n");
+    }
+
+    kfree(buf);
 }

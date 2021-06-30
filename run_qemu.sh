@@ -2,7 +2,7 @@
 
 cd cmake-build-debug
 qemu-system-i386 \
-            -s -S \
+            -s \
             -no-reboot \
             -no-shutdown \
             -d guest_errors,cpu_reset \

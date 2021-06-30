@@ -103,7 +103,7 @@ bool is_paging_enabled() {
     return cr0 & (1 << 31);
 }
 
-void page_fault_handler(registers_t registers) {
+void page_fault_handler(interrupt_registers_t registers) {
     u32 fault_addr;
     asm volatile ("mov %%cr2, %0" : "=r" (fault_addr));
 

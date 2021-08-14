@@ -5,7 +5,7 @@
 #include <std/registers.h>
 #include <stdarg.h>
 
-typedef enum LOG_LEVEL { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL } LOG_LEVEL;
+typedef enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL } LOG_LEVEL;
 
 void dbg_set_level(LOG_LEVEL level);
 

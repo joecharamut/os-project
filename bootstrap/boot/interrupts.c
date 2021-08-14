@@ -1,7 +1,9 @@
+#include "interrupts.h"
+
+#include <debug/panic.h>
 #include <debug/debug.h>
 #include <io/port.h>
 #include <std/registers.h>
-#include "interrupts.h"
 
 #define IDT_SIZE 256
 isr_t interrupt_handlers[IDT_SIZE];
@@ -47,34 +49,56 @@ void __attribute__((used)) isr_handler(interrupt_registers_t interruptRegisters)
     if (interrupt_handlers[interruptRegisters.interrupt_num]) {
         interrupt_handlers[interruptRegisters.interrupt_num](interruptRegisters);
     } else {
-        registers_t registers = {
-                .edi = interruptRegisters.edi,
-                .esi = interruptRegisters.esi,
-                .ebp = interruptRegisters.ebp,
-                .esp = interruptRegisters.esp,
-                .ebx = interruptRegisters.ebx,
-                .edx = interruptRegisters.edx,
-                .ecx = interruptRegisters.ecx,
-                .eax = interruptRegisters.eax,
-                .eflags = interruptRegisters.eflags,
-                .eip = interruptRegisters.eip,
-        };
+        registers_t registers = INTERRUPT_TO_NORMAL_REGISTERS(interruptRegisters);
         panic("Unhandled Exception: %s", &registers, exception_strings[interruptRegisters.interrupt_num]);
     }
 }
 
+#define PIC1_CMD        0x20
+#define PIC1_DATA       0x21
+#define PIC2_CMD        0xA0
+#define PIC2_DATA       0xA1
+
+#define PIC_READ_IRR    0x0A
+#define PIC_READ_ISR    0x0B
+#define PIC_EOI         0x20
+#define PIC_INIT        0x11
+
 void __attribute__((used)) irq_handler(interrupt_registers_t registers) {
-    if (registers.interrupt_num >= 40) {
-        // send reset to PIC2
-        outb(0xA0, 0x20);
+    u8 irq_num = registers.interrupt_num - IRQ0;
+
+    // check if this is a PIC1 spurious interrupt
+    if (irq_num == 7) {
+        outb(PIC1_CMD, PIC_READ_ISR);
+        u8 isr = inb(PIC1_CMD);
+        if ((isr & 0x80) == 0) {
+            dbg_logf(LOG_WARN, "Spurious IRQ (PIC1)\n");
+            return;
+        }
     }
-    // send reset to PIC1
-    outb(0x20, 0x20);
+
+    // if not, send EOI to PIC1
+    outb(PIC1_CMD, PIC_EOI);
+
+    // check if this is a PIC2 spurious interrupt
+    if (irq_num == 15) {
+        outb(PIC2_CMD, PIC_READ_ISR);
+        u8 isr = inb(PIC2_CMD);
+        if ((isr & 0x80) == 0) {
+            dbg_logf(LOG_WARN, "Spurious IRQ (PIC2)\n");
+            return;
+        }
+    }
+
+    // if not, send EOI to PIC2
+    if (irq_num >= 8) {
+        outb(PIC2_CMD, PIC_EOI);
+    }
 
     if (interrupt_handlers[registers.interrupt_num]) {
         interrupt_handlers[registers.interrupt_num](registers);
     } else {
-        dbg_logf(LOG_TRACE, "Unhandled IRQ: %d\n", registers.interrupt_num - 32);
+        dbg_logf(LOG_TRACE, "Unhandled IRQ: %d\n", irq_num);
     }
 }
 
@@ -186,20 +210,25 @@ static void set_idt_entry(int index, u32 addr, u16 sel, u8 flags) {
 
 static void init_pic() {
     // remap irq table
-    outb(0x20, 0x11);
-    outb(0xA0, 0x11);
+    outb(PIC1_CMD, PIC_INIT);
+    outb(PIC2_CMD, PIC_INIT);
 
-    outb(0x21, 0x20);
-    outb(0xA1, 0x28);
+    // PIC offsets
+    outb(PIC1_DATA, 0x20);
+    outb(PIC2_DATA, 0x28);
 
-    outb(0x21, 0x04);
-    outb(0xA1, 0x02);
+    // PIC2 at IRQ2
+    outb(PIC1_DATA, 0x04);
+    // PIC2 cascade identity
+    outb(PIC2_DATA, 0x02);
 
-    outb(0x21, 0x01);
-    outb(0xA1, 0x01);
+    // 8086 mode
+    outb(PIC1_DATA, 0x01);
+    outb(PIC2_DATA, 0x01);
 
-    outb(0x21, 0x0);
-    outb(0xA1, 0x0);
+// todo why was this here
+//    outb(PIC1_DATA, 0x0);
+//    outb(PIC2_DATA, 0x0);
 
     extern void irq0();
     extern void irq1();
@@ -217,20 +246,20 @@ static void init_pic() {
     extern void irq13();
     extern void irq14();
     extern void irq15();
-    set_idt_entry(32, (u32) irq0, 0x08, 0x8E);
-    set_idt_entry(33, (u32) irq1, 0x08, 0x8E);
-    set_idt_entry(34, (u32) irq2, 0x08, 0x8E);
-    set_idt_entry(35, (u32) irq3, 0x08, 0x8E);
-    set_idt_entry(36, (u32) irq4, 0x08, 0x8E);
-    set_idt_entry(37, (u32) irq5, 0x08, 0x8E);
-    set_idt_entry(38, (u32) irq6, 0x08, 0x8E);
-    set_idt_entry(39, (u32) irq7, 0x08, 0x8E);
-    set_idt_entry(40, (u32) irq8, 0x08, 0x8E);
-    set_idt_entry(41, (u32) irq9, 0x08, 0x8E);
-    set_idt_entry(42, (u32) irq10, 0x08, 0x8E);
-    set_idt_entry(43, (u32) irq11, 0x08, 0x8E);
-    set_idt_entry(44, (u32) irq12, 0x08, 0x8E);
-    set_idt_entry(45, (u32) irq13, 0x08, 0x8E);
-    set_idt_entry(46, (u32) irq14, 0x08, 0x8E);
-    set_idt_entry(47, (u32) irq15, 0x08, 0x8E);
+    set_idt_entry(IRQ0, (u32) irq0, 0x08, 0x8E);
+    set_idt_entry(IRQ1, (u32) irq1, 0x08, 0x8E);
+    set_idt_entry(IRQ2, (u32) irq2, 0x08, 0x8E);
+    set_idt_entry(IRQ3, (u32) irq3, 0x08, 0x8E);
+    set_idt_entry(IRQ4, (u32) irq4, 0x08, 0x8E);
+    set_idt_entry(IRQ5, (u32) irq5, 0x08, 0x8E);
+    set_idt_entry(IRQ6, (u32) irq6, 0x08, 0x8E);
+    set_idt_entry(IRQ7, (u32) irq7, 0x08, 0x8E);
+    set_idt_entry(IRQ8, (u32) irq8, 0x08, 0x8E);
+    set_idt_entry(IRQ9, (u32) irq9, 0x08, 0x8E);
+    set_idt_entry(IRQ10, (u32) irq10, 0x08, 0x8E);
+    set_idt_entry(IRQ11, (u32) irq11, 0x08, 0x8E);
+    set_idt_entry(IRQ12, (u32) irq12, 0x08, 0x8E);
+    set_idt_entry(IRQ13, (u32) irq13, 0x08, 0x8E);
+    set_idt_entry(IRQ14, (u32) irq14, 0x08, 0x8E);
+    set_idt_entry(IRQ15, (u32) irq15, 0x08, 0x8E);
 }

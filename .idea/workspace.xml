@@ -13,29 +13,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="testing">
-      <change afterPath="$PROJECT_DIR$/bootstrap/std/registers.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image/python/__builtins.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="registers">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/boot/boot.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/boot.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/boot/interrupts.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/interrupts.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/boot/interrupts.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/interrupts.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/panic.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/panic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/dev/pci.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/io/pci.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/dev/pci.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/io/pci.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/fs/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/fs/ide.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/io/timer.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/io/timer.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/io/timer.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/io/timer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/kernel/kernel.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/mm/paging.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/paging.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/mm/paging.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/mm/paging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/python/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/image/python/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -273,6 +256,11 @@
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -292,11 +280,6 @@
       <toRun name="GDB qemu" type="CLion_Remote" />
       <toRun name="qemu" type="CMakeRunConfiguration" />
       <method v="2" />
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
     </configuration>
     <list>
       <item itemvalue="CMake Application.kernel.bin" />
@@ -335,7 +318,9 @@
       <workItem from="1622985834435" duration="1240000" />
       <workItem from="1623769273750" duration="1299000" />
       <workItem from="1625019197560" duration="1985000" />
-      <workItem from="1625064492088" duration="4445000" />
+      <workItem from="1625064492088" duration="4461000" />
+      <workItem from="1625192573006" duration="3123000" />
+      <workItem from="1625277863002" duration="599000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -491,7 +476,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622909399448</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="registers">
+      <created>1625076563777</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1625076563777</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -587,7 +579,8 @@
     <MESSAGE value="hopefully fixed kheap" />
     <MESSAGE value="disable logging" />
     <MESSAGE value="testing" />
-    <option name="LAST_COMMIT_MESSAGE" value="testing" />
+    <MESSAGE value="registers" />
+    <option name="LAST_COMMIT_MESSAGE" value="registers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

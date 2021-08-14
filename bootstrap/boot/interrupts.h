@@ -1,6 +1,7 @@
 #ifndef OS_INTERRUPTS_H
 #define OS_INTERRUPTS_H
 
+#include <std/registers.h>
 #include <std/types.h>
 
 #define IRQ0 32
@@ -26,6 +27,19 @@ typedef struct {
     u32 interrupt_num, error_code;
     u32 eip, cs, eflags, user_esp, ss;
 } interrupt_registers_t;
+
+#define INTERRUPT_TO_NORMAL_REGISTERS(__intregs) ((registers_t) { \
+    .edi = (__intregs).edi, \
+    .esi = (__intregs).esi, \
+    .ebp = (__intregs).ebp, \
+    .esp = (__intregs).esp, \
+    .ebx = (__intregs).ebx, \
+    .edx = (__intregs).edx, \
+    .ecx = (__intregs).ecx, \
+    .eax = (__intregs).eax, \
+    .eflags = (__intregs).eflags, \
+    .eip = (__intregs).eip, \
+})
 
 typedef struct {
     u16 base_lo;

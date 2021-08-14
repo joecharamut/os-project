@@ -13,9 +13,10 @@
 #include <io/timer.h>
 #include <std/registers.h>
 
-void int3_handler(interrupt_registers_t regs) {
+void int3_handler(interrupt_registers_t i_regs) {
     term_setcolor(VGA_COLOR(VGA_COLOR_WHITE, VGA_COLOR_LIGHT_RED));
-    dbg_printf("BREAKPOINT HIT: \"%s\"\n", regs.edx);
+    registers_t regs = INTERRUPT_TO_NORMAL_REGISTERS(i_regs);
+    dbg_printf("BREAKPOINT HIT: \"%s\"\n", (char *) regs.edx);
     dump_registers(&regs);
 }
 
@@ -23,7 +24,6 @@ void int3_handler(interrupt_registers_t regs) {
 #define PAGE_CEIL(addr) ((addr) & 0x00000FFF ? (((addr) & 0xFFFFF000) + 0x1000) : (addr))
 #define PAGE_FLOOR(addr) ((addr) & 0x00000FFF ? (((addr) & 0xFFFFF000)) : (addr))
 
-noreturn void boot_entrypoint(u32 multiboot_magic, multiboot_info_t *multiboot_info);
 noreturn static void boot_main(multiboot_info_t *multiboot_info);
 noreturn static void boot_final();
 
@@ -137,7 +137,7 @@ noreturn static void boot_main(multiboot_info_t *multiboot_info) {
 
     u32 eip;
     asm volatile ("mov $., %0" : "=r" (eip));
-    dbg_logf(LOG_DEBUG, "Hello higher-half, we're at 0x%08x now!\n", eip);
+    dbg_logf(LOG_DEBUG, "Hello higher-half, we're at 0x%08lx now!\n", eip);
 
     init_gdt();
     init_interrupts();
@@ -180,6 +180,9 @@ static void unmap_bootcode() {
 
 noreturn static void boot_final() {
     unmap_bootcode();
+
+    dbg_logf(LOG_INFO, "Bootloader done here, Hello kernel!\n");
     kernel_main();
+
     PANIC("Kernel Returned");
 }

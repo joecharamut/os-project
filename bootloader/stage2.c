@@ -1,8 +1,7 @@
 void term_write(const char *);
 __attribute__((noreturn)) void abort();
 
-extern unsigned int supports_cpuid();
-extern unsigned int supports_long_mode();
+#include "cpuid.h"
 
 __attribute__((noreturn, used)) void main() {
     term_write("hello stage2 c world!\r\n");

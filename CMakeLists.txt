@@ -16,7 +16,7 @@ set(SUPPRESS_FLAGS "")
 set(ERROR_FLAGS "-Werror=implicit-function-declaration")
 
 set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS} -ffreestanding -I${CMAKE_SOURCE_DIR}/bootstrap")
-set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -T linker.ld")
+set(CMAKE_EXE_LINKER_FLAGS "-nostdlib")
 
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT  "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
@@ -58,20 +58,13 @@ add_custom_target(linker.ld
 add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
 add_dependencies(kernel.bin linker.ld)
 target_link_libraries(kernel.bin gcc)
+target_link_options(kernel.bin PRIVATE -T "${CMAKE_BINARY_DIR}/linker.ld")
 
 add_custom_command(TARGET kernel.bin POST_BUILD
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS kernel.bin
         VERBATIM
         COMMAND objdump -M intel -d kernel.bin > kernel.asm
-        )
-
-set(GRUB_MODULES acpi biosdisk boot configfile echo elf ext2 hello help ls multiboot normal part_msdos sleep terminal vbe vga video)
-add_custom_command(OUTPUT grub.img
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS grub_img.cfg
-        VERBATIM
-        COMMAND grub-mkimage -o grub.img -p \(hd0,msdos1\)/boot -c ${CMAKE_SOURCE_DIR}/grub_img.cfg --format=i386-pc ${GRUB_MODULES}
         )
 
 set(IMAGE_PYTHON_SOURCES
@@ -81,27 +74,60 @@ set(IMAGE_BOOT_SOURCES
         image/boot/config.ini)
 list(TRANSFORM IMAGE_PYTHON_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
 list(TRANSFORM IMAGE_BOOT_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
-add_custom_command(OUTPUT disk.img
+
+add_custom_command(OUTPUT mbr.bin
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS bootloader/mbr.asm
+        VERBATIM
+        COMMAND ${CMAKE_ASM_NASM_COMPILER} ${INCLUDES} ${FLAGS} -f bin -o mbr.bin ${CMAKE_SOURCE_DIR}/bootloader/mbr.asm
+        )
+
+set(STAGE2_SOURCES
+        bootloader/stage2.asm
+        bootloader/cpu.asm
+        bootloader/print.asm
+        bootloader/ext2.asm
+        )
+add_custom_command(OUTPUT stage2.bin
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS ${STAGE2_SOURCES}
+        VERBATIM
+        COMMAND ${CMAKE_ASM_NASM_COMPILER} ${INCLUDES} ${FLAGS} -f bin -o stage2.bin -I${CMAKE_SOURCE_DIR}/bootloader ${CMAKE_SOURCE_DIR}/bootloader/stage2.asm
+        )
+
+set(TEST_SOURCES
+        bootloader/test.c bootloader/test.asm
+        )
+add_executable(test.bin ${TEST_SOURCES})
+target_compile_options(test.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
+target_link_options(test.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
+
+add_custom_command(OUTPUT fs.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS ${IMAGE_PYTHON_SOURCES}
         DEPENDS ${IMAGE_BOOT_SOURCES}
-        DEPENDS grub.img
         DEPENDS kernel.bin
-        BYPRODUCTS ext2.img
+        COMMAND dd if=/dev/zero of=fs.bin bs=1M count=1 &&
+        mkfs.ext2 -L "RAGU" -M "/" -q fs.bin 7M &&
+        e2mkdir fs.bin:/boot &&
+        e2cp ${CMAKE_BINARY_DIR}/kernel.bin fs.bin:/boot &&
+        e2cp ${IMAGE_BOOT_SOURCES} fs.bin:/boot &&
+        e2mkdir fs.bin:/python &&
+        e2cp ${IMAGE_PYTHON_SOURCES} fs.bin:/python
+        )
+
+add_custom_command(OUTPUT disk.img
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS mbr.bin
+        DEPENDS stage2.bin
+        DEPENDS fs.bin
+        DEPENDS test.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=disk.img bs=1M count=8 &&
-        parted -s disk.img mklabel msdos &&
-        parted -s disk.img mkpart primary ext2 1MiB 100% &&
-        dd conv=notrunc if=/usr/lib/grub/i386-pc/boot.img of=disk.img bs=440 count=1 &&
-        dd conv=notrunc if=grub.img of=disk.img bs=512 seek=1 count=1024 &&
-        dd if=/dev/zero of=ext2.img bs=1M count=7 &&
-        mkfs.ext2 -L "RAGU" -M "/" -q ext2.img 7M &&
-        e2mkdir ext2.img:/boot &&
-        e2cp ${CMAKE_BINARY_DIR}/kernel.bin ext2.img:/boot &&
-        e2cp ${IMAGE_BOOT_SOURCES} ext2.img:/boot &&
-        e2mkdir ext2.img:/python &&
-        e2cp ${IMAGE_PYTHON_SOURCES} ext2.img:/python &&
-        dd conv=notrunc if=ext2.img of=disk.img bs=1M seek=1 count=7
+        dd conv=notrunc if=mbr.bin of=disk.img bs=512 count=1 &&
+        dd conv=notrunc if=test.bin of=disk.img bs=512 seek=1 count=128 &&
+        dd conv=notrunc if=fs.bin of=disk.img bs=1M seek=1 count=1 &&
+        fdisk -l disk.img
         )
 
 add_custom_target(qemu

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cd cmake-build-debug
-qemu-system-i386 \
+qemu-system-x86_64 \
             -s \
             -no-reboot \
             -no-shutdown \

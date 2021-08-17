@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="os" targetName="test.bin" />
       <config projectName="os" targetName="linker.ld" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="qemu" />
@@ -13,12 +14,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="registers">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="aaaaa">
+      <change afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/ext2.asm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/print.asm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/stage2.asm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/test.asm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/test.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/boot/boot.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/boot.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/boot/interrupts.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/interrupts.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/boot/interrupts.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/boot/interrupts.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap/debug/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap/debug/debug.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,27 +238,23 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bootloader" />
       <recent name="$PROJECT_DIR$/bootstrap/io" />
       <recent name="$PROJECT_DIR$/image" />
       <recent name="$PROJECT_DIR$/image/boot" />
       <recent name="$PROJECT_DIR$/bootstrap/fs" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
@@ -276,15 +279,26 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="test.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="test.bin">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="CompoundRunConfigurationType">
       <toRun name="GDB qemu" type="CLion_Remote" />
       <toRun name="qemu" type="CMakeRunConfiguration" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.kernel.bin" />
       <item itemvalue="CMake Application.linker.ld" />
       <item itemvalue="CMake Application.qemu" />
+      <item itemvalue="CMake Application.test.bin" />
       <item itemvalue="GDB Remote Debug.GDB qemu" />
     </list>
   </component>
@@ -321,6 +335,10 @@
       <workItem from="1625064492088" duration="4461000" />
       <workItem from="1625192573006" duration="3123000" />
       <workItem from="1625277863002" duration="599000" />
+      <workItem from="1628907117398" duration="33197000" />
+      <workItem from="1629077795697" duration="75000" />
+      <workItem from="1629077880476" duration="15659000" />
+      <workItem from="1629166230491" duration="3408000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -483,7 +501,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625076563777</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="aaaaa">
+      <created>1628907156790</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1628907156790</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -580,7 +605,8 @@
     <MESSAGE value="disable logging" />
     <MESSAGE value="testing" />
     <MESSAGE value="registers" />
-    <option name="LAST_COMMIT_MESSAGE" value="registers" />
+    <MESSAGE value="aaaaa" />
+    <option name="LAST_COMMIT_MESSAGE" value="aaaaa" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -59,12 +59,12 @@ add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
 add_dependencies(kernel.bin linker.ld)
 target_link_libraries(kernel.bin gcc)
 target_link_options(kernel.bin PRIVATE -T "${CMAKE_BINARY_DIR}/linker.ld")
-
 add_custom_command(TARGET kernel.bin POST_BUILD
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS kernel.bin
+        BYPRODUCTS kernel.lst
         VERBATIM
-        COMMAND objdump -M intel -d kernel.bin > kernel.asm
+        COMMAND objdump -M intel -d kernel.bin > kernel.lst
         )
 
 set(IMAGE_PYTHON_SOURCES
@@ -89,6 +89,13 @@ set(STAGE2_SOURCES
 add_executable(stage2.bin ${STAGE2_SOURCES})
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
 target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
+add_custom_command(TARGET stage2.bin POST_BUILD
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS stage2.bin
+        BYPRODUCTS stage2.lst
+        VERBATIM
+        COMMAND objdump -m i8086 -b binary -D -M intel stage2.bin > stage2.lst
+        )
 
 add_custom_command(OUTPUT fs.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

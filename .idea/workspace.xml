@@ -2,10 +2,10 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="os" targetName="test.bin" />
       <config projectName="os" targetName="linker.ld" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="qemu" />
+      <config projectName="os" targetName="stage2.bin" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -14,13 +14,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="bootloader and convincing gcc to make real mode code">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="build the real stage2 now">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/test.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/test.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/test.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpu.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpuid.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -333,7 +331,7 @@
       <workItem from="1628907117398" duration="33197000" />
       <workItem from="1629077795697" duration="75000" />
       <workItem from="1629077880476" duration="15659000" />
-      <workItem from="1629166230491" duration="7514000" />
+      <workItem from="1629166230491" duration="9238000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -510,7 +508,21 @@
       <option name="project" value="LOCAL" />
       <updated>1629225883643</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="touch up linker script and switch to unreal mode in mbr">
+      <created>1629229864128</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1629229864128</updated>
+    </task>
+    <task id="LOCAL-00027" summary="build the real stage2 now">
+      <created>1629230153061</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1629230153061</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -609,7 +621,9 @@
     <MESSAGE value="registers" />
     <MESSAGE value="aaaaa" />
     <MESSAGE value="bootloader and convincing gcc to make real mode code" />
-    <option name="LAST_COMMIT_MESSAGE" value="bootloader and convincing gcc to make real mode code" />
+    <MESSAGE value="touch up linker script and switch to unreal mode in mbr" />
+    <MESSAGE value="build the real stage2 now" />
+    <option name="LAST_COMMIT_MESSAGE" value="build the real stage2 now" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

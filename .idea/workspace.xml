@@ -14,10 +14,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="build the real stage2 now">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add cpuid header">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/cpu.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpuid.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -331,7 +329,7 @@
       <workItem from="1628907117398" duration="33197000" />
       <workItem from="1629077795697" duration="75000" />
       <workItem from="1629077880476" duration="15659000" />
-      <workItem from="1629166230491" duration="9238000" />
+      <workItem from="1629166230491" duration="11823000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -522,7 +520,28 @@
       <option name="project" value="LOCAL" />
       <updated>1629230153061</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="added long mode check">
+      <created>1629231655391</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1629231655391</updated>
+    </task>
+    <task id="LOCAL-00029" summary="remove old stage2">
+      <created>1629231683042</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1629231683042</updated>
+    </task>
+    <task id="LOCAL-00030" summary="add cpuid header">
+      <created>1629231748059</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1629231748059</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -598,9 +617,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="initial commit" />
-    <MESSAGE value="uhhhhhhhhhhhhhhhhh" />
-    <MESSAGE value="ide? kinda" />
     <MESSAGE value="bees" />
     <MESSAGE value="higher half" />
     <MESSAGE value="add gitignore" />
@@ -623,7 +639,10 @@
     <MESSAGE value="bootloader and convincing gcc to make real mode code" />
     <MESSAGE value="touch up linker script and switch to unreal mode in mbr" />
     <MESSAGE value="build the real stage2 now" />
-    <option name="LAST_COMMIT_MESSAGE" value="build the real stage2 now" />
+    <MESSAGE value="added long mode check" />
+    <MESSAGE value="remove old stage2" />
+    <MESSAGE value="add cpuid header" />
+    <option name="LAST_COMMIT_MESSAGE" value="add cpuid header" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

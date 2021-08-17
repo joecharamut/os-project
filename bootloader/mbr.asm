@@ -204,7 +204,7 @@ dd 0x1234ABCD
 ; 0x0000 = read-write, 0x5A5A = read only
 dw 0x0000
 
-partition_1: partition_entry 0, 0x7F, 1, 128 ; type=EXPERIMENTAL, start=512B, size=64KiB
+partition_1: partition_entry 0, 0x7F, 1, 1024 ; type=EXPERIMENTAL, start=512B, size=512KiB
 partition_2: partition_entry 0, 0x83, 2048, 2048 ; type=LINUX, start=1MiB, size=1MiB
 partition_3: partition_entry 0, 0x00, 0x00, 0x00 ; type=EMPTY
 partition_4: partition_entry 0, 0x00, 0x00, 0x00 ; type=EMPTY

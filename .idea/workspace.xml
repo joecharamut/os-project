@@ -274,7 +274,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="test.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="test.bin">
+    <configuration name="stage2.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="stage2.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="stage2.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -293,7 +293,7 @@
       <item itemvalue="CMake Application.kernel.bin" />
       <item itemvalue="CMake Application.linker.ld" />
       <item itemvalue="CMake Application.qemu" />
-      <item itemvalue="CMake Application.test.bin" />
+      <item itemvalue="CMake Application.stage2.bin" />
       <item itemvalue="GDB Remote Debug.GDB qemu" />
     </list>
   </component>

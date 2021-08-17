@@ -1,14 +1,12 @@
 void term_write(const char *);
-extern void test();
 
 void main() {
     term_write("hello from c world\r\n");
-    test();
 }
 
 void term_write(const char *str) {
     while (*str) {
-        __asm__(
+        __asm__ volatile (
         "movb $0x0E, %%ah   \n" // teletype output
         "movb $0x00, %%bh   \n" // codepage 0
         "movb $0x00, %%bl   \n" // foreground color

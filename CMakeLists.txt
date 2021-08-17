@@ -83,24 +83,11 @@ add_custom_command(OUTPUT mbr.bin
         )
 
 set(STAGE2_SOURCES
-        bootloader/stage2.asm
-        bootloader/cpu.asm
-        bootloader/print.asm
-        bootloader/ext2.asm
+        bootloader/stage2.c
         )
-add_custom_command(OUTPUT stage2.bin
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS ${STAGE2_SOURCES}
-        VERBATIM
-        COMMAND ${CMAKE_ASM_NASM_COMPILER} ${INCLUDES} ${FLAGS} -f bin -o stage2.bin -I${CMAKE_SOURCE_DIR}/bootloader ${CMAKE_SOURCE_DIR}/bootloader/stage2.asm
-        )
-
-set(TEST_SOURCES
-        bootloader/test.c bootloader/test.asm
-        )
-add_executable(test.bin ${TEST_SOURCES})
-target_compile_options(test.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
-target_link_options(test.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
+add_executable(stage2.bin ${STAGE2_SOURCES})
+target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
+target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
 
 add_custom_command(OUTPUT fs.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -119,13 +106,12 @@ add_custom_command(OUTPUT fs.bin
 add_custom_command(OUTPUT disk.img
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS mbr.bin
-        DEPENDS stage2.bin
         DEPENDS fs.bin
-        DEPENDS test.bin
+        DEPENDS stage2.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=disk.img bs=1M count=8 &&
         dd conv=notrunc if=mbr.bin of=disk.img bs=512 count=1 &&
-        dd conv=notrunc if=test.bin of=disk.img bs=512 seek=1 count=256 &&
+        dd conv=notrunc if=stage2.bin of=disk.img bs=512 seek=1 count=1024 &&
         dd conv=notrunc if=fs.bin of=disk.img bs=1M seek=1 count=1 &&
         fdisk -l disk.img
         )

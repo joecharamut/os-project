@@ -14,18 +14,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="aaaaa">
-      <change afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/ext2.asm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/print.asm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/stage2.asm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/test.asm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/test.c" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="bootloader and convincing gcc to make real mode code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/test.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/test.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/test.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -338,7 +333,7 @@
       <workItem from="1628907117398" duration="33197000" />
       <workItem from="1629077795697" duration="75000" />
       <workItem from="1629077880476" duration="15659000" />
-      <workItem from="1629166230491" duration="3408000" />
+      <workItem from="1629166230491" duration="7514000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -508,7 +503,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628907156790</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="bootloader and convincing gcc to make real mode code">
+      <created>1629225883643</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1629225883643</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -606,7 +608,8 @@
     <MESSAGE value="testing" />
     <MESSAGE value="registers" />
     <MESSAGE value="aaaaa" />
-    <option name="LAST_COMMIT_MESSAGE" value="aaaaa" />
+    <MESSAGE value="bootloader and convincing gcc to make real mode code" />
+    <option name="LAST_COMMIT_MESSAGE" value="bootloader and convincing gcc to make real mode code" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

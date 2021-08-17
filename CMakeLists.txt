@@ -125,7 +125,7 @@ add_custom_command(OUTPUT disk.img
         VERBATIM
         COMMAND dd if=/dev/zero of=disk.img bs=1M count=8 &&
         dd conv=notrunc if=mbr.bin of=disk.img bs=512 count=1 &&
-        dd conv=notrunc if=test.bin of=disk.img bs=512 seek=1 count=128 &&
+        dd conv=notrunc if=test.bin of=disk.img bs=512 seek=1 count=256 &&
         dd conv=notrunc if=fs.bin of=disk.img bs=1M seek=1 count=1 &&
         fdisk -l disk.img
         )

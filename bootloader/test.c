@@ -2,7 +2,7 @@ void term_write(const char *);
 extern void test();
 
 void main() {
-    term_write("hello from c world");
+    term_write("hello from c world\r\n");
     test();
 }
 

@@ -21,6 +21,26 @@ _boot:
     jmp 0:_boot_reloc
 
 _boot_reloc:
+    ; INT10h function 00h - Set Video Mode
+    mov ah, 0x00
+    mov al, byte [0x0449] ; current video mode byte
+    int 10h
+
+    ; INT10h function 0Bh/00h - Set Background Color
+    mov ah, 0x0B
+    mov bh, 0x00
+    mov bl, 0x01 ; color blue
+    int 10h
+
+    ; check a20 line
+    call check_a20
+    test ax, ax
+    mov bp, str_no_a20
+    jz err_print ; no a20
+
+    ; enable unreal mode
+    call enable_unreal_mode
+
     ; INT13h function 41h - Check Extensions Present
     mov ah, 0x41
     mov bx, 0x55AA
@@ -28,16 +48,11 @@ _boot_reloc:
     mov bp, no_int13_msg
     jc err_print ; CF set if not present
 
-    ; check if partition 1 is stage2 code
-    cmp byte [partition_1.type], 0x7F
-    mov bp, stage2_err_msg
-    jne err_print
-
     mov ebx, [partition_1.first_sector]
-    mov ecx, 0x1000
+    mov ecx, 0x100
 .read_loop:
     mov word [disk_packet.count], 1
-    mov dword [disk_packet.buffer], ecx
+    mov dword [disk_packet.buffer_segment], ecx
     mov dword [disk_packet.start_lo], ebx
 
     ; INT13h function 42h - Extended Read Sectors
@@ -48,12 +63,86 @@ _boot_reloc:
     jc err_print ; CF set on error
 
     inc ebx
-    add ecx, 512
-    cmp ebx, 0x78 ; loads 0x1000 - 0xFFFF (60 KiB)
+    add ecx, 32
+    cmp ebx, 1024 ; load 1024 sectors (512 KiB)
     jle .read_loop
 
     mov dl, [boot_disk] ; reload disk id
     jmp 0:0x1000 ; jump to stage2
+
+; ======== functions ========
+
+enable_unreal_mode:
+    ; save real mode segments
+    push ds
+    push ss
+    push es
+
+    ; load gtd
+    lgdt [unreal_gdtinfo]
+
+    ; set protected mode
+    mov eax, cr0
+    or al, 1
+    mov cr0, eax
+
+    ; set segments to protected mode descriptor 1
+    mov bx, 0x08
+    mov ds, bx
+    mov ss, bx
+    mov es, bx
+
+    ; clear protected mode
+    and al, 0xFE
+    mov cr0, eax
+
+    ; restore real mode segments
+    pop es
+    pop ss
+    pop ds
+
+    ret
+
+check_a20:
+    pushf
+    push ds
+    push es
+    push di
+    push si
+
+    xor ax, ax
+    mov es, ax ; es = 0x0000
+
+    not ax
+    mov ds, ax ; ds = 0xFFFF
+
+    mov di, 0x0500
+    mov si, 0x0510
+
+    mov al, byte [es:di]
+    push ax
+    mov al, byte [ds:si]
+    push ax
+
+    mov byte [es:di], 0x00
+    mov byte [ds:si], 0xFF
+    cmp byte [es:di], 0xFF
+
+    pop ax
+    mov byte [ds:si], al
+    pop ax
+    mov byte [es:di], al
+
+    mov ax, 0
+    je .exit
+    mov ax, 1
+.exit:
+    pop si
+    pop di
+    pop es
+    pop ds
+    popf
+    ret
 
 err_print:
     mov ah, 0Eh ; teletype output
@@ -70,18 +159,28 @@ err_print:
     cli
     hlt
 
-no_int13_msg: db "Error: No INT13h Extensions", 0
+str_no_a20: db "No A20 Line", 0
+no_int13_msg: db "No INT13 Extensions", 0
 read_error: db "Read Error", 0
-stage2_err_msg: db "Error loading stage2", 0
 
 boot_disk: db 0
 disk_packet:
     db 0x10
     db 0
     .count: dw 0
-    .buffer: dd 0
+    .buffer_offset: dw 0
+    .buffer_segment: dw 0
     .start_lo: dd 0
     .start_hi: dd 0
+
+unreal_gdtinfo:
+    dw unreal_gdt_end - unreal_gdt - 1
+    dd unreal_gdt
+
+unreal_gdt:
+    dd 0, 0 ; null descriptor
+    db 0xff, 0xff, 0, 0, 0, 10010010b, 11001111b, 0 ; flat data descriptor
+unreal_gdt_end:
 
 ; pad rest of boot code area with zeros
 times 440 - ($-$$) db 0

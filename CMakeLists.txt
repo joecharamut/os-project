@@ -70,7 +70,6 @@ add_custom_command(TARGET kernel.bin POST_BUILD
 set(IMAGE_PYTHON_SOURCES
         image/python/test.py)
 set(IMAGE_BOOT_SOURCES
-        image/boot/grub.cfg
         image/boot/config.ini)
 list(TRANSFORM IMAGE_PYTHON_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
 list(TRANSFORM IMAGE_BOOT_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)

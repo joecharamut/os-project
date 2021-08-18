@@ -14,9 +14,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="move print funcs to module">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="generate listings for stage2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -329,7 +328,7 @@
       <workItem from="1628907117398" duration="33197000" />
       <workItem from="1629077795697" duration="75000" />
       <workItem from="1629077880476" duration="15659000" />
-      <workItem from="1629166230491" duration="13114000" />
+      <workItem from="1629166230491" duration="15058000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -555,7 +554,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629240641924</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="generate listings for stage2">
+      <created>1629241325592</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1629241325592</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -631,7 +637,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add gitignore" />
     <MESSAGE value="stacker" />
     <MESSAGE value="heap? sorta" />
     <MESSAGE value="something" />
@@ -656,7 +661,8 @@
     <MESSAGE value="add cpuid header" />
     <MESSAGE value="print hex" />
     <MESSAGE value="move print funcs to module" />
-    <option name="LAST_COMMIT_MESSAGE" value="move print funcs to module" />
+    <MESSAGE value="generate listings for stage2" />
+    <option name="LAST_COMMIT_MESSAGE" value="generate listings for stage2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

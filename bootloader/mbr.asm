@@ -2,13 +2,11 @@ bits 16
 org 0x0E00
 
 _boot:
-    mov byte [boot_disk], dl ; save disk id
-
     ; move stack to 0x0DFF
     cli
     xor ax, ax
     mov ss, ax
-    mov si, 0x0DFF
+    mov sp, 0x0DFF
     sti
 
     ; copy mbr to 0x0E00
@@ -17,8 +15,11 @@ _boot:
     mov cx, 512
     rep movsb
 
-    ; jump to relocated mbr
-    jmp 0:_boot_reloc
+    ; save boot disk id
+    mov byte [boot_disk], dl
+
+    ; jump to relocated mbr and reload CS
+    jmp 0x0000:_boot_reloc
 
 _boot_reloc:
     ; INT10h function 00h - Set Video Mode
@@ -40,6 +41,11 @@ _boot_reloc:
 
     ; enable unreal mode
     call enable_unreal_mode
+
+    ; expand the stack
+    mov ax, 0x0100
+    mov ss, ax
+    mov sp, 0x0000
 
     ; INT13h function 41h - Check Extensions Present
     mov ah, 0x41

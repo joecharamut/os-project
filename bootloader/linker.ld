@@ -1,6 +1,6 @@
 OUTPUT_FORMAT("binary")
 OUTPUT_ARCH("i8086")
-ENTRY(main)
+ENTRY(_start)
 
 MEMORY
 {
@@ -11,6 +11,7 @@ MEMORY
 SECTIONS
 {
     .code : {
+        *(.start_text)
         *(.text)
     } > CS
 

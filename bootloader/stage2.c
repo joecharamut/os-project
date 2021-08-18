@@ -1,10 +1,16 @@
 __attribute__((noreturn)) void abort();
 
+#include <stdint.h>
 #include "cpuid.h"
 #include "print.h"
 
-__attribute__((noreturn, used)) void main() {
-    print_str("hello stage2 c world!\n");
+void main() {
+    volatile uint8_t boot_disk;
+    __asm__ volatile ("movb %%dl, %0\t\n" : "=al" (boot_disk));
+    print_str("hello world from unreal mode in c\n");
+    print_str("boot drive is: 0x");
+    print_hex(boot_disk);
+    print_str("\n");
 
     if (!supports_cpuid()) {
         print_str("Boot Failure: Processor does not support CPUID");
@@ -21,8 +27,6 @@ __attribute__((noreturn, used)) void main() {
     print_str("4096 in hex is: ");
     print_hex(4096);
     print_str("\n");
-
-    abort();
 }
 
 __attribute__((noreturn)) void abort() {

@@ -101,8 +101,8 @@ add_custom_command(OUTPUT fs.bin
         DEPENDS ${IMAGE_PYTHON_SOURCES}
         DEPENDS ${IMAGE_BOOT_SOURCES}
         DEPENDS kernel.bin
-        COMMAND dd if=/dev/zero of=fs.bin bs=1M count=1 &&
-        mkfs.ext2 -L "RAGU" -M "/" -q fs.bin 7M &&
+        COMMAND dd if=/dev/zero of=fs.bin bs=1M count=64 &&
+        mkfs.ext2 -L "RAGU" -M "/" -q fs.bin &&
         e2mkdir fs.bin:/boot &&
         e2cp ${CMAKE_BINARY_DIR}/kernel.bin fs.bin:/boot &&
         e2cp ${IMAGE_BOOT_SOURCES} fs.bin:/boot &&
@@ -110,16 +110,27 @@ add_custom_command(OUTPUT fs.bin
         e2cp ${IMAGE_PYTHON_SOURCES} fs.bin:/python
         )
 
+add_custom_command(OUTPUT boot_fs.bin
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS kernel.bin
+        VERBATIM
+        COMMAND dd if=/dev/zero of=boot_fs.bin bs=1M count=64 &&
+        mkfs.vfat -F32 -i DEADBEEF -n "SYSTEM" boot_fs.bin &&
+        mcopy -i boot_fs.bin kernel.bin ::
+        )
+
 add_custom_command(OUTPUT disk.img
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS mbr.bin
-        DEPENDS fs.bin
         DEPENDS stage2.bin
+        DEPENDS boot_fs.bin
+        DEPENDS fs.bin
         VERBATIM
-        COMMAND dd if=/dev/zero of=disk.img bs=1M count=8 &&
+        COMMAND dd if=/dev/zero of=disk.img bs=1M count=129 &&
         dd conv=notrunc if=mbr.bin of=disk.img bs=512 count=1 &&
-        dd conv=notrunc if=stage2.bin of=disk.img bs=512 seek=1 count=1024 &&
-        dd conv=notrunc if=fs.bin of=disk.img bs=1M seek=1 count=1 &&
+        dd conv=notrunc if=stage2.bin of=disk.img bs=512 seek=1 count=2047 &&
+        dd conv=notrunc if=boot_fs.bin of=disk.img bs=1M seek=1 count=64 &&
+        dd conv=notrunc if=fs.bin of=disk.img bs=1M seek=65 count=64 &&
         fdisk -l disk.img
         )
 

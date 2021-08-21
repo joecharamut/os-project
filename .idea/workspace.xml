@@ -14,7 +14,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="pass boot disk to main()" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="pass boot disk to main()">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/stage2.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -245,14 +252,14 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
       <method v="2">
@@ -330,7 +337,8 @@
       <workItem from="1629077880476" duration="15659000" />
       <workItem from="1629166230491" duration="15058000" />
       <workItem from="1629262157385" duration="20000" />
-      <workItem from="1629304444185" duration="3892000" />
+      <workItem from="1629304444185" duration="5844000" />
+      <workItem from="1629369754440" duration="7130000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -570,7 +578,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629318232285</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="pass boot disk to main()">
+      <created>1629318339788</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1629318339788</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TimeTrackingManager">

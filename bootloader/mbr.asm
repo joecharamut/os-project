@@ -1,6 +1,10 @@
 bits 16
 org 0x0E00
 
+KiB equ 1024
+MiB equ (KiB*1024)
+GiB equ (MiB*1024)
+
 _boot:
     ; move stack to 0x0DFF
     cli
@@ -210,9 +214,9 @@ dd 0x1234ABCD
 ; 0x0000 = read-write, 0x5A5A = read only
 dw 0x0000
 
-partition_1: partition_entry 0, 0x7F, 1, 1024 ; type=EXPERIMENTAL, start=512B, size=512KiB
-partition_2: partition_entry 0, 0x83, 2048, 2048 ; type=LINUX, start=1MiB, size=1MiB
-partition_3: partition_entry 0, 0x00, 0x00, 0x00 ; type=EMPTY
+partition_1: partition_entry 0, 0x7F, 1, 2047 ; type=EXPERIMENTAL, start=512B, size=1023KiB [stage2.bin]
+partition_2: partition_entry 0, 0x0C, (1*MiB)/512, (64*MiB)/512 ; type=FAT32+LBA, start=1MiB, size=64MiB [boot_fs.bin]
+partition_3: partition_entry 0, 0x83, (65*MiB)/512, (64*MiB)/512 ; type=LINUX, start=64MiB, size=1MiB [fs.bin]
 partition_4: partition_entry 0, 0x00, 0x00, 0x00 ; type=EMPTY
 
 ; boot signature

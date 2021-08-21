@@ -1,7 +1,7 @@
-#ifndef OS_CPUID_H
-#define OS_CPUID_H
+#ifndef LOADER_CPUID_H
+#define LOADER_CPUID_H
 
 extern unsigned int supports_cpuid();
 extern unsigned int supports_long_mode();
 
-#endif //OS_CPUID_H
+#endif //LOADER_CPUID_H

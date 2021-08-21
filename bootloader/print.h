@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
+extern void print_chr(char c);
 void print_str(const char *str);
-void print_chr(char c);
 void print_hex(uint32_t i);
 
 #endif //LOADER_PRINT_H

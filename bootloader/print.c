@@ -20,15 +20,3 @@ void print_hex(uint32_t i) {
     }
     print_chr(hex_alphabet[i % 16]);
 }
-
-void print_chr_old(char c) {
-    __asm__ volatile (
-    "movb $0x0E, %%ah   \n" // teletype output
-    "movb $0x00, %%bh   \n" // codepage 0
-    "movb $0x00, %%bl   \n" // foreground color 0
-    "movb %0, %%al      \n" // char to write
-    "int $0x10          \n"
-    :
-    : "r" (c)
-    : "ax", "bx");
-}

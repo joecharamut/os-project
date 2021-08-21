@@ -27,10 +27,6 @@ void main() {
     print_str("4096 in hex is: ");
     print_hex(4096);
     print_str("\n");
-
-    for (uint16_t *vid = (void *) 0xB8000; ((uint32_t) vid) < 0xBFFFF; vid++) {
-        *vid = (((uint16_t) 0x01) | ((uint16_t) 0xCF << 8));
-    }
 }
 
 __attribute__((noreturn)) void abort() {

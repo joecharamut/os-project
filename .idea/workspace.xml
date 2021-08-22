@@ -14,9 +14,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="writint asmemby">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="make print_chr an extern asm function">
+      <change afterPath="$PROJECT_DIR$/bootloader/assert.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/disk.asm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/print.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/print.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,6 +140,9 @@
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
+  <component name="OCResolveContextSettings">
+    <option name="configuration" value="0-Debug-stage2.bin" />
+  </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="120" />
     <option name="width" value="1600" />
@@ -231,7 +239,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="fileTemplates" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -334,7 +342,7 @@
       <workItem from="1629166230491" duration="15058000" />
       <workItem from="1629262157385" duration="20000" />
       <workItem from="1629304444185" duration="5844000" />
-      <workItem from="1629369754440" duration="8566000" />
+      <workItem from="1629369754440" duration="14974000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1620304265322</created>
@@ -609,7 +617,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629514658294</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="make print_chr an extern asm function">
+      <created>1629547917288</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1629547917288</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -685,7 +700,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="before i mess stuff up" />
     <MESSAGE value="misc work on ext2" />
     <MESSAGE value="can sorta read files" />
     <MESSAGE value="whoops" />
@@ -710,7 +724,8 @@
     <MESSAGE value="make a boot fs" />
     <MESSAGE value="misc" />
     <MESSAGE value="writint asmemby" />
-    <option name="LAST_COMMIT_MESSAGE" value="writint asmemby" />
+    <MESSAGE value="make print_chr an extern asm function" />
+    <option name="LAST_COMMIT_MESSAGE" value="make print_chr an extern asm function" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

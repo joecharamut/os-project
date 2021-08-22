@@ -85,7 +85,8 @@ set(STAGE2_SOURCES
         bootloader/stage2.c bootloader/stage2.asm
         bootloader/cpuid.h bootloader/cpuid.asm
         bootloader/print.h bootloader/print.c bootloader/print.asm
-        )
+        bootloader/disk.h bootloader/disk.c bootloader/disk.asm
+        bootloader/assert.h )
 add_executable(stage2.bin ${STAGE2_SOURCES})
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
 target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")

@@ -13,10 +13,10 @@ void print_str(const char *str) {
     }
 }
 
-const char hex_alphabet[] = "0123456789ABCDEF";
-void print_hex(uint32_t i) {
-    if (i >= 16) {
-        print_hex(i / 16);
+const char print_num_alphabet[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+void print_num(uint32_t num, uint32_t base) {
+    if (num >= base) {
+        print_num(num / base, base);
     }
-    print_chr(hex_alphabet[i % 16]);
+    print_chr(print_num_alphabet[num % base]);
 }

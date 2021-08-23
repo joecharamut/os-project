@@ -82,11 +82,13 @@ add_custom_command(OUTPUT mbr.bin
         )
 
 set(STAGE2_SOURCES
+        bootloader/assert.h
         bootloader/stage2.c bootloader/stage2.asm
         bootloader/cpuid.h bootloader/cpuid.asm
         bootloader/print.h bootloader/print.c bootloader/print.asm
-        bootloader/disk.h bootloader/disk.c bootloader/disk.asm
-        bootloader/assert.h )
+        bootloader/disk.h bootloader/disk.asm
+        bootloader/mem.h bootloader/mem.asm
+        )
 add_executable(stage2.bin ${STAGE2_SOURCES})
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
 target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
@@ -130,7 +132,7 @@ add_custom_command(OUTPUT disk.img
         VERBATIM
         COMMAND dd if=/dev/zero of=disk.img bs=1M count=129 &&
         dd conv=notrunc if=mbr.bin of=disk.img bs=512 count=1 &&
-        dd conv=notrunc if=stage2.bin of=disk.img bs=512 seek=1 count=2047 &&
+        dd conv=notrunc if=stage2.bin of=disk.img bs=512 seek=1 count=1024 &&
         dd conv=notrunc if=boot_fs.bin of=disk.img bs=1M seek=1 count=64 &&
         dd conv=notrunc if=fs.bin of=disk.img bs=1M seek=65 count=64 &&
         fdisk -l disk.img

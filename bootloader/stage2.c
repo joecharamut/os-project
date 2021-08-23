@@ -14,15 +14,13 @@ void main() {
         abort();
     }
     if (low_ram != 639) {
-        print_str("Boot Failure: Not enough Low Memory (expected: 640k, actual: ");
-        print_dec(low_ram + 1);
-        print_str("k)\n");
+        print_decs("Boot Failure: Not enough Low Memory (expected: 640k, actual: ", low_ram + 1, "k)\n");
         abort();
     }
 
     print_str("hello world from pretty broken c!\n");
-    print_str("boot drive was: 0x"); print_hex(boot_disk); print_str("\n");
-    print_str("low ram available: "); print_dec(low_ram + 1); print_str("kb\n");
+    print_hexs("boot drive was: 0x", boot_disk, "\n");
+    print_decs("low ram available: ", low_ram + 1, "kb\n");
 
     if (!supports_cpuid()) {
         print_str("Boot Failure: Processor does not support CPUID");
@@ -38,22 +36,19 @@ void main() {
     disk_mbr_t *mbr = (void *) &mbr_buffer;
     uint32_t status = disk_read_sectors(boot_disk, mbr_buffer, 0, 1);
     if (status) {
-        print_str("Boot Failure: Error reading disk: 0x"); print_hex(status);
+        print_hexs("Boot Failure: Error reading disk: 0x", status, "");
         abort();
     }
 
-    print_str("disk signature: ");
-    print_hex(mbr->disk_signature);
-    print_str("\n");
+    print_hexs("disk signature: ", mbr->disk_signature, "\n");
 
     if (mbr->signature != 0xAA55) {
-        print_str("Boot Failure: Invalid MBR Signature: 0x");
-        print_hex(mbr->signature);
+        print_hexs("Boot Failure: Invalid MBR Signature: 0x", mbr->signature, "");
         abort();
     }
 
-    print_str("part 1 type: 0x"); print_hex(mbr->partitions[0].type); print_str("\n");
-    print_str("part 2 type: 0x"); print_hex(mbr->partitions[1].type); print_str("\n");
-    print_str("part 3 type: 0x"); print_hex(mbr->partitions[2].type); print_str("\n");
-    print_str("part 4 type: 0x"); print_hex(mbr->partitions[3].type); print_str("\n");
+    print_hexs("part 1 type: 0x", mbr->partitions[0].type, "\n");
+    print_hexs("part 2 type: 0x", mbr->partitions[1].type, "\n");
+    print_hexs("part 3 type: 0x", mbr->partitions[2].type, "\n");
+    print_hexs("part 4 type: 0x", mbr->partitions[3].type, "\n");
 }

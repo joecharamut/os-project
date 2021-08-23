@@ -14,14 +14,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rename assert">
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add some helper macros for printing numbers in a string">
       <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/print.asm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/print.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/print.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -648,7 +642,21 @@
       <option name="project" value="LOCAL" />
       <updated>1629688118778</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="move print funcs to debug">
+      <created>1629688545627</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1629688545627</updated>
+    </task>
+    <task id="LOCAL-00045" summary="add some helper macros for printing numbers in a string">
+      <created>1629689290059</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1629689290059</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -724,8 +732,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="whoops" />
-    <MESSAGE value="math" />
     <MESSAGE value="files" />
     <MESSAGE value="hopefully fixed kheap" />
     <MESSAGE value="disable logging" />
@@ -749,7 +755,9 @@
     <MESSAGE value="make print_chr an extern asm function" />
     <MESSAGE value="disk work" />
     <MESSAGE value="rename assert" />
-    <option name="LAST_COMMIT_MESSAGE" value="rename assert" />
+    <MESSAGE value="move print funcs to debug" />
+    <MESSAGE value="add some helper macros for printing numbers in a string" />
+    <option name="LAST_COMMIT_MESSAGE" value="add some helper macros for printing numbers in a string" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

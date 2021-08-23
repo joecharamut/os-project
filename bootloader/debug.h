@@ -17,6 +17,19 @@ __attribute__((noreturn)) void abort();
 
 #define print_hex(i) print_num((i), 16)
 #define print_dec(i) print_num((i), 10)
+#define print_hexs(p, i, s) \
+do {                        \
+    print_str((p));         \
+    print_hex((i));         \
+    print_str((s));         \
+} while (0)
+#define print_decs(p, i, s) \
+do {                        \
+    print_str((p));         \
+    print_dec((i));         \
+    print_str((s));         \
+} while (0)
+
 
 void print_chr(char c);
 void print_str(const char *str);

@@ -2,7 +2,7 @@
 #define LOADER_DISK_H
 
 #include <stdint.h>
-#include "assert.h"
+#include "debug.h"
 
 typedef struct {
     uint8_t status;

@@ -1,6 +1,5 @@
-__attribute__((noreturn)) void abort();
-
 #include <stdint.h>
+#include "debug.h"
 #include "cpuid.h"
 #include "print.h"
 #include "disk.h"
@@ -59,9 +58,4 @@ void main() {
     print_str("part 2 type: 0x"); print_hex(mbr->partitions[1].type); print_str("\n");
     print_str("part 3 type: 0x"); print_hex(mbr->partitions[2].type); print_str("\n");
     print_str("part 4 type: 0x"); print_hex(mbr->partitions[3].type); print_str("\n");
-}
-
-__attribute__((noreturn)) void abort() {
-    __asm__ volatile ("cli; hlt; jmp .");
-    __builtin_unreachable();
 }

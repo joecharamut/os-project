@@ -1,5 +1,5 @@
-#ifndef LOADER_ASSERT_H
-#define LOADER_ASSERT_H
+#ifndef LOADER_DEBUG_H
+#define LOADER_DEBUG_H
 
 #include "print.h"
 
@@ -12,4 +12,6 @@ do { \
     } \
 } while (0)
 
-#endif //LOADER_ASSERT_H
+__attribute__((noreturn)) void abort();
+
+#endif //LOADER_DEBUG_H

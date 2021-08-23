@@ -14,17 +14,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="make print_chr an extern asm function">
-      <change afterPath="$PROJECT_DIR$/bootloader/mem.asm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/mem.h" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rename assert">
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/assert.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/assert.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/disk.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/disk.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/print.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/print.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/print.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/print.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/print.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/print.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/print.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -631,7 +627,28 @@
       <option name="project" value="LOCAL" />
       <updated>1629547917288</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="disk work">
+      <created>1629687906362</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1629687906362</updated>
+    </task>
+    <task id="LOCAL-00042" summary="rename assert">
+      <created>1629688113366</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1629688113366</updated>
+    </task>
+    <task id="LOCAL-00043" summary="rename assert">
+      <created>1629688118778</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1629688118778</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -707,8 +724,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="misc work on ext2" />
-    <MESSAGE value="can sorta read files" />
     <MESSAGE value="whoops" />
     <MESSAGE value="math" />
     <MESSAGE value="files" />
@@ -732,7 +747,9 @@
     <MESSAGE value="misc" />
     <MESSAGE value="writint asmemby" />
     <MESSAGE value="make print_chr an extern asm function" />
-    <option name="LAST_COMMIT_MESSAGE" value="make print_chr an extern asm function" />
+    <MESSAGE value="disk work" />
+    <MESSAGE value="rename assert" />
+    <option name="LAST_COMMIT_MESSAGE" value="rename assert" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

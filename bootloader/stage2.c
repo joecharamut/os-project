@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include "debug.h"
 #include "cpuid.h"
-#include "print.h"
 #include "disk.h"
 #include "mem.h"
 
@@ -20,7 +19,6 @@ void main() {
         print_str("k)\n");
         abort();
     }
-    assert(1 == 2);
 
     print_str("hello world from pretty broken c!\n");
     print_str("boot drive was: 0x"); print_hex(boot_disk); print_str("\n");

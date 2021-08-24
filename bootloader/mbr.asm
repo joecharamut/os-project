@@ -1,31 +1,24 @@
 bits 16
-org 0x0E00
+org 0x0500
 
 KiB equ 1024
 MiB equ (KiB*1024)
 GiB equ (MiB*1024)
 
 _boot:
-    ; move stack to 0x0DFF
-    cli
-    xor ax, ax
-    mov ss, ax
-    mov sp, 0x0DFF
-    sti
-
-    ; copy mbr to 0x0E00
+    ; relocate mbr to 0x0500 - 0x06FF
     mov si, 0x7C00
-    mov di, 0x0E00
+    mov di, 0x0500
     mov cx, 512
     rep movsb
-
-    ; save boot disk id
-    mov byte [boot_disk], dl
 
     ; jump to relocated mbr and reload CS
     jmp 0x0000:_boot_reloc
 
 _boot_reloc:
+    ; save boot disk id
+    mov byte [boot_disk], dl
+
     ; INT10h function 00h - Set Video Mode
     mov ah, 0x00
     mov al, byte [0x0449] ; current video mode byte
@@ -46,10 +39,10 @@ _boot_reloc:
     ; enable unreal mode
     call enable_unreal_mode
 
-    ; expand the stack
-    mov ax, 0x0100
+    ; switch to the real stack
+    mov ax, 0x6000
     mov ss, ax
-    mov sp, 0x0000
+    mov sp, 0xFF00
 
     ; INT13h function 41h - Check Extensions Present
     mov ah, 0x41
@@ -59,10 +52,10 @@ _boot_reloc:
     jc err_print ; CF set if not present
 
     mov ebx, [partition_1.first_sector]
-    mov ecx, 0x100
+    mov cx, 0x0070
 .read_loop:
     mov word [disk_packet.count], 1
-    mov dword [disk_packet.buffer_segment], ecx
+    mov word [disk_packet.buffer_segment], cx
     mov dword [disk_packet.start_lo], ebx
 
     ; INT13h function 42h - Extended Read Sectors
@@ -73,12 +66,12 @@ _boot_reloc:
     jc err_print ; CF set on error
 
     inc ebx
-    add ecx, 32
+    add cx, 32
     cmp ebx, 1024 ; load 1024 sectors (512 KiB)
     jle .read_loop
 
     mov dl, [boot_disk] ; reload disk id
-    jmp 0:0x1000 ; jump to stage2
+    jmp 0:0x0700 ; jump to stage2
 
 ; ======== functions ========
 

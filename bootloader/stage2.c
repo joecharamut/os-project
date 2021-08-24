@@ -4,6 +4,13 @@
 #include "disk.h"
 #include "mem.h"
 
+void main();
+
+__attribute__((noreturn, used)) void _start() {
+    main();
+    abort();
+}
+
 void main() {
     volatile uint8_t boot_disk;
     __asm__ volatile ("movb %%dl, %0\t\n" : "=al" (boot_disk));

@@ -17,7 +17,7 @@ static_assert(sizeof(disk_partition_entry_t) == 16, "Invalid Size");
 typedef struct {
     uint8_t bootcode[440];
     uint32_t disk_signature;
-    uint16_t copy_protected;
+    uint16_t write_protected;
     disk_partition_entry_t partitions[4];
     uint16_t signature;
 } __attribute__((packed)) disk_mbr_t;

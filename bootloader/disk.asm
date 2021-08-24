@@ -14,11 +14,13 @@ endstruc
 global disk_read_sectors:function
 ; uint32_t disk_read_sectors(uint8_t disk, uint8_t *buffer, uint32_t sector, uint32_t count)
 disk_read_sectors:
+    ; offsets for function arguments
     %define p_count ebp+20
     %define p_sector ebp+16
     %define p_buffer ebp+12
     %define p_disk ebp+8
 
+    ; address for the tmp buffer at +512KiB
     %define tmp_buf 0x80000
     %define tmp_buf_seg 0x8000
     %define tmp_buf_off 0x0000

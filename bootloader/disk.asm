@@ -20,9 +20,9 @@ disk_read_sectors:
     %define p_buffer ebp+12
     %define p_disk ebp+8
 
-    ; address for the tmp buffer at +512KiB
-    %define tmp_buf 0x80000
-    %define tmp_buf_seg 0x8000
+    ; address for the tmp buffer at 0x70000
+    %define tmp_buf 0x70000
+    %define tmp_buf_seg 0x7000
     %define tmp_buf_off 0x0000
 
     ; enter a new stack frame
@@ -60,21 +60,14 @@ disk_read_sectors:
     mov esi, tmp_buf
     mov edi, [p_buffer]
 
-    ; count * 512 bytes per sector / 4 bytes per copy
+    ; count * 512 bytes per sector
     mov eax, [p_count]
-    mov ecx, 128
+    mov ecx, 512
     mul ecx
     mov ecx, eax
 
     ; do the copy
-.copy:
-    mov eax, [ds:esi]
-    mov [ds:edi], eax
-
-    add esi, 4
-    add edi, 4
-    dec ecx
-    jnz .copy ; loop until ecx = 0
+    a32 rep movsb
 
     ; return 0 on success
     xor eax, eax

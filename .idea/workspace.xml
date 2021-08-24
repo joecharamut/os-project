@@ -14,13 +14,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add func for getting bios mem map">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="figured out the right rep movsb prefix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/stage2.asm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mem.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.asm" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -345,13 +341,6 @@
       <workItem from="1629262157385" duration="20000" />
       <workItem from="1629304444185" duration="5844000" />
       <workItem from="1629369754440" duration="14974000" />
-    </task>
-    <task id="LOCAL-00001" summary="initial commit">
-      <created>1620304265322</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1620304265322</updated>
     </task>
     <task id="LOCAL-00002" summary="initial commit">
       <created>1620304291489</created>
@@ -682,7 +671,21 @@
       <option name="project" value="LOCAL" />
       <updated>1629788814052</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="move around some memory">
+      <created>1629831359692</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1629831359692</updated>
+    </task>
+    <task id="LOCAL-00050" summary="figured out the right rep movsb prefix">
+      <created>1629848161226</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1629848161226</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -758,8 +761,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="disable logging" />
-    <MESSAGE value="testing" />
     <MESSAGE value="registers" />
     <MESSAGE value="aaaaa" />
     <MESSAGE value="bootloader and convincing gcc to make real mode code" />
@@ -783,7 +784,9 @@
     <MESSAGE value="add some helper macros for printing numbers in a string" />
     <MESSAGE value="add some comments" />
     <MESSAGE value="add func for getting bios mem map" />
-    <option name="LAST_COMMIT_MESSAGE" value="add func for getting bios mem map" />
+    <MESSAGE value="move around some memory" />
+    <MESSAGE value="figured out the right rep movsb prefix" />
+    <option name="LAST_COMMIT_MESSAGE" value="figured out the right rep movsb prefix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

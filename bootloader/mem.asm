@@ -40,7 +40,7 @@ get_system_memory_map:
     push ebx
     push es
 
-    mov ax, 0x8000
+    mov ax, 0x7000
     mov es, ax
     mov di, 0x0000      ; buffer [es:di] = 0x80000
     xor ebx, ebx        ; index = 0
@@ -61,29 +61,22 @@ get_system_memory_map:
 .loop_done:
 
     pop es              ; restore original es
-    push esi            ; save the counter
+    push esi            ; save the num of entries
 
     test esi, esi
-    jz .copy_done       ; if 0 mmap entries, we're all done
+    jz .skip_copy       ; if 0 mmap entries, we're all done
 
     ; copy to buffer
     mov ecx, 20         ; 20 bytes per entry
     mov eax, esi
-    mul ecx             ; entries * size
-    mov ecx, eax        ; loop counter
-    mov esi, 0x80000    ; tmp buffer
-    mov edi, [ebp+8]    ; real buffer
-.copy:
-    mov eax, [ds:esi]
-    mov [ds:edi], eax   ; copy 1 dword (4 bytes)
+    mul ecx
+    mov ecx, eax        ; count = entries * size
+    mov esi, 0x70000    ; src = tmp buffer
+    mov edi, [ebp+8]    ; dst = real buffer
+    a32 rep movsb       ; do the copy
 
-    add esi, 4
-    add edi, 4
-    sub ecx, 4
-    jnz .copy           ; loop until ecx = 0
-
-.copy_done:
-    pop eax             ; pop counter into return
+.skip_copy:
+    pop eax             ; pop entry count into return value
 
 .exit:
     ; restore important registers

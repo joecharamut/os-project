@@ -89,6 +89,7 @@ set(STAGE2_SOURCES
         bootloader/mem.h bootloader/mem.asm
         )
 add_executable(stage2.bin ${STAGE2_SOURCES})
+set_target_properties(stage2.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/bootloader/linker.ld)
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
 target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
 add_custom_command(TARGET stage2.bin POST_BUILD

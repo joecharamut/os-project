@@ -1,10 +1,6 @@
 bits 16
 org 0x0500
 
-KiB equ 1024
-MiB equ (KiB*1024)
-GiB equ (MiB*1024)
-
 _boot:
     ; relocate mbr to 0x0500 - 0x06FF
     mov si, 0x7C00
@@ -140,29 +136,30 @@ unreal_gdt_end:
 ; pad rest of boot code area with zeros
 times 440 - ($-$$) db 0
 
-; partition table
+; disk identifier
+dd 0x1234ABCD
+; 0x0000 = read-write, 0x5A5A = read only
+dw 0x0000
+
 %macro partition_entry 4
-    %if %1 == 0
-        .status: db 0x00 ; status=inactive
-    %else
-        .status: db 0x80 ; status=active
-    %endif
+    .status: db %1 ; 0x80 for active, 0x00 for inactive
     db 0, 0, 0 ; CHS addr of first sector
     .type: db %2 ; partition type
     db 0, 0, 0 ; CHS addr of last sector
     .first_sector: dd %3 ; LBA of first sector
     .num_sectors: dd %4 ; number of sectors
 %endmacro
+%define SECTOR(x) ((x)/512)
 
-; disk identifier
-dd 0x1234ABCD
-; 0x0000 = read-write, 0x5A5A = read only
-dw 0x0000
+KiB equ 1024
+MiB equ (KiB*1024)
+GiB equ (MiB*1024)
 
-partition_1: partition_entry 0, 0x7F, 1, (512*KiB)/512 ; type=EXPERIMENTAL, start=512B, size=512KiB [stage2.bin]
-partition_2: partition_entry 0, 0x0C, (1*MiB)/512, (64*MiB)/512 ; type=FAT32+LBA, start=1MiB, size=64MiB [boot_fs.bin]
-partition_3: partition_entry 0, 0x83, (65*MiB)/512, (64*MiB)/512 ; type=LINUX, start=64MiB, size=1MiB [fs.bin]
-partition_4: partition_entry 0, 0x00, 0x00, 0x00 ; type=EMPTY
+; partition table
+partition_1: partition_entry 0x80, 0xDA, SECTOR(    512), SECTOR(512*KiB) ; boot=Y, type=DATA, start=512B, size=512KiB [stage2.bin]
+partition_2: partition_entry 0x00, 0x0C, SECTOR(  1*MiB), SECTOR( 64*MiB) ; boot=N, type=FAT32+LBA, start=1MiB, size=64MiB [boot_fs.bin]
+partition_3: partition_entry 0x00, 0x83, SECTOR( 65*MiB), SECTOR( 64*MiB) ; boot=N, type=LINUX, start=64MiB, size=1MiB [fs.bin]
+partition_4: partition_entry 0x00, 0x00, 0x00, 0x00                       ; boot=N, type=EMPTY
 
 ; boot signature
 dw 0xAA55

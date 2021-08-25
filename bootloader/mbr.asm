@@ -30,12 +30,6 @@ _boot_reloc:
     mov bl, 0x01 ; color blue
     int 10h
 
-    ; check a20 line
-    call check_a20
-    test ax, ax
-    mov bp, str_no_a20
-    jz err_print ; no a20
-
     ; enable unreal mode
     call enable_unreal_mode
 
@@ -106,47 +100,6 @@ enable_unreal_mode:
 
     ret
 
-check_a20:
-    pushf
-    push ds
-    push es
-    push di
-    push si
-
-    xor ax, ax
-    mov es, ax ; es = 0x0000
-
-    not ax
-    mov ds, ax ; ds = 0xFFFF
-
-    mov di, 0x0500
-    mov si, 0x0510
-
-    mov al, byte [es:di]
-    push ax
-    mov al, byte [ds:si]
-    push ax
-
-    mov byte [es:di], 0x00
-    mov byte [ds:si], 0xFF
-    cmp byte [es:di], 0xFF
-
-    pop ax
-    mov byte [ds:si], al
-    pop ax
-    mov byte [es:di], al
-
-    mov ax, 0
-    je .exit
-    mov ax, 1
-.exit:
-    pop si
-    pop di
-    pop es
-    pop ds
-    popf
-    ret
-
 err_print:
     mov ah, 0Eh ; teletype output
     mov bh, 0 ; codepage
@@ -162,7 +115,6 @@ err_print:
     cli
     hlt
 
-str_no_a20: db "No A20 Line", 0
 no_int13_msg: db "No INT13 Extensions", 0
 read_error: db "Read Error", 0
 

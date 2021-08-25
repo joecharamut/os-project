@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "debug.h"
-#include "cpuid.h"
+#include "cpu.h"
 #include "disk.h"
 #include "mem.h"
 
@@ -50,6 +50,10 @@ void main() {
         print_hexs("length: 0x", memory_map[i].length, "\n");
     }
 
+    if (!a20_line_enabled()) {
+        print_str("Boot Failure: A20 Line Disabled");
+        abort();
+    }
 
     if (!supports_cpuid()) {
         print_str("Boot Failure: Processor does not support CPUID");

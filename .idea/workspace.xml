@@ -16,7 +16,11 @@
   <component name="ChangeListManager">
     <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="figured out the right rep movsb prefix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/mem.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpuid.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpuid.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -341,13 +345,6 @@
       <workItem from="1629262157385" duration="20000" />
       <workItem from="1629304444185" duration="5844000" />
       <workItem from="1629369754440" duration="14974000" />
-    </task>
-    <task id="LOCAL-00002" summary="initial commit">
-      <created>1620304291489</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1620304291489</updated>
     </task>
     <task id="LOCAL-00003" summary="uhhhhhhhhhhhhhhhhh">
       <created>1620401115648</created>
@@ -685,7 +682,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629848161226</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="figured out the right rep movsb prefix">
+      <created>1629848723262</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1629848723262</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TimeTrackingManager">

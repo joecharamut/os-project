@@ -14,8 +14,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="workin on fat32">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="save and load boot disk directly instead of using dl">
+      <change afterPath="$PROJECT_DIR$/bootloader/entry.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
@@ -342,13 +344,6 @@
       <workItem from="1629262157385" duration="20000" />
       <workItem from="1629304444185" duration="5844000" />
       <workItem from="1629369754440" duration="14974000" />
-    </task>
-    <task id="LOCAL-00006" summary="higher half">
-      <created>1620771597094</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1620771597094</updated>
     </task>
     <task id="LOCAL-00007" summary="add gitignore">
       <created>1620771626457</created>
@@ -686,7 +681,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629938672047</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="save and load boot disk directly instead of using dl">
+      <created>1629940320431</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1629940320431</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -762,7 +764,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="touch up linker script and switch to unreal mode in mbr" />
     <MESSAGE value="build the real stage2 now" />
     <MESSAGE value="added long mode check" />
     <MESSAGE value="remove old stage2" />
@@ -787,7 +788,8 @@
     <MESSAGE value="move a20 detect into stage2" />
     <MESSAGE value="cleanup" />
     <MESSAGE value="workin on fat32" />
-    <option name="LAST_COMMIT_MESSAGE" value="workin on fat32" />
+    <MESSAGE value="save and load boot disk directly instead of using dl" />
+    <option name="LAST_COMMIT_MESSAGE" value="save and load boot disk directly instead of using dl" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

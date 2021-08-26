@@ -82,6 +82,7 @@ add_custom_command(OUTPUT mbr.bin
         )
 
 set(STAGE2_SOURCES
+        bootloader/entry.asm
         bootloader/stage2.c
         bootloader/debug.h bootloader/debug.c
         bootloader/cpu.h bootloader/cpu.asm

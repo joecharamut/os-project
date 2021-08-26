@@ -5,13 +5,6 @@
 #include "disk.h"
 #include "mem.h"
 
-void main();
-
-__attribute__((noreturn, used)) void _start() {
-    main();
-    abort();
-}
-
 void main() {
     // load boot disk from first byte of scratch space
     uint8_t boot_disk = *((uint8_t *) 0x70000);

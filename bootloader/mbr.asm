@@ -12,13 +12,6 @@ _boot:
     jmp 0x0000:_boot_reloc
 
 _boot_reloc:
-    ; save boot disk id
-    push es
-    mov ax, 0x7000
-    mov es, ax
-    mov [es:0x0000], dl
-    pop es
-
     ; INT10h function 00h - Set Video Mode
     mov ah, 0x00
     mov al, byte [0x0449] ; current video mode byte
@@ -31,19 +24,49 @@ _boot_reloc:
     int 10h
 
     ; enable unreal mode
-    call enable_unreal_mode
+    ; load gdt
+    lgdt [unreal_gdtinfo]
+
+    ; set protected mode
+    mov eax, cr0
+    or al, 1
+    mov cr0, eax
+
+    ; set segments to protected mode descriptor 1
+    mov ax, 0x08
+    mov ds, ax
+    mov ss, ax
+    mov es, ax
+
+    ; clear protected mode
+    mov eax, cr0
+    and al, 0xFE
+    mov cr0, eax
+
+    ; restore real mode segments
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
 
     ; switch to the real stack
     mov ax, 0x6000
     mov ss, ax
     mov sp, 0xFF00
 
+    ; save boot disk id
+    a32 mov [0x70000], dl
+
     ; INT13h function 41h - Check Extensions Present
     mov ah, 0x41
     mov bx, 0x55AA
     int 13h
-    mov bp, no_int13_msg
+    mov si, no_int13_msg
     jc err_print ; CF set if not present
+
+    ; check to make sure type is [Non-FS Data]
+    cmp byte [partition_1.type], 0xDA
+    mov si, invl_part_msg
+    jne err_print
 
     mov ebx, [partition_1.first_sector]
     mov cx, 0x0070
@@ -56,7 +79,7 @@ _boot_reloc:
     mov ah, 0x42
     mov si, disk_packet
     int 13h
-    mov bp, read_error
+    mov si, read_error
     jc err_print ; CF set on error
 
     inc ebx
@@ -64,58 +87,33 @@ _boot_reloc:
     cmp ebx, 768 ; load 768 sectors (384 KiB)
     jle .read_loop
 
+    cmp dword [0x0700 + 2], "SWAG"
+    mov si, invl_part_msg
+    jne err_print
+
     jmp 0x0000:0x0700 ; jump to stage2
 
 ; ======== functions ========
 
-enable_unreal_mode:
-    ; save real mode segments
-    push ds
-    push ss
-    push es
-
-    ; load gtd
-    lgdt [unreal_gdtinfo]
-
-    ; set protected mode
-    mov eax, cr0
-    or al, 1
-    mov cr0, eax
-
-    ; set segments to protected mode descriptor 1
-    mov bx, 0x08
-    mov ds, bx
-    mov ss, bx
-    mov es, bx
-
-    ; clear protected mode
-    and al, 0xFE
-    mov cr0, eax
-
-    ; restore real mode segments
-    pop es
-    pop ss
-    pop ds
-
-    ret
-
 err_print:
     mov ah, 0Eh ; teletype output
-    mov bh, 0 ; codepage
-    mov bl, 00001001b ; attributes
-    mov al, [bp] ; char to display
+    mov al, [si] ; char to display
+    xor bx, bx ; codepage / attributes 0
+
 .loop:
     int 10h
-    inc bp
-    mov al, [bp]
+    inc si
+    mov al, [si]
     test al, al
     jnz .loop
+
 .exit:
     cli
     hlt
 
+invl_part_msg: db "Invalid Boot Partition", 0
 no_int13_msg: db "No INT13 Extensions", 0
-read_error: db "Read Error", 0
+read_error: db "Disk Read Error", 0
 
 disk_packet:
     db 0x10

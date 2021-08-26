@@ -86,7 +86,7 @@ set(STAGE2_SOURCES
         bootloader/stage2.c
         bootloader/debug.h bootloader/debug.c
         bootloader/cpu.h bootloader/cpu.asm
-        bootloader/disk.h bootloader/disk.asm
+        bootloader/disk.h bootloader/disk.c bootloader/disk.asm
         bootloader/mem.h bootloader/mem.asm
         )
 add_executable(stage2.bin ${STAGE2_SOURCES})

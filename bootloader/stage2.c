@@ -87,6 +87,14 @@ void main() {
     print_decs("Trying to load partition ", fat_partition+1, "\n");
 
     uint32_t first_sector = mbr->partitions[fat_partition].lba_first_sector;
+    fat32_volume_t volume = { 0 };
+    if (!fat32_open_volume(&volume, boot_disk, first_sector)) {
+        print_str("Boot Failure: Error opening FAT32 volume");
+        abort();
+    }
+
+    abort();
+
     uint8_t vbr_buffer[512];
     fat32_vbr_t *vbr = (fat32_vbr_t *) &vbr_buffer;
     if (disk_read_sectors(boot_disk, vbr_buffer, first_sector, 1)) {

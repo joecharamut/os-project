@@ -2,6 +2,7 @@
 #define LOADER_DISK_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "debug.h"
 
 typedef struct {
@@ -70,6 +71,13 @@ typedef struct {
 } __attribute__((packed)) fat32_fsinfo_t;
 static_assert(sizeof(fat32_fsinfo_t) == 512, "Invalid Size");
 
+typedef struct {
+    uint8_t disk;
+    uint32_t first_sector;
+
+} fat32_volume_t;
+
 extern uint32_t disk_read_sectors(uint8_t disk, uint8_t *buffer, uint32_t sector, uint32_t count);
+bool fat32_open_volume(fat32_volume_t *this, uint8_t disk, uint32_t first_sector);
 
 #endif //LOADER_DISK_H

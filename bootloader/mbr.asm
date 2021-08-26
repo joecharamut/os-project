@@ -13,7 +13,11 @@ _boot:
 
 _boot_reloc:
     ; save boot disk id
-    mov byte [boot_disk], dl
+    push es
+    mov ax, 0x7000
+    mov es, ax
+    mov [es:0x0000], dl
+    pop es
 
     ; INT10h function 00h - Set Video Mode
     mov ah, 0x00
@@ -57,11 +61,10 @@ _boot_reloc:
 
     inc ebx
     add cx, 32
-    cmp ebx, 1024 ; load 1024 sectors (512 KiB)
+    cmp ebx, 768 ; load 768 sectors (384 KiB)
     jle .read_loop
 
-    mov dl, [boot_disk] ; reload disk id
-    jmp 0:0x0700 ; jump to stage2
+    jmp 0x0000:0x0700 ; jump to stage2
 
 ; ======== functions ========
 
@@ -114,7 +117,6 @@ err_print:
 no_int13_msg: db "No INT13 Extensions", 0
 read_error: db "Read Error", 0
 
-boot_disk: db 0
 disk_packet:
     db 0x10
     db 0

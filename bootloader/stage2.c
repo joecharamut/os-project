@@ -13,8 +13,9 @@ __attribute__((noreturn, used)) void _start() {
 }
 
 void main() {
-    volatile uint8_t boot_disk;
-    __asm__ volatile ("movb %%dl, %0\t\n" : "=al" (boot_disk));
+    // load boot disk from first byte of scratch space
+    uint8_t boot_disk = *((uint8_t *) 0x70000);
+
     print_str("hello world from pretty broken c!\n");
     print_hexs("boot drive was: 0x", boot_disk, "\n");
 

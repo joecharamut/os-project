@@ -14,10 +14,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="move a20 detect into stage2">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="cleanup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/disk.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/disk.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mem.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -342,13 +346,6 @@
       <workItem from="1629262157385" duration="20000" />
       <workItem from="1629304444185" duration="5844000" />
       <workItem from="1629369754440" duration="14974000" />
-    </task>
-    <task id="LOCAL-00004" summary="ide? kinda">
-      <created>1620670181195</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1620670181196</updated>
     </task>
     <task id="LOCAL-00005" summary="bees">
       <created>1620747355482</created>
@@ -686,7 +683,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629857517503</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="cleanup">
+      <created>1629896652849</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1629896652849</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -762,7 +766,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="aaaaa" />
     <MESSAGE value="bootloader and convincing gcc to make real mode code" />
     <MESSAGE value="touch up linker script and switch to unreal mode in mbr" />
     <MESSAGE value="build the real stage2 now" />
@@ -787,7 +790,8 @@
     <MESSAGE value="move around some memory" />
     <MESSAGE value="figured out the right rep movsb prefix" />
     <MESSAGE value="move a20 detect into stage2" />
-    <option name="LAST_COMMIT_MESSAGE" value="move a20 detect into stage2" />
+    <MESSAGE value="cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

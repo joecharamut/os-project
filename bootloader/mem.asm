@@ -89,3 +89,26 @@ get_system_memory_map:
     pop ebp
     ret
 
+; void *memcpy(void *dst, void *src, uint32_t count)
+global memcpy:function
+memcpy:
+    ; enter stack frame
+    push ebp
+    mov ebp, esp
+
+    push esi
+    push edi
+
+    mov ecx, [ebp+16] ; count
+    mov esi, [ebp+12] ; src
+    mov edi, [ebp+8] ; dst
+    a32 rep movsb
+
+    pop edi
+    pop esi
+    mov eax, [ebp+8] ; dst
+
+    ; leave stack frame
+    mov esp, ebp
+    pop ebp
+    ret

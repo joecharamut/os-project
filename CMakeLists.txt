@@ -119,7 +119,7 @@ add_custom_command(OUTPUT boot_fs.bin
         DEPENDS kernel.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=boot_fs.bin bs=1M count=64 &&
-        mkfs.vfat -F32 -i DEADBEEF -n "SYSTEM" boot_fs.bin &&
+        mkfs.vfat -F32 -i BEEFCAFE -n "SYSTEM" boot_fs.bin &&
         mcopy -i boot_fs.bin kernel.bin ::
         )
 

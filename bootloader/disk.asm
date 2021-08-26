@@ -60,6 +60,10 @@ disk_read_sectors:
     mov esi, tmp_buf
     mov edi, [p_buffer]
 
+    ; check if we arent copying to a nullptr
+    test edi, edi
+    jz .skip_copy
+
     ; count * 512 bytes per sector
     mov eax, [p_count]
     mov ecx, 512
@@ -69,6 +73,7 @@ disk_read_sectors:
     ; do the copy
     a32 rep movsb
 
+.skip_copy:
     ; return 0 on success
     xor eax, eax
     jmp .exit

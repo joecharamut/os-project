@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stddef.h>
 #include "debug.h"
 #include "cpu.h"
 #include "disk.h"
@@ -50,8 +51,8 @@ void main() {
         print_hexs("length: 0x", memory_map[i].length, "\n");
     }
 
-    if (!a20_line_enabled()) {
-        print_str("Boot Failure: A20 Line Disabled");
+    if (!get_a20_line_state()) {
+        print_str("Boot Failure: A20 Line Disabled (todo: enable it)");
         abort();
     }
 
@@ -66,22 +67,67 @@ void main() {
     }
 
     uint8_t mbr_buffer[512];
-    disk_mbr_t *mbr = (void *) &mbr_buffer;
-    uint32_t status = disk_read_sectors(boot_disk, mbr_buffer, 0, 1);
-    if (status) {
+    disk_mbr_t *mbr = (disk_mbr_t *) &mbr_buffer;
+    if (disk_read_sectors(boot_disk, mbr_buffer, 0, 1)) {
         print_str("Boot Failure: Error reading disk");
         abort();
     }
 
-    print_hexs("disk signature: ", mbr->disk_signature, "\n");
-
     if (mbr->signature != 0xAA55) {
-        print_hexs("Boot Failure: Invalid MBR Signature: 0x", mbr->signature, "");
+        print_str("Boot Failure: Invalid MBR Signature");
         abort();
     }
 
-    print_hexs("part 1 type: 0x", mbr->partitions[0].type, "\n");
-    print_hexs("part 2 type: 0x", mbr->partitions[1].type, "\n");
-    print_hexs("part 3 type: 0x", mbr->partitions[2].type, "\n");
-    print_hexs("part 4 type: 0x", mbr->partitions[3].type, "\n");
+    int fat_partition = -1;
+    for (int i = 0; i < 4; i++) {
+        print_decs("partition ", i+1, " ");
+        print_hexs("is type 0x", mbr->partitions[i].type, "\n");
+        if (mbr->partitions[i].type == 0x0C) {
+            fat_partition = i;
+        }
+    }
+    if (fat_partition == -1) {
+        print_str("Boot Failure: Could not find system partition");
+        abort();
+    }
+    print_decs("Trying to load partition ", fat_partition+1, "\n");
+
+    uint32_t first_sector = mbr->partitions[fat_partition].lba_first_sector;
+    uint8_t vbr_buffer[512];
+    fat32_vbr_t *vbr = (fat32_vbr_t *) &vbr_buffer;
+    if (disk_read_sectors(boot_disk, vbr_buffer, first_sector, 1)) {
+        print_str("Boot Failure: Error reading disk");
+        abort();
+    }
+
+    print_str("oem id: '");
+    for (int i = 0; i < 8; ++i) {
+        print_chr(vbr->oem_id[i]);
+    }
+    print_str("'\n");
+
+    print_str("label: '");
+    for (int i = 0; i < 11; ++i) {
+        print_chr(vbr->label[i]);
+    }
+    print_str("'\n");
+
+    print_hexs("vol id: 0x", vbr->serial_number, "\n");
+    print_hexs("fat ver: 0x", vbr->version, "\n");
+    print_hexs("vbr sig: 0x", vbr->partition_signature, "\n");
+
+    fat32_fsinfo_t *fsinfo = (void *) 0x70000;
+    if (disk_read_sectors(boot_disk, NULL, first_sector + vbr->fsinfo_sector, 1)) {
+        print_str("Boot Failure: Error reading disk");
+        abort();
+    }
+
+    if (fsinfo->lead_signature != 0x41615252 ||
+        fsinfo->mid_signature  != 0x61417272 ||
+        fsinfo->trail_signature != 0xAA550000) {
+        print_str("Boot Failure: Invalid FSInfo Struct");
+        abort();
+    }
+
+    assert(1 == 2);
 }

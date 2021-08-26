@@ -58,8 +58,8 @@ supports_long_mode:
 .has_long_mode:
     ret
 
-global a20_line_enabled:function
-a20_line_enabled:
+global get_a20_line_state:function
+get_a20_line_state:
     pushf
     push ds
     push es

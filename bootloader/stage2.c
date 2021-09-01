@@ -93,6 +93,7 @@ void main() {
         abort();
     }
 
+    print_str("Success?");
     abort();
 
     uint8_t vbr_buffer[512];

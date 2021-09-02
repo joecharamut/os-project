@@ -14,11 +14,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="working on fat32">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="more fat32 stuff">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/disk.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/disk.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mem.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -291,6 +293,11 @@
       <toRun name="qemu" type="CMakeRunConfiguration" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.kernel.bin" />
       <item itemvalue="CMake Application.linker.ld" />
@@ -341,13 +348,7 @@
       <workItem from="1629369754440" duration="14974000" />
       <workItem from="1630010325484" duration="1237000" />
       <workItem from="1630112996894" duration="19519000" />
-    </task>
-    <task id="LOCAL-00009" summary="heap? sorta">
-      <created>1621545074350</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1621545074350</updated>
+      <workItem from="1630525197305" duration="13367000" />
     </task>
     <task id="LOCAL-00010" summary="something">
       <created>1621707878412</created>
@@ -685,7 +686,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629950220105</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="more fat32 stuff">
+      <created>1630525319380</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1630525319380</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -761,7 +769,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove old stage2" />
     <MESSAGE value="add cpuid header" />
     <MESSAGE value="print hex" />
     <MESSAGE value="move print funcs to module" />
@@ -786,7 +793,8 @@
     <MESSAGE value="save and load boot disk directly instead of using dl" />
     <MESSAGE value="add a little bootloader check" />
     <MESSAGE value="working on fat32" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on fat32" />
+    <MESSAGE value="more fat32 stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="more fat32 stuff" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

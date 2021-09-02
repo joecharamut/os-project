@@ -87,50 +87,68 @@ void main() {
     print_decs("Trying to load partition ", fat_partition+1, "\n");
 
     uint32_t first_sector = mbr->partitions[fat_partition].lba_first_sector;
-    fat32_volume_t volume = { 0 };
-    if (!fat32_open_volume(&volume, boot_disk, first_sector)) {
+
+    uint8_t volume_buf[sizeof(fat32_volume_t)];
+    fat32_volume_t *volume = (fat32_volume_t *) &volume_buf;
+    if (!fat32_open_volume(volume, boot_disk, first_sector)) {
         print_str("Boot Failure: Error opening FAT32 volume");
         abort();
     }
 
+    int entries = fat32_read_directory(volume, NULL, volume->root_cluster);
+    if (entries <= 0) {
+        print_str("Boot Failure: Error reading root directory");
+        abort();
+    }
+    fat32_directory_entry_t directory[entries];
+    fat32_read_directory(volume, (fat32_directory_entry_t *) &directory, volume->root_cluster);
+
+    for (int i = 0; i < entries; ++i) {
+        print_decs("entry ", i, ": ");
+        for (int j = 0; j < 8; ++j) {
+            print_chr(directory[i].name[j]);
+        }
+        print_str(".");
+        for (int j = 0; j < 3; ++j) {
+            print_chr(directory[i].ext[j]);
+        }
+        print_hexs(" : type 0x", directory[i].attributes, "");
+        print_decs(" : size ", directory[i].filesize, "");
+        print_hexs(" : cluster 0x", directory[i].cluster_hi << 16 | directory[i].cluster_lo, "\n");
+    }
+
+    const char *load_name = "KERNEL  ";
+    const char *load_ext = "BIN";
+    int file_index = -1;
+    for (int i = 0; i < entries; ++i) {
+        if (strncmp(directory[i].name, load_name, 8) == 0 && strncmp(directory[i].ext, load_ext, 3) == 0) {
+            file_index = i;
+            break;
+        }
+    }
+    if (file_index == -1) {
+        print_str("Boot Failure: Could not find KERNEL.BIN");
+        abort();
+    }
+
+    uint8_t file_buf[sizeof(fat32_file_t)];
+    fat32_file_t *file = (fat32_file_t *) &file_buf;
+    if (!fat32_file_open(volume, file, &directory[file_index])) {
+        print_str("Boot Failure: Error opening kernel file");
+        abort();
+    }
+
+    uint8_t *load_addr = (void *) 0x100000;
+    uint32_t count = 0;
+    uint32_t block_size = 512;
+    while (count < file->file_size) {
+        if (fat32_file_read(file, load_addr + count, block_size) <= 0) {
+            print_str("Boot Failure: Error reading kernel file");
+            abort();
+        }
+        count += block_size;
+    }
+
     print_str("Success?");
-    abort();
-
-    uint8_t vbr_buffer[512];
-    fat32_vbr_t *vbr = (fat32_vbr_t *) &vbr_buffer;
-    if (disk_read_sectors(boot_disk, vbr_buffer, first_sector, 1)) {
-        print_str("Boot Failure: Error reading disk");
-        abort();
-    }
-
-    print_str("oem id: '");
-    for (int i = 0; i < 8; ++i) {
-        print_chr(vbr->oem_id[i]);
-    }
-    print_str("'\n");
-
-    print_str("label: '");
-    for (int i = 0; i < 11; ++i) {
-        print_chr(vbr->label[i]);
-    }
-    print_str("'\n");
-
-    print_hexs("vol id: 0x", vbr->serial_number, "\n");
-    print_hexs("fat ver: 0x", vbr->version, "\n");
-    print_hexs("vbr sig: 0x", vbr->partition_signature, "\n");
-
-    fat32_fsinfo_t *fsinfo = (void *) 0x70000;
-    if (disk_read_sectors(boot_disk, NULL, first_sector + vbr->fsinfo_sector, 1)) {
-        print_str("Boot Failure: Error reading disk");
-        abort();
-    }
-
-    if (fsinfo->lead_signature != 0x41615252 ||
-        fsinfo->mid_signature  != 0x61417272 ||
-        fsinfo->trail_signature != 0xAA550000) {
-        print_str("Boot Failure: Invalid FSInfo Struct");
-        abort();
-    }
-
-    assert(1 == 2);
+    assert(false);
 }

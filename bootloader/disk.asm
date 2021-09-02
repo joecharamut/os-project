@@ -11,8 +11,8 @@ struc disk_packet
     .start_hi: resd 1
 endstruc
 
-global disk_read_sectors:function
 ; uint32_t disk_read_sectors(uint8_t disk, uint8_t *buffer, uint32_t sector, uint32_t count)
+global disk_read_sectors:function
 disk_read_sectors:
     ; offsets for function arguments
     %define p_count ebp+20

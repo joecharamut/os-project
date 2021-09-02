@@ -15,5 +15,6 @@ extern uint16_t get_memory_size();
 extern uint16_t get_extended_memory_size();
 extern uint32_t get_system_memory_map(bios_mmap_entry_t *entry_buffer);
 extern void memcpy(void *dst, void *src, uint32_t count);
+extern uint32_t strncmp(const char *str1, const char *str2, uint32_t count);
 
 #endif //LOADER_MEM_H

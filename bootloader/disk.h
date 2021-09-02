@@ -123,6 +123,10 @@ typedef struct {
 
 typedef struct {
     fat32_volume_t *volume;
+
+    uint32_t current_cluster;
+    uint32_t file_offset;
+    uint32_t file_size;
 } fat32_file_t;
 
 extern uint32_t disk_read_sectors(uint8_t disk, uint8_t *buffer, uint32_t sector, uint32_t count);
@@ -130,7 +134,7 @@ extern uint32_t disk_read_sectors(uint8_t disk, uint8_t *buffer, uint32_t sector
 bool fat32_open_volume(fat32_volume_t *this, uint8_t disk, uint32_t first_sector);
 int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_buf, uint32_t cluster);
 
-bool fat32_file_open(fat32_volume_t *this, fat32_file_t *fptr, const char *path);
-uint32_t fat32_file_read(fat32_file_t *this, void *buf, uint32_t bytes);
+bool fat32_file_open(fat32_volume_t *this, fat32_file_t *file_ptr, fat32_directory_entry_t *dir_entry);
+uint32_t fat32_file_read(fat32_file_t *this, uint8_t *buf, uint32_t bytes);
 
 #endif //LOADER_DISK_H

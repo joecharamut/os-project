@@ -112,3 +112,44 @@ memcpy:
     mov esp, ebp
     pop ebp
     ret
+
+; uint32_t strncmp(const char *str1, const char *str2, uint32_t count)
+global strncmp:function
+strncmp:
+    ; enter stack frame
+        push ebp
+        mov ebp, esp
+
+        push esi
+        push edi
+
+        mov ecx, [ebp+16] ; count
+        mov edi, [ebp+12] ; str2
+        mov esi, [ebp+8] ; str1
+        a32 repe cmpsb
+
+        jg .greater
+        jl .lesser
+
+        ; equal
+        xor eax, eax
+        jmp .return
+
+.greater:
+        mov eax, 1
+        jmp .return
+
+.lesser:
+        mov eax, -1
+        jmp .return
+
+.return:
+        pop edi
+        pop esi
+
+        ; leave stack frame
+        mov esp, ebp
+        pop ebp
+        ret
+
+

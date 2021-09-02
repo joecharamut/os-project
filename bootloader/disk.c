@@ -60,20 +60,11 @@ bool fat32_open_volume(fat32_volume_t *this, uint8_t disk, uint32_t first_sector
         return false;
     }
 
-    int entries = fat32_read_directory(this, NULL, this->root_cluster);
-    if (entries < 0) {
-        return false;
-    }
-    print_decs("dir entries: ", entries, "\n");
-
-    fat32_next_cluster(this, this->root_cluster);
-    fat32_next_cluster(this, 0x3);
-
     return true;
 }
 
 int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_buf, uint32_t cluster) {
-    uint8_t cluster_buf[this->cluster_size];
+    uint8_t cluster_buf[this->cluster_size * 512];
     fat32_directory_entry_t *directory = (fat32_directory_entry_t *) &cluster_buf;
 
     if (fat32_read_cluster(this, cluster_buf, cluster)) {
@@ -87,21 +78,21 @@ int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_bu
         }
 
         if (directory[entry_idx].attributes == FAT32_ATTR_LFN) {
-            fat32_lfn_entry_t *lfn = (fat32_lfn_entry_t *) &directory[entry_idx];
-
-            print_decs("lfn entry ", entry_idx, ": ");
-            for (int i = 0; i < 5; ++i) {
-                print_chr(lfn->group_1[i]);
-            }
-            for (int i = 0; i < 6; ++i) {
-                print_chr(lfn->group_2[i]);
-            }
-            for (int i = 0; i < 2; ++i) {
-                print_chr(lfn->group_3[i]);
-            }
-            print_str("\n");
+//            fat32_lfn_entry_t *lfn = (fat32_lfn_entry_t *) &directory[entry_idx];
+//
+//            print_decs("lfn entry ", entry_idx, ": ");
+//            for (int i = 0; i < 5; ++i) {
+//                print_chr(lfn->group_1[i]);
+//            }
+//            for (int i = 0; i < 6; ++i) {
+//                print_chr(lfn->group_2[i]);
+//            }
+//            for (int i = 0; i < 2; ++i) {
+//                print_chr(lfn->group_3[i]);
+//            }
+//            print_str("\n");
         } else if (directory[entry_idx].attributes == FAT32_ATTR_VOLUMEID) {
-            print_decs("vol id ", entry_idx, ": ");
+            print_str("vol id: ");
             for (int i = 0; i < 8; ++i) {
                 print_chr(directory[entry_idx].name[i]);
             }
@@ -110,25 +101,56 @@ int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_bu
             }
             print_str("\n");
         } else {
-            print_decs("entry ", entry_idx, ": ");
-            for (int i = 0; i < 8; ++i) {
-                print_chr(directory[entry_idx].name[i]);
+//            print_decs("entry ", entry_idx, ": ");
+//            for (int i = 0; i < 8; ++i) {
+//                print_chr(directory[entry_idx].name[i]);
+//            }
+//            print_str(".");
+//            for (int i = 0; i < 3; ++i) {
+//                print_chr(directory[entry_idx].ext[i]);
+//            }
+//            print_hexs(" : type 0x", directory[entry_idx].attributes, "");
+//            print_decs(" : size ", directory[entry_idx].filesize, "");
+//            print_hexs(" : cluster 0x", directory[entry_idx].cluster_hi << 16 | directory[entry_idx].cluster_lo, "\n");
+
+            if (entry_buf) {
+                entry_buf[count] = directory[entry_idx];
             }
-            print_str(".");
-            for (int i = 0; i < 3; ++i) {
-                print_chr(directory[entry_idx].ext[i]);
-            }
-            print_hexs(" : type 0x", directory[entry_idx].attributes, "");
-            print_decs(" : size ", directory[entry_idx].filesize, "");
-            print_hexs(" : cluster 0x", directory[entry_idx].cluster_hi << 16 | directory[entry_idx].cluster_lo, "\n");
 
             ++count;
         }
     }
 
-    if (entry_buf) {
-        assert(false);
-    }
-
     return count;
+}
+
+bool fat32_file_open(fat32_volume_t *this, fat32_file_t *file_ptr, fat32_directory_entry_t *dir_entry) {
+    file_ptr->volume = this;
+    file_ptr->current_cluster = (dir_entry->cluster_hi << 16) | dir_entry->cluster_lo;
+    file_ptr->file_offset = 0;
+    file_ptr->file_size = dir_entry->filesize;
+    return true;
+}
+
+uint32_t fat32_file_read(fat32_file_t *this, uint8_t *buf, uint32_t bytes) {
+    uint32_t cluster_size = this->volume->cluster_size * 512;
+    uint8_t cluster_buf[cluster_size];
+    uint32_t bytes_read = 0;
+
+    while (bytes_read < bytes && this->file_offset < this->file_size) {
+        if (bytes_read % cluster_size == 0) {
+            if (bytes_read != 0) {
+                this->current_cluster = fat32_next_cluster(this->volume, this->current_cluster);
+            }
+            if (fat32_read_cluster(this->volume, cluster_buf, this->current_cluster)) {
+                print_hexs("Error reading cluster 0x", this->current_cluster, "\n");
+                abort();
+            }
+        }
+
+        buf[bytes_read] = cluster_buf[bytes_read % cluster_size];
+        bytes_read++;
+        this->file_offset++;
+    }
+    return bytes_read;
 }

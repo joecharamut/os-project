@@ -117,7 +117,7 @@ void main() {
         print_hexs(" : cluster 0x", directory[i].cluster_hi << 16 | directory[i].cluster_lo, "\n");
     }
 
-    const char *load_name = "KERNEL  ";
+    const char *load_name = "TEST64  ";
     const char *load_ext = "BIN";
     int file_index = -1;
     for (int i = 0; i < entries; ++i) {
@@ -149,6 +149,6 @@ void main() {
         count += block_size;
     }
 
-    print_str("Success?");
+    print_str("Success?\n");
     assert(false);
 }

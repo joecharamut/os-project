@@ -1,15 +1,24 @@
+cmake_minimum_required(VERSION 3.18)
+
+set(NATIVE_COMPILER ${CMAKE_C_COMPILER})
+find_program(I686_COMPILER i686-elf-gcc REQUIRED)
+find_program(X86_64_COMPILER x86_64-elf-gcc REQUIRED)
+
+message(STATUS "Native compiler is ${NATIVE_COMPILER}")
+message(STATUS "i686 compiler is ${I686_COMPILER}")
+message(STATUS "x86_64 compiler is ${X86_64_COMPILER}")
+
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM Generic)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-set(CMAKE_C_COMPILER /home/joseph/opt/cross/prefix/bin/i686-elf-gcc)
+set(CMAKE_C_COMPILER ${NATIVE_COMPILER})
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 set(CMAKE_ASM_NASM_COMPILER nasm)
 
 project(os C ASM_NASM)
-cmake_minimum_required(VERSION 3.14)
 
 set(WARNING_FLAGS "-Wall -Wextra -Wpedantic -Wformat")
 set(SUPPRESS_FLAGS "")
@@ -19,7 +28,7 @@ set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WA
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib")
 
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
-set(CMAKE_ASM_NASM_COMPILE_OBJECT  "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 set(BOOTSTRAP_SOURCES
         bootstrap/std/types.h bootstrap/debug/assert.h bootstrap/std/registers.h
@@ -55,6 +64,7 @@ add_custom_target(linker.ld
         COMMAND ${CMAKE_C_COMPILER} -P -CC -E -x c ${CMAKE_C_FLAGS} ${CMAKE_SOURCE_DIR}/bootstrap/linker.ld.in > linker.ld
         )
 
+set(CMAKE_C_COMPILER ${I686_COMPILER})
 add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
 add_dependencies(kernel.bin linker.ld)
 target_link_libraries(kernel.bin gcc)
@@ -74,6 +84,13 @@ set(IMAGE_BOOT_SOURCES
 list(TRANSFORM IMAGE_PYTHON_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
 list(TRANSFORM IMAGE_BOOT_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
 
+set(TEST64_SOURCES
+        test64/main.c)
+set(CMAKE_C_COMPILER ${X86_64_COMPILER})
+add_executable(test64.bin ${TEST64_SOURCES})
+set_target_properties(test64.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/test64/linker.ld)
+target_link_options(test64.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/test64/linker.ld")
+
 add_custom_command(OUTPUT mbr.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS bootloader/mbr.asm
@@ -89,6 +106,7 @@ set(STAGE2_SOURCES
         bootloader/disk.h bootloader/disk.c bootloader/disk.asm
         bootloader/mem.h bootloader/mem.asm
         )
+set(CMAKE_C_COMPILER ${I686_COMPILER})
 add_executable(stage2.bin ${STAGE2_SOURCES})
 set_target_properties(stage2.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/bootloader/linker.ld)
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
@@ -117,13 +135,11 @@ add_custom_command(OUTPUT fs.bin
 
 add_custom_command(OUTPUT boot_fs.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS kernel.bin
+        DEPENDS test64.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=boot_fs.bin bs=1M count=64 &&
         mkfs.vfat -F32 -i BEEFCAFE -n "SYSTEM" boot_fs.bin &&
-        mcopy -i boot_fs.bin kernel.bin :: &&
-        mcopy -i boot_fs.bin ${CMAKE_SOURCE_DIR}/test.txt :: &&
-        mcopy -i boot_fs.bin ${CMAKE_SOURCE_DIR}/test_test_test.txt ::
+        mcopy -i boot_fs.bin test64.bin ::
         )
 
 add_custom_command(OUTPUT disk.img

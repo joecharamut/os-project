@@ -4,6 +4,7 @@
 #include "cpu.h"
 #include "disk.h"
 #include "mem.h"
+#include "elf.h"
 
 void main() {
     // load boot disk from first byte of scratch space
@@ -147,6 +148,21 @@ void main() {
             abort();
         }
         count += block_size;
+    }
+
+    elf_identifier_t *ident = (elf_identifier_t *) load_addr;
+    if (ident->magic[0] != 0x7F
+        || ident->magic[1] != 'E'
+        || ident->magic[2] != 'L'
+        || ident->magic[3] != 'F') {
+        print_str("Boot Failure: Invalid ELF Header");
+        abort();
+    }
+
+    if (ident->bitness != ELF_IDENT_64BIT) {
+        print_str("Boot Failure: Invalid ELF Bitness: ");
+        print_dec(ident->bitness);
+        abort();
     }
 
     print_str("Success?\n");

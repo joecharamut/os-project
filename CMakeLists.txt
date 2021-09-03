@@ -1,136 +1,17 @@
 cmake_minimum_required(VERSION 3.18)
-
-set(NATIVE_COMPILER ${CMAKE_C_COMPILER})
-find_program(I686_COMPILER i686-elf-gcc REQUIRED)
-find_program(X86_64_COMPILER x86_64-elf-gcc REQUIRED)
-
-message(STATUS "Native compiler is ${NATIVE_COMPILER}")
-message(STATUS "i686 compiler is ${I686_COMPILER}")
-message(STATUS "x86_64 compiler is ${X86_64_COMPILER}")
-
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM Generic)
-set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-
-set(CMAKE_C_COMPILER ${NATIVE_COMPILER})
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-
-set(CMAKE_ASM_NASM_COMPILER nasm)
-
 project(os C ASM_NASM)
 
-set(WARNING_FLAGS "-Wall -Wextra -Wpedantic -Wformat")
-set(SUPPRESS_FLAGS "")
-set(ERROR_FLAGS "-Werror=implicit-function-declaration")
-
-set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS} -ffreestanding -I${CMAKE_SOURCE_DIR}/bootstrap")
-set(CMAKE_EXE_LINKER_FLAGS "-nostdlib")
-
-set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
-set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
-
-set(BOOTSTRAP_SOURCES
-        bootstrap/std/types.h bootstrap/debug/assert.h bootstrap/std/registers.h
-        bootstrap/boot/gdt.asm bootstrap/boot/gdt.c bootstrap/boot/gdt.h
-        bootstrap/boot/interrupts.asm bootstrap/boot/interrupts.c bootstrap/boot/interrupts.h
-        bootstrap/boot/boot.asm bootstrap/boot/boot.c bootstrap/boot/multiboot.h
-        bootstrap/debug/serial.c bootstrap/debug/serial.h
-        bootstrap/debug/term.c bootstrap/debug/term.h
-        bootstrap/io/pci.c bootstrap/io/pci.h
-        bootstrap/io/port.c bootstrap/io/port.h
-        bootstrap/debug/debug.c bootstrap/debug/debug.h
-        bootstrap/fs/ide.c bootstrap/fs/ide.h
-        bootstrap/mm/kmem.c bootstrap/mm/kmem.h
-        bootstrap/mm/paging.c bootstrap/mm/paging.h
-        bootstrap/io/timer.c bootstrap/io/timer.h
-        bootstrap/debug/panic.c bootstrap/debug/panic.h
-        bootstrap/std/stdlib.c bootstrap/std/stdlib.h
-        bootstrap/std/string.c bootstrap/std/string.h
-        bootstrap/std/math.c bootstrap/std/math.h
-        bootstrap/kernel/kernel.c bootstrap/kernel/kernel.h
-        bootstrap/std/bitset.c bootstrap/std/bitset.h
-        bootstrap/io/ps2.c bootstrap/io/ps2.h
-        bootstrap/std/ordered_array.c bootstrap/std/ordered_array.h
-        bootstrap/mm/kheap.c bootstrap/mm/kheap.h
-        bootstrap/io/acpi.c bootstrap/io/acpi.h
-        bootstrap/std/list.c bootstrap/std/list.h
-        bootstrap/fs/ext2.c bootstrap/fs/ext2.h)
-
-add_custom_target(linker.ld
-        BYPRODUCTS linker.ld
-        DEPENDS bootstrap/linker.ld.in
-        VERBATIM
-        COMMAND ${CMAKE_C_COMPILER} -P -CC -E -x c ${CMAKE_C_FLAGS} ${CMAKE_SOURCE_DIR}/bootstrap/linker.ld.in > linker.ld
-        )
-
-set(CMAKE_C_COMPILER ${I686_COMPILER})
-add_executable(kernel.bin ${BOOTSTRAP_SOURCES})
-add_dependencies(kernel.bin linker.ld)
-target_link_libraries(kernel.bin gcc)
-target_link_options(kernel.bin PRIVATE -T "${CMAKE_BINARY_DIR}/linker.ld")
-add_custom_command(TARGET kernel.bin POST_BUILD
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS kernel.bin
-        BYPRODUCTS kernel.lst
-        VERBATIM
-        COMMAND objdump -M intel -d kernel.bin > kernel.lst
-        )
-
-set(IMAGE_PYTHON_SOURCES
-        image/python/test.py)
-set(IMAGE_BOOT_SOURCES
-        image/boot/config.ini)
-list(TRANSFORM IMAGE_PYTHON_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
-list(TRANSFORM IMAGE_BOOT_SOURCES PREPEND ${CMAKE_SOURCE_DIR}/)
-
-set(TEST64_SOURCES
-        test64/main.c)
-set(CMAKE_C_COMPILER ${X86_64_COMPILER})
-add_executable(test64.bin ${TEST64_SOURCES})
-set_target_properties(test64.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/test64/linker.ld)
-target_link_options(test64.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/test64/linker.ld")
-
-add_custom_command(OUTPUT mbr.bin
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS bootloader/mbr.asm
-        VERBATIM
-        COMMAND ${CMAKE_ASM_NASM_COMPILER} ${INCLUDES} ${FLAGS} -f bin -o mbr.bin ${CMAKE_SOURCE_DIR}/bootloader/mbr.asm
-        )
-
-set(STAGE2_SOURCES
-        bootloader/entry.asm
-        bootloader/stage2.c
-        bootloader/debug.h bootloader/debug.c
-        bootloader/cpu.h bootloader/cpu.asm
-        bootloader/disk.h bootloader/disk.c bootloader/disk.asm
-        bootloader/mem.h bootloader/mem.asm
-        )
-set(CMAKE_C_COMPILER ${I686_COMPILER})
-add_executable(stage2.bin ${STAGE2_SOURCES})
-set_target_properties(stage2.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/bootloader/linker.ld)
-target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
-target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
-add_custom_command(TARGET stage2.bin POST_BUILD
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS stage2.bin
-        BYPRODUCTS stage2.lst
-        VERBATIM
-        COMMAND objdump -m i8086 -b binary -D -M intel stage2.bin > stage2.lst
-        )
+add_subdirectory(bootloader)
+add_subdirectory(test64)
+add_subdirectory(bootstrap)
 
 add_custom_command(OUTPUT fs.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS ${IMAGE_PYTHON_SOURCES}
-        DEPENDS ${IMAGE_BOOT_SOURCES}
         DEPENDS kernel.bin
         COMMAND dd if=/dev/zero of=fs.bin bs=1M count=64 &&
         mkfs.ext2 -L "RAGU" -M "/" -q fs.bin &&
         e2mkdir fs.bin:/boot &&
-        e2cp ${CMAKE_BINARY_DIR}/kernel.bin fs.bin:/boot &&
-        e2cp ${IMAGE_BOOT_SOURCES} fs.bin:/boot &&
-        e2mkdir fs.bin:/python &&
-        e2cp ${IMAGE_PYTHON_SOURCES} fs.bin:/python
+        e2cp ${CMAKE_BINARY_DIR}/kernel.bin fs.bin:/boot
         )
 
 add_custom_command(OUTPUT boot_fs.bin

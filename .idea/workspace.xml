@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="os" targetName="mbr.bin" />
       <config projectName="os" targetName="linker.ld" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="qemu" />
@@ -15,12 +16,19 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="can actually load a file lets go">
-      <change afterPath="$PROJECT_DIR$/test64/linker.ld" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test64/main.c" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="pick compilers automagically">
+      <change afterPath="$PROJECT_DIR$/bootloader/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/elf.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootloader/elf.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test64/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/boot/config.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/python/__builtins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/python/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/test64/linker.ld" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,9 +43,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CMakeLists.txt" />
         <option value="Python Script" />
         <option value="Python Stub" />
+        <option value="CMakeLists.txt" />
       </list>
     </option>
   </component>
@@ -277,6 +285,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="mbr.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="mbr.bin" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="qemu" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="run_qemu.sh" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="qemu" CONFIG_NAME="Debug" RUN_PATH="/bin/bash">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -303,10 +316,11 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="CMake Application.qemu" />
+      <item itemvalue="CMake Application.mbr.bin" />
+      <item itemvalue="CMake Application.stage2.bin" />
       <item itemvalue="CMake Application.kernel.bin" />
       <item itemvalue="CMake Application.linker.ld" />
-      <item itemvalue="CMake Application.qemu" />
-      <item itemvalue="CMake Application.stage2.bin" />
       <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="GDB Remote Debug.GDB qemu" />
     </list>
@@ -353,14 +367,7 @@
       <workItem from="1629369754440" duration="14974000" />
       <workItem from="1630010325484" duration="1237000" />
       <workItem from="1630112996894" duration="19519000" />
-      <workItem from="1630525197305" duration="19699000" />
-    </task>
-    <task id="LOCAL-00011" summary="make ide better">
-      <created>1621737151477</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1621737151477</updated>
+      <workItem from="1630525197305" duration="23961000" />
     </task>
     <task id="LOCAL-00012" summary="move ide">
       <created>1621737277436</created>
@@ -698,7 +705,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630606849156</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="pick compilers automagically">
+      <created>1630641975117</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1630641975117</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -774,7 +788,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="print hex" />
     <MESSAGE value="move print funcs to module" />
     <MESSAGE value="generate listings for stage2" />
     <MESSAGE value="pass boot disk to main()" />
@@ -799,7 +812,8 @@
     <MESSAGE value="working on fat32" />
     <MESSAGE value="more fat32 stuff" />
     <MESSAGE value="can actually load a file lets go" />
-    <option name="LAST_COMMIT_MESSAGE" value="can actually load a file lets go" />
+    <MESSAGE value="pick compilers automagically" />
+    <option name="LAST_COMMIT_MESSAGE" value="pick compilers automagically" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

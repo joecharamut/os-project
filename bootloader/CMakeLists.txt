@@ -27,7 +27,7 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/mbr.bin"
-        DEPENDS mbr.asm
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mbr.asm
         COMMAND ${CMAKE_ASM_NASM_COMPILER} ${INCLUDES} ${FLAGS} -f bin -o "${CMAKE_CURRENT_BINARY_DIR}/mbr.bin" "${CMAKE_CURRENT_SOURCE_DIR}/mbr.asm"
         )
 add_custom_target(mbr.bin
@@ -41,7 +41,7 @@ set(STAGE2_SOURCES
         cpu.asm cpu.h
         disk.c disk.asm disk.h
         mem.asm mem.h
-        elf.c elf.h)
+        elf.h)
 add_executable(stage2.bin ${STAGE2_SOURCES})
 set_target_properties(stage2.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/bootloader/linker.ld)
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)

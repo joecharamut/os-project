@@ -20,7 +20,7 @@ set(WARNING_FLAGS "-Wall -Wextra -Wpedantic -Wformat")
 set(SUPPRESS_FLAGS "")
 set(ERROR_FLAGS "-Werror=implicit-function-declaration")
 
-set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS} -ffreestanding")
+set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS} -ffreestanding -mcmodel=large")
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib")
 
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf64)

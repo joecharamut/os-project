@@ -139,30 +139,97 @@ void main() {
         abort();
     }
 
-    uint8_t *load_addr = (void *) 0x100000;
-    uint32_t count = 0;
-    uint32_t block_size = 512;
-    while (count < file->file_size) {
-        if (fat32_file_read(file, load_addr + count, block_size) <= 0) {
-            print_str("Boot Failure: Error reading kernel file");
-            abort();
-        }
-        count += block_size;
+    print_str("Loading Kernel File Header...\n");
+    uint8_t header_buf[64];
+    if (fat32_file_read(file, header_buf, 64) != 64) {
+        print_str("Boot Failure: Error reading kernel file header");
+        abort();
     }
 
-    elf_identifier_t *ident = (elf_identifier_t *) load_addr;
+    elf_identifier_t *ident = (elf_identifier_t *) header_buf;
+
     if (ident->magic[0] != 0x7F
         || ident->magic[1] != 'E'
         || ident->magic[2] != 'L'
-        || ident->magic[3] != 'F') {
+        || ident->magic[3] != 'F'
+        || ident->version != ELF_IDENT_CURRENT_VERSION) {
         print_str("Boot Failure: Invalid ELF Header");
         abort();
     }
 
     if (ident->bitness != ELF_IDENT_64BIT) {
-        print_str("Boot Failure: Invalid ELF Bitness: ");
-        print_dec(ident->bitness);
+        print_str("Boot Failure: Unsupported ELF Bitness");
         abort();
+    }
+
+    if (ident->endianness != ELF_IDENT_LITTLE_ENDIAN) {
+        print_str("Boot Failure: Unsupported ELF Endianness");
+        abort();
+    }
+
+    elf64_header_t *header = (elf64_header_t *) header_buf;
+
+    if (header->type != ELF_TYPE_EXEC) {
+        print_str("Boot Failure: Unsupported ELF Object Type");
+        abort();
+    }
+
+    if (header->instruction_set != 0x3E) {
+        print_str("Boot Failure: Unsupported ELF Instruction Set");
+        abort();
+    }
+    print_hexs("Entrypoint is at 0x", header->entry, "\n");
+
+    print_str("Loading Program Header Table...\n");
+
+    elf64_pht_entry_t pht[header->pht_entry_count];
+    fat32_file_seek(file, (int) header->pht_offset, FAT32_SEEK_SET);
+    if (fat32_file_read(file, (void *) pht, header->pht_entry_count * sizeof(elf64_pht_entry_t)) != header->pht_entry_count * sizeof(elf64_pht_entry_t)) {
+        print_str("Boot Failure: Error reading program header table");
+        abort();
+    }
+
+    for (int i = 0; i < header->pht_entry_count; ++i) {
+        if (pht[i].type == ELF_PTYPE_LOAD) {
+            print_decs("Segment ", i, ": Loading");
+            print_decs(" ", pht[i].filesize, " bytes");
+            print_hexs(" to 0x", pht[i].paddr, "....");
+            const char *spinner = "|/-\\";
+            int spin_index = 0;
+            fat32_file_seek(file, (int) pht[i].offset, FAT32_SEEK_SET);
+
+            uint32_t count = 0;
+            uint32_t block_size = 512;
+            while (count < pht[i].filesize) {
+                print_chr('\b');
+                print_chr(spinner[spin_index]);
+                spin_index = ((spin_index + 1) % 4);
+
+                uint32_t loaded = fat32_file_read(file, (void *) (pht[i].paddr + count), block_size);
+                if (loaded == 0) {
+                    print_str("Boot Failure: Error reading kernel file");
+                    abort();
+                }
+                count += loaded;
+            }
+            print_str("\bDone!\n");
+        } else {
+            print_decs("Segment ", i, ": [");
+            print_hexs("type 0x", pht[i].type, ": ");
+
+            print_hexs("flags 0x", pht[i].flags, " (");
+            print_chr((pht[i].flags & ELF_PFLAG_R) ? 'R' : '-');
+            print_chr((pht[i].flags & ELF_PFLAG_W) ? 'W' : '-');
+            print_chr((pht[i].flags & ELF_PFLAG_X) ? 'X' : '-');
+            print_str("): ");
+
+            print_hexs("offset 0x", pht[i].offset, ": ");
+            print_hexs("vaddr 0x", pht[i].vaddr, ": ");
+            print_hexs("paddr 0x", pht[i].paddr, ": ");
+            print_decs("filesize ", pht[i].filesize, " bytes: ");
+            print_decs("memsize ", pht[i].memsize, " bytes: ");
+            print_hexs("align 0x", pht[i].align, "]\n");
+        }
     }
 
     print_str("Success?\n");

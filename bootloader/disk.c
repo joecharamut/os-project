@@ -92,14 +92,14 @@ int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_bu
 //            }
 //            print_str("\n");
         } else if (directory[entry_idx].attributes == FAT32_ATTR_VOLUMEID) {
-            print_str("vol id: ");
-            for (int i = 0; i < 8; ++i) {
-                print_chr(directory[entry_idx].name[i]);
-            }
-            for (int i = 0; i < 3; ++i) {
-                print_chr(directory[entry_idx].ext[i]);
-            }
-            print_str("\n");
+//            print_str("vol id: ");
+//            for (int i = 0; i < 8; ++i) {
+//                print_chr(directory[entry_idx].name[i]);
+//            }
+//            for (int i = 0; i < 3; ++i) {
+//                print_chr(directory[entry_idx].ext[i]);
+//            }
+//            print_str("\n");
         } else {
 //            print_decs("entry ", entry_idx, ": ");
 //            for (int i = 0; i < 8; ++i) {
@@ -126,7 +126,8 @@ int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_bu
 
 bool fat32_file_open(fat32_volume_t *this, fat32_file_t *file_ptr, fat32_directory_entry_t *dir_entry) {
     file_ptr->volume = this;
-    file_ptr->current_cluster = (dir_entry->cluster_hi << 16) | dir_entry->cluster_lo;
+    file_ptr->starting_cluster = (dir_entry->cluster_hi << 16) | dir_entry->cluster_lo;
+    file_ptr->current_cluster = file_ptr->starting_cluster;
     file_ptr->file_offset = 0;
     file_ptr->file_size = dir_entry->filesize;
     return true;
@@ -137,20 +138,46 @@ uint32_t fat32_file_read(fat32_file_t *this, uint8_t *buf, uint32_t bytes) {
     uint8_t cluster_buf[cluster_size];
     uint32_t bytes_read = 0;
 
+    if (fat32_read_cluster(this->volume, cluster_buf, this->current_cluster)) {
+        print_hexs("Error reading cluster 0x", this->current_cluster, "\n");
+        abort();
+    }
+
     while (bytes_read < bytes && this->file_offset < this->file_size) {
-        if (bytes_read % cluster_size == 0) {
-            if (bytes_read != 0) {
-                this->current_cluster = fat32_next_cluster(this->volume, this->current_cluster);
-            }
+        if (this->file_offset % cluster_size == 0 && bytes_read != 0) {
+            this->current_cluster = fat32_next_cluster(this->volume, this->current_cluster);
             if (fat32_read_cluster(this->volume, cluster_buf, this->current_cluster)) {
                 print_hexs("Error reading cluster 0x", this->current_cluster, "\n");
                 abort();
             }
         }
 
-        buf[bytes_read] = cluster_buf[bytes_read % cluster_size];
+        buf[bytes_read] = cluster_buf[this->file_offset % cluster_size];
         bytes_read++;
         this->file_offset++;
     }
+
     return bytes_read;
+}
+
+int fat32_file_seek(fat32_file_t *this, int offset, int origin) {
+    switch (origin) {
+        case FAT32_SEEK_SET:
+            this->file_offset = offset;
+            break;
+
+        case FAT32_SEEK_CUR:
+            this->file_offset += offset;
+            break;
+
+        default: return -1;
+    }
+
+    uint32_t cluster_index = this->file_offset / (this->volume->cluster_size * 512);
+    this->current_cluster = this->starting_cluster;
+    while (cluster_index-- > 0) {
+        this->current_cluster = fat32_next_cluster(this->volume, this->current_cluster);
+    }
+
+    return 0;
 }

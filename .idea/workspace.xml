@@ -16,19 +16,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="pick compilers automagically">
-      <change afterPath="$PROJECT_DIR$/bootloader/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/elf.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootloader/elf.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bootstrap/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test64/CMakeLists.txt" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="split up makefiles">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpu.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/disk.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/elf.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/elf.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/elf.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/boot/config.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/python/__builtins.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/python/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test64/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/test64/linker.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/test64/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,14 +265,14 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
     </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
       <method v="2">
@@ -367,14 +366,8 @@
       <workItem from="1629369754440" duration="14974000" />
       <workItem from="1630010325484" duration="1237000" />
       <workItem from="1630112996894" duration="19519000" />
-      <workItem from="1630525197305" duration="23961000" />
-    </task>
-    <task id="LOCAL-00012" summary="move ide">
-      <created>1621737277436</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1621737277436</updated>
+      <workItem from="1630525197305" duration="30692000" />
+      <workItem from="1630768914723" duration="16016000" />
     </task>
     <task id="LOCAL-00013" summary="before i mess stuff up">
       <created>1622081533621</created>
@@ -712,7 +705,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630641975117</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="split up makefiles">
+      <created>1630686380133</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1630686380133</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -788,7 +788,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="move print funcs to module" />
     <MESSAGE value="generate listings for stage2" />
     <MESSAGE value="pass boot disk to main()" />
     <MESSAGE value="fix include guards" />
@@ -813,7 +812,8 @@
     <MESSAGE value="more fat32 stuff" />
     <MESSAGE value="can actually load a file lets go" />
     <MESSAGE value="pick compilers automagically" />
-    <option name="LAST_COMMIT_MESSAGE" value="pick compilers automagically" />
+    <MESSAGE value="split up makefiles" />
+    <option name="LAST_COMMIT_MESSAGE" value="split up makefiles" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

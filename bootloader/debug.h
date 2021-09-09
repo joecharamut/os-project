@@ -31,7 +31,7 @@ do {                        \
 } while (0)
 
 
-void print_chr(char c);
+extern void print_chr(char c);
 void print_str(const char *str);
 void print_num(uint32_t num, uint32_t base);
 

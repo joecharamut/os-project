@@ -16,18 +16,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="split up makefiles">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add loadable segments">
+      <change afterPath="$PROJECT_DIR$/bootloader/debug.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpu.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/cpu.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/disk.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/elf.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/elf.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/elf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test64/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test64/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/test64/linker.ld" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/test64/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -367,14 +367,7 @@
       <workItem from="1630010325484" duration="1237000" />
       <workItem from="1630112996894" duration="19519000" />
       <workItem from="1630525197305" duration="30692000" />
-      <workItem from="1630768914723" duration="16016000" />
-    </task>
-    <task id="LOCAL-00013" summary="before i mess stuff up">
-      <created>1622081533621</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1622081533621</updated>
+      <workItem from="1630768914723" duration="30395000" />
     </task>
     <task id="LOCAL-00014" summary="misc work on ext2">
       <created>1622639401244</created>
@@ -712,7 +705,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630686380133</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="add loadable segments">
+      <created>1630978533549</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1630978533549</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -788,7 +788,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="generate listings for stage2" />
     <MESSAGE value="pass boot disk to main()" />
     <MESSAGE value="fix include guards" />
     <MESSAGE value="make a boot fs" />
@@ -813,7 +812,8 @@
     <MESSAGE value="can actually load a file lets go" />
     <MESSAGE value="pick compilers automagically" />
     <MESSAGE value="split up makefiles" />
-    <option name="LAST_COMMIT_MESSAGE" value="split up makefiles" />
+    <MESSAGE value="add loadable segments" />
+    <option name="LAST_COMMIT_MESSAGE" value="add loadable segments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

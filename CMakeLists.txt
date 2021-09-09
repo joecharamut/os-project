@@ -16,11 +16,11 @@ add_custom_command(OUTPUT fs.bin
 
 add_custom_command(OUTPUT boot_fs.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS test64.bin
+        DEPENDS test64/test64.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=boot_fs.bin bs=1M count=64 &&
         mkfs.vfat -F32 -i BEEFCAFE -n "SYSTEM" boot_fs.bin &&
-        mcopy -i boot_fs.bin test64.bin ::
+        mcopy -i boot_fs.bin test64/test64.bin ::
         )
 
 add_custom_command(OUTPUT disk.img
@@ -31,8 +31,8 @@ add_custom_command(OUTPUT disk.img
         DEPENDS fs.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=disk.img bs=1M count=129 &&
-        dd conv=notrunc if=mbr.bin of=disk.img bs=512 count=1 &&
-        dd conv=notrunc if=stage2.bin of=disk.img bs=512 seek=1 count=1024 &&
+        dd conv=notrunc if=bootloader/mbr.bin of=disk.img bs=512 count=1 &&
+        dd conv=notrunc if=bootloader/stage2.bin of=disk.img bs=512 seek=1 count=1024 &&
         dd conv=notrunc if=boot_fs.bin of=disk.img bs=1M seek=1 count=64 &&
         dd conv=notrunc if=fs.bin of=disk.img bs=1M seek=65 count=64 &&
         fdisk -l disk.img

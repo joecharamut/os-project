@@ -5,15 +5,6 @@ __attribute__((noreturn)) void abort() {
     __builtin_unreachable();
 }
 
-void print_chr(char c) {
-    __asm__ volatile (
-            "int $0x10\t\n"
-            :
-            : "ax" (0x0E00 | c), "bx" (0)
-            : "memory", "cc"
-    );
-}
-
 void print_str(const char *str) {
     char c;
     while ((c = *str)) {

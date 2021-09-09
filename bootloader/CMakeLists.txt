@@ -26,18 +26,14 @@ set(CMAKE_EXE_LINKER_FLAGS "-nostdlib")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
-add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/mbr.bin"
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mbr.asm
-        COMMAND ${CMAKE_ASM_NASM_COMPILER} ${INCLUDES} ${FLAGS} -f bin -o "${CMAKE_CURRENT_BINARY_DIR}/mbr.bin" "${CMAKE_CURRENT_SOURCE_DIR}/mbr.asm"
-        )
 add_custom_target(mbr.bin
-        ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/mbr.bin" ${CMAKE_BINARY_DIR}
-        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/mbr.bin")
+        ${CMAKE_ASM_NASM_COMPILER} ${INCLUDES} ${FLAGS} -f bin -o "${CMAKE_CURRENT_BINARY_DIR}/mbr.bin" "${CMAKE_CURRENT_SOURCE_DIR}/mbr.asm"
+        )
 
 set(STAGE2_SOURCES
         entry.asm
         stage2.c
-        debug.c debug.h
+        debug.c debug.asm debug.h
         cpu.asm cpu.h
         disk.c disk.asm disk.h
         mem.asm mem.h
@@ -46,9 +42,6 @@ add_executable(stage2.bin ${STAGE2_SOURCES})
 set_target_properties(stage2.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/bootloader/linker.ld)
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
 target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
-add_custom_command(TARGET stage2.bin POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/stage2.bin ${CMAKE_BINARY_DIR}
-        )
 add_custom_command(TARGET stage2.bin POST_BUILD
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS stage2.bin

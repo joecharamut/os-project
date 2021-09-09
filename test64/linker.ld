@@ -3,7 +3,7 @@ ENTRY(_start)
 
 PHDRS
 {
-    phony PT_NULL;
+    phony_segment PT_NULL;
     main PT_LOAD;
 }
 
@@ -13,7 +13,7 @@ SECTIONS
 
     .phony : {
         . += 0x100000;
-    } : phony
+    } : phony_segment
 
     .text ALIGN(4K) : AT(ADDR(.text) - 0xC0000000) {
         *(.text)

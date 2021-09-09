@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
+#include <cpuid.h>
+
 #include "debug.h"
 #include "cpu.h"
 #include "disk.h"
@@ -10,53 +12,68 @@ void main() {
     // load boot disk from first byte of scratch space
     uint8_t boot_disk = *((uint8_t *) 0x70000);
 
-    print_str("hello world from pretty broken c!\n");
-    print_hexs("boot drive was: 0x", boot_disk, "\n");
-
-    uint16_t low_ram = get_memory_size();
-    if (low_ram == 0xFFFF) {
-        print_str("Boot Failure: BIOS does not support detecting Low Memory");
-        abort();
-    }
-
-    print_decs("low ram available: ", low_ram + 1, "kb\n");
-    if (low_ram != 639) {
-        print_str("Boot Failure: Not enough Low Memory");
-        abort();
-    }
-
-    uint16_t extended_ram = get_extended_memory_size();
-    if (extended_ram == 0xFFFF) {
-        print_str("Boot Failure: BIOS does not support detecting Extended Memory");
-        abort();
-    }
-    print_decs("extd ram available: ", extended_ram, "kb\n");
+    print_str("\xC9\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBB");
+    print_str("\xBA                            bruh loader v1.0                                  \xBA");
+    print_str("\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC");
 
     bios_mmap_entry_t memory_map[16];
     uint32_t mmap_entries = get_system_memory_map(memory_map);
     if (mmap_entries == 0) {
         print_str("Boot Failure: BIOS does not support System Memory Map");
         abort();
+    } else if (mmap_entries > 16) {
+        print_str("Boot Failure: mmap_entries buffer overrun");
+        abort();
     }
-    print_decs("mmap entries: ", mmap_entries, "\n");
+
+    const int KiB = 1024;
+    const int MiB = KiB * 1024;
+
     for (uint32_t i = 0; i < mmap_entries; ++i) {
-        print_decs("entry ", i, ": ");
-        print_hexs("type ", memory_map[i].type, ", ");
-        print_hexs("start: 0x", memory_map[i].base, ", ");
-        print_hexs("length: 0x", memory_map[i].length, "\n");
+        print_decs("mmap ", i, ": [");
+        print_str(memory_map[i].type == 1 ? "\xFB, " : "-, ");
+        print_hexs("Region: 0x", memory_map[i].base, "-");
+        print_hexs("0x", memory_map[i].base + memory_map[i].length, ", ");
+
+        print_hexs("Size: 0x", memory_map[i].length, ", ");
+        if (memory_map[i].length > MiB) {
+            print_str("(");
+            if ((uint32_t) memory_map[i].length % MiB != 0) {
+                print_str("~");
+            }
+            print_dec((uint32_t) memory_map[i].length / MiB);
+            print_str(" MiB)");
+        } else if (memory_map[i].length > KiB) {
+            print_str("(");
+            if ((uint32_t) memory_map[i].length % KiB != 0) {
+                print_str("~");
+            }
+            print_dec((uint32_t) memory_map[i].length / KiB);
+            print_str(" KiB)");
+        } else {
+            print_str("(");
+            print_dec((uint32_t) memory_map[i].length);
+            print_str(" B)");
+        }
+        print_str("]\n");
     }
 
     if (!get_a20_line_state()) {
+        // todo enable a20 if disabled
         print_str("Boot Failure: A20 Line Disabled (todo: enable it)");
         abort();
     }
 
-    if (!supports_cpuid()) {
+    if (!__get_cpuid_max(0x80000001, NULL)) {
         print_str("Boot Failure: Processor does not support CPUID");
         abort();
     }
 
-    if (!supports_long_mode()) {
+    uint32_t eax, ebx, ecx, edx;
+    __cpuid(0x80000001, eax, ebx, ecx, edx);
+
+    // long mode bit
+    if (!(edx & (1 << 29))) {
         print_str("Boot Failure: Processor does not support Long Mode");
         abort();
     }
@@ -226,8 +243,8 @@ void main() {
             print_hexs("offset 0x", pht[i].offset, ": ");
             print_hexs("vaddr 0x", pht[i].vaddr, ": ");
             print_hexs("paddr 0x", pht[i].paddr, ": ");
-            print_decs("filesize ", pht[i].filesize, " bytes: ");
-            print_decs("memsize ", pht[i].memsize, " bytes: ");
+            print_decs("filesize ", pht[i].filesize, ": ");
+            print_decs("memsize ", pht[i].memsize, ": ");
             print_hexs("align 0x", pht[i].align, "]\n");
         }
     }

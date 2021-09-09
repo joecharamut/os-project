@@ -1,5 +1,5 @@
-#include <stddef.h>
 #include "disk.h"
+#include "mem.h"
 
 static bool fat32_load_vbr(fat32_volume_t *this) {
     uint8_t vbr_buffer[512];
@@ -77,6 +77,23 @@ int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_bu
             break;
         }
 
+        switch (directory[entry_idx].attributes) {
+            case FAT32_ATTR_LFN:
+                break;
+
+            case FAT32_ATTR_VOLUMEID:
+                memcpy(this->volume_id, directory[entry_idx].name, 8);
+                memcpy(this->volume_id+8, directory[entry_idx].ext, 3);
+                break;
+
+            default:
+                if (entry_buf) {
+                    entry_buf[count] = directory[entry_idx];
+                }
+                count++;
+                break;
+        }
+
         if (directory[entry_idx].attributes == FAT32_ATTR_LFN) {
 //            fat32_lfn_entry_t *lfn = (fat32_lfn_entry_t *) &directory[entry_idx];
 //
@@ -91,33 +108,6 @@ int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_bu
 //                print_chr(lfn->group_3[i]);
 //            }
 //            print_str("\n");
-        } else if (directory[entry_idx].attributes == FAT32_ATTR_VOLUMEID) {
-//            print_str("vol id: ");
-//            for (int i = 0; i < 8; ++i) {
-//                print_chr(directory[entry_idx].name[i]);
-//            }
-//            for (int i = 0; i < 3; ++i) {
-//                print_chr(directory[entry_idx].ext[i]);
-//            }
-//            print_str("\n");
-        } else {
-//            print_decs("entry ", entry_idx, ": ");
-//            for (int i = 0; i < 8; ++i) {
-//                print_chr(directory[entry_idx].name[i]);
-//            }
-//            print_str(".");
-//            for (int i = 0; i < 3; ++i) {
-//                print_chr(directory[entry_idx].ext[i]);
-//            }
-//            print_hexs(" : type 0x", directory[entry_idx].attributes, "");
-//            print_decs(" : size ", directory[entry_idx].filesize, "");
-//            print_hexs(" : cluster 0x", directory[entry_idx].cluster_hi << 16 | directory[entry_idx].cluster_lo, "\n");
-
-            if (entry_buf) {
-                entry_buf[count] = directory[entry_idx];
-            }
-
-            ++count;
         }
     }
 

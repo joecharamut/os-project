@@ -43,7 +43,7 @@ set_target_properties(stage2.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/boo
 target_compile_options(stage2.bin PRIVATE $<$<COMPILE_LANGUAGE:C>:-m16>)
 target_link_options(stage2.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/bootloader/linker.ld")
 add_custom_command(TARGET stage2.bin POST_BUILD
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         DEPENDS stage2.bin
         BYPRODUCTS stage2.lst
         VERBATIM

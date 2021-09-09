@@ -8,6 +8,12 @@
 #include "mem.h"
 #include "elf.h"
 
+__attribute__((noreturn)) void fail(const char *msg) {
+    print_str("Boot Failure: ");
+    print_str(msg);
+    abort();
+}
+
 void main() {
     // load boot disk from first byte of scratch space
     uint8_t boot_disk = *((uint8_t *) 0x70000);
@@ -16,18 +22,19 @@ void main() {
     print_str("\xBA                            bruh loader v1.0                                  \xBA");
     print_str("\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC");
 
+    if (!get_a20_line_state()) {
+        // todo enable a20 if disabled
+        fail("A20 Line Disabled");
+    }
+
+    print_str("[ INFO ] Detecting Memory...\n");
     bios_mmap_entry_t memory_map[16];
     uint32_t mmap_entries = get_system_memory_map(memory_map);
     if (mmap_entries == 0) {
-        print_str("Boot Failure: BIOS does not support System Memory Map");
-        abort();
+        fail("BIOS does not support System Memory Map");
     } else if (mmap_entries > 16) {
-        print_str("Boot Failure: mmap_entries buffer overrun");
-        abort();
+        fail("mmap_entries buffer overrun");
     }
-
-    const int KiB = 1024;
-    const int MiB = KiB * 1024;
 
     for (uint32_t i = 0; i < mmap_entries; ++i) {
         print_decs("mmap ", i, ": [");
@@ -36,19 +43,19 @@ void main() {
         print_hexs("0x", memory_map[i].base + memory_map[i].length, ", ");
 
         print_hexs("Size: 0x", memory_map[i].length, ", ");
-        if (memory_map[i].length > MiB) {
+        if (memory_map[i].length > 0x100000) {
             print_str("(");
-            if ((uint32_t) memory_map[i].length % MiB != 0) {
+            if ((uint32_t) memory_map[i].length % 0x100000 != 0) {
                 print_str("~");
             }
-            print_dec((uint32_t) memory_map[i].length / MiB);
+            print_dec((uint32_t) memory_map[i].length / 0x100000);
             print_str(" MiB)");
-        } else if (memory_map[i].length > KiB) {
+        } else if (memory_map[i].length > 0x400) {
             print_str("(");
-            if ((uint32_t) memory_map[i].length % KiB != 0) {
+            if ((uint32_t) memory_map[i].length % 0x400 != 0) {
                 print_str("~");
             }
-            print_dec((uint32_t) memory_map[i].length / KiB);
+            print_dec((uint32_t) memory_map[i].length / 0x400);
             print_str(" KiB)");
         } else {
             print_str("(");
@@ -58,15 +65,8 @@ void main() {
         print_str("]\n");
     }
 
-    if (!get_a20_line_state()) {
-        // todo enable a20 if disabled
-        print_str("Boot Failure: A20 Line Disabled (todo: enable it)");
-        abort();
-    }
-
     if (!__get_cpuid_max(0x80000001, NULL)) {
-        print_str("Boot Failure: Processor does not support CPUID");
-        abort();
+        fail("Processor does not support CPUID");
     }
 
     uint32_t eax, ebx, ecx, edx;
@@ -74,20 +74,17 @@ void main() {
 
     // long mode bit
     if (!(edx & (1 << 29))) {
-        print_str("Boot Failure: Processor does not support Long Mode");
-        abort();
+        fail("Processor does not support Long Mode");
     }
 
     uint8_t mbr_buffer[512];
     disk_mbr_t *mbr = (disk_mbr_t *) &mbr_buffer;
     if (disk_read_sectors(boot_disk, mbr_buffer, 0, 1)) {
-        print_str("Boot Failure: Error reading disk");
-        abort();
+        fail("Error reading disk");
     }
 
     if (mbr->signature != 0xAA55) {
-        print_str("Boot Failure: Invalid MBR Signature");
-        abort();
+        fail("Invalid MBR Signature");
     }
 
     int fat_partition = -1;
@@ -99,8 +96,7 @@ void main() {
         }
     }
     if (fat_partition == -1) {
-        print_str("Boot Failure: Could not find system partition");
-        abort();
+        fail("Could not find system partition");
     }
     print_decs("Trying to load partition ", fat_partition+1, "\n");
 
@@ -109,18 +105,19 @@ void main() {
     uint8_t volume_buf[sizeof(fat32_volume_t)];
     fat32_volume_t *volume = (fat32_volume_t *) &volume_buf;
     if (!fat32_open_volume(volume, boot_disk, first_sector)) {
-        print_str("Boot Failure: Error opening FAT32 volume");
-        abort();
+        fail("Error opening FAT32 volume");
     }
 
     int entries = fat32_read_directory(volume, NULL, volume->root_cluster);
     if (entries <= 0) {
-        print_str("Boot Failure: Error reading root directory");
-        abort();
+        fail("Error reading root directory");
     }
     fat32_directory_entry_t directory[entries];
     fat32_read_directory(volume, (fat32_directory_entry_t *) &directory, volume->root_cluster);
 
+    print_str("Directory listing of volume '");
+    print_str(volume->volume_id);
+    print_str("':\n");
     for (int i = 0; i < entries; ++i) {
         print_decs("entry ", i, ": ");
         for (int j = 0; j < 8; ++j) {
@@ -145,22 +142,19 @@ void main() {
         }
     }
     if (file_index == -1) {
-        print_str("Boot Failure: Could not find KERNEL.BIN");
-        abort();
+        fail("Could not find KERNEL.BIN");
     }
 
     uint8_t file_buf[sizeof(fat32_file_t)];
     fat32_file_t *file = (fat32_file_t *) &file_buf;
     if (!fat32_file_open(volume, file, &directory[file_index])) {
-        print_str("Boot Failure: Error opening kernel file");
-        abort();
+        fail("Error opening kernel file");
     }
 
     print_str("Loading Kernel File Header...\n");
     uint8_t header_buf[64];
     if (fat32_file_read(file, header_buf, 64) != 64) {
-        print_str("Boot Failure: Error reading kernel file header");
-        abort();
+        fail("Error reading kernel file header");
     }
 
     elf_identifier_t *ident = (elf_identifier_t *) header_buf;
@@ -170,30 +164,25 @@ void main() {
         || ident->magic[2] != 'L'
         || ident->magic[3] != 'F'
         || ident->version != ELF_IDENT_CURRENT_VERSION) {
-        print_str("Boot Failure: Invalid ELF Header");
-        abort();
+        fail("Invalid ELF Header");
     }
 
     if (ident->bitness != ELF_IDENT_64BIT) {
-        print_str("Boot Failure: Unsupported ELF Bitness");
-        abort();
+        fail("Unsupported ELF Bitness");
     }
 
     if (ident->endianness != ELF_IDENT_LITTLE_ENDIAN) {
-        print_str("Boot Failure: Unsupported ELF Endianness");
-        abort();
+        fail("Unsupported ELF Endianness");
     }
 
     elf64_header_t *header = (elf64_header_t *) header_buf;
 
     if (header->type != ELF_TYPE_EXEC) {
-        print_str("Boot Failure: Unsupported ELF Object Type");
-        abort();
+        fail("Unsupported ELF Object Type");
     }
 
     if (header->instruction_set != 0x3E) {
-        print_str("Boot Failure: Unsupported ELF Instruction Set");
-        abort();
+        fail("Unsupported ELF Instruction Set");
     }
     print_hexs("Entrypoint is at 0x", header->entry, "\n");
 
@@ -202,8 +191,7 @@ void main() {
     elf64_pht_entry_t pht[header->pht_entry_count];
     fat32_file_seek(file, (int) header->pht_offset, FAT32_SEEK_SET);
     if (fat32_file_read(file, (void *) pht, header->pht_entry_count * sizeof(elf64_pht_entry_t)) != header->pht_entry_count * sizeof(elf64_pht_entry_t)) {
-        print_str("Boot Failure: Error reading program header table");
-        abort();
+        fail("Error reading program header table");
     }
 
     for (int i = 0; i < header->pht_entry_count; ++i) {
@@ -224,8 +212,7 @@ void main() {
 
                 uint32_t loaded = fat32_file_read(file, (void *) (pht[i].paddr + count), block_size);
                 if (loaded == 0) {
-                    print_str("Boot Failure: Error reading kernel file");
-                    abort();
+                    fail("Error reading kernel file");
                 }
                 count += loaded;
             }

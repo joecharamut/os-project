@@ -7,6 +7,6 @@ qemu-system-x86_64 \
             -no-shutdown \
             -d guest_errors,cpu_reset \
             -serial stdio \
-            -m 512M \
+            -m 256M \
             -vga std \
             -drive file=disk.img,format=raw

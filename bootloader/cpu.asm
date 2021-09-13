@@ -43,3 +43,96 @@ get_a20_line_state:
     popf
     ret
 
+global get_system_time:function
+get_system_time:
+    xor eax, eax
+    xor edx, edx
+    int 1Ah
+    mov ax, cx
+    shr eax, 16
+    or eax, edx
+    ret
+
+global delay:function
+delay:
+    push ebp
+    mov ebp, esp
+    sub esp, 4
+
+    call get_system_time
+    add eax, [ebp+8] ; u32 ticks
+    mov [ebp-4], eax ; u32 end_time
+
+.loop:
+    nop
+    call get_system_time
+    cmp eax, [ebp-4] ; u32 end_time
+    jb .loop
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+global enter_long_mode:function
+enter_long_mode:
+    xor ax, ax
+    mov ss, ax
+    add esp, 0x60000 ; prepare the stack for transition out of segmented memory
+
+    push ebp
+    mov ebp, esp
+
+    mov al, 0xFF
+    out 0xA1, al
+    out 0x21, al ; disable all IRQs
+    cli          ; disable interrupts
+    lidt [IDT]   ; load the null interrupt table to force NMIs to triple fault
+
+    mov eax, cr4
+    or eax, 1<<5 | 1<<7 ; set PAE and PGE
+    mov cr4, eax
+
+;    mov eax, 0x11000
+;    mov cr3, eax ; set cr3 to the PML4
+
+    mov ecx, 0xC0000080 ; EFER MSR
+    rdmsr
+
+    or eax, 0x00000100 ; set the LME bit
+    wrmsr
+
+    mov eax, cr0
+    or eax, 1<<31 | 1<<0 ; set Protected Mode Enable and Paging
+    mov cr0, eax
+
+    lgdt [GDT.Pointer]
+
+    push dword [ebp+0xC] ; push high and low dwords of entrypoint
+    push dword [ebp+0x8]
+    jmp dword 08h:_entry_long_mode
+
+GDT:
+    .Null: dq 0x0000000000000000
+    .Code: dq 0x00209A0000000000
+    .Data: dq 0x0000920000000000
+align 4
+    .Pointer:
+        dw $ - GDT - 1
+        dd GDT
+
+align 4
+IDT:
+    .length: dw 0
+    .base: dd 0
+
+bits 64
+section .text64
+_entry_long_mode:
+    mov eax, 0x10
+    mov ds, eax
+    mov ss, eax
+    mov es, eax
+    mov fs, eax
+    mov gs, eax
+
+    ret ; [pop rip]

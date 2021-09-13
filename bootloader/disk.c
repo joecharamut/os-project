@@ -24,6 +24,8 @@ static bool fat32_load_vbr(fat32_volume_t *this) {
     }
 
     // should be good here, copy necessary data
+    this->serial_number = vbr->serial_number;
+
     this->cluster_size = vbr->sectors_per_cluster;
     this->fat_size = (vbr->sectors_per_fat_16 == 0) ? vbr->sectors_per_fat_32 : vbr->sectors_per_fat_16;
     this->root_cluster = vbr->root_directory_cluster;

@@ -16,13 +16,19 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fix characters not printing">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="cleanup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpu.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpu.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/disk.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test64/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/test64/linker.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/test64/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -260,14 +266,14 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
       <method v="2">
@@ -362,14 +368,8 @@
       <workItem from="1630010325484" duration="1237000" />
       <workItem from="1630112996894" duration="19519000" />
       <workItem from="1630525197305" duration="30692000" />
-      <workItem from="1630768914723" duration="32977000" />
-    </task>
-    <task id="LOCAL-00015" summary="can sorta read files">
-      <created>1622820471875</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1622820471875</updated>
+      <workItem from="1630768914723" duration="65533000" />
+      <workItem from="1631553853764" duration="4913000" />
     </task>
     <task id="LOCAL-00016" summary="whoops">
       <created>1622820549549</created>
@@ -707,7 +707,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631145866652</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="cleanup">
+      <created>1631159812363</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1631159812364</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -797,7 +804,6 @@
     <MESSAGE value="move around some memory" />
     <MESSAGE value="figured out the right rep movsb prefix" />
     <MESSAGE value="move a20 detect into stage2" />
-    <MESSAGE value="cleanup" />
     <MESSAGE value="workin on fat32" />
     <MESSAGE value="save and load boot disk directly instead of using dl" />
     <MESSAGE value="add a little bootloader check" />
@@ -808,7 +814,8 @@
     <MESSAGE value="split up makefiles" />
     <MESSAGE value="add loadable segments" />
     <MESSAGE value="fix characters not printing" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix characters not printing" />
+    <MESSAGE value="cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

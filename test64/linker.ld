@@ -3,32 +3,40 @@ ENTRY(_start)
 
 PHDRS
 {
-    phony_segment PT_NULL;
-    main PT_LOAD;
+    load PT_LOAD;
 }
 
+KERNEL_VMA = 0xFFFFFFF800000000;
 SECTIONS
 {
-    . = 0xC0000000;
+    . = KERNEL_VMA;
+    . += 1M;
 
-    .phony : {
-        . += 0x100000;
-    } : phony_segment
-
-    .text ALIGN(4K) : AT(ADDR(.text) - 0xC0000000) {
+    .text : AT(ADDR(.text) - KERNEL_VMA) {
+        _code = .;
         *(.text)
-    } : main
+        *(.rodata*)
+        . = ALIGN(4K);
+    } :load
 
-    .rodata ALIGN(4K) : AT(ADDR(.rodata) - 0xC0000000) {
-        *(.rodata)
-    } : main
-
-    .data ALIGN(4K) : AT(ADDR(.data) - 0xC0000000) {
+    .data ALIGN(4K) : AT(ADDR(.data) - KERNEL_VMA) {
+        _data = .;
         *(.data)
-    } : main
+    } :load
 
-    .bss ALIGN(4K) : AT(ADDR(.bss) - 0xC0000000) {
+   .eh_frame : AT(ADDR(.eh_frame) - KERNEL_VMA)
+   {
+       _eh_frame = .;
+       *(.eh_frame)
+        . = ALIGN(4096);
+   } :load
+
+    .bss ALIGN(4K) : AT(ADDR(.bss) - KERNEL_VMA) {
+        _bss = .;
         *(.bss)
         *(COMMON)
-    } : main
+        . = ALIGN(4096);
+    } :load
+
+    _end = .;
 }

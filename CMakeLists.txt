@@ -20,6 +20,7 @@ add_custom_command(OUTPUT boot_fs.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=boot_fs.bin bs=1M count=64 &&
         mkfs.vfat -F32 -i BEEFCAFE -n "SYSTEM" boot_fs.bin &&
+        mmd -i boot_fs.bin ::/dir1 &&
         mcopy -i boot_fs.bin test64/test64.bin :: &&
         mattrib -i boot_fs.bin -a -h +r +s test64.bin
         )

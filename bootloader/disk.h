@@ -115,6 +115,7 @@ typedef struct {
     uint32_t first_sector;
 
     char volume_id[12];
+    uint32_t serial_number;
     uint32_t cluster_size;
     uint32_t fat_size;
     uint32_t first_data_sector;

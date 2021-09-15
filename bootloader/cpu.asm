@@ -73,6 +73,21 @@ delay:
     pop ebp
     ret
 
+global peek_keystroke:function
+peek_keystroke:
+    mov ah, 0x01
+    int 16h
+    jnz .exit
+    xor ax, ax
+.exit:
+    ret
+
+global pop_keystroke:function
+pop_keystroke:
+    mov ah, 0x00
+    int 16h
+    ret
+
 global enter_long_mode:function
 enter_long_mode:
     xor ax, ax
@@ -92,9 +107,6 @@ enter_long_mode:
     or eax, 1<<5 | 1<<7 ; set PAE and PGE
     mov cr4, eax
 
-;    mov eax, 0x11000
-;    mov cr3, eax ; set cr3 to the PML4
-
     mov ecx, 0xC0000080 ; EFER MSR
     rdmsr
 
@@ -107,10 +119,11 @@ enter_long_mode:
 
     lgdt [GDT.Pointer]
 
-    push dword [ebp+0xC] ; push high and low dwords of entrypoint
+    push dword [ebp+0xC] ; push high and low dwords of kernel entrypoint
     push dword [ebp+0x8]
-    jmp dword 08h:_entry_long_mode
+    jmp dword 08h:_entry_long_mode ; do it
 
+section .data
 GDT:
     .Null: dq 0x0000000000000000
     .Code: dq 0x00209A0000000000
@@ -133,6 +146,12 @@ _entry_long_mode:
     mov ss, eax
     mov es, eax
     mov fs, eax
-    mov gs, eax
+    mov gs, eax ; set all the data segments
 
-    ret ; [pop rip]
+    pop rax ; kernel entrypoint
+    call rax
+
+    cli
+.1:
+    hlt
+    jmp .1

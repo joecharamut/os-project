@@ -1,22 +1,29 @@
-char bss[512];
+#include <stdint.h>
+
+#define DISPLAY_WIDTH 80
+#define DISPLAY_HEIGHT 25
+#define DISPLAY_ENTRY(chr, color) ((uint16_t) (chr) | ((uint16_t) (color) << 8))
+#define DISPLAY_COLOR 0x17
 
 void _start() {
     const char *str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam mattis ante eu elit pretium mollis. Quisque dapibus, risus at tempor tempor, velit ligula porttitor ex, eleifend laoreet ante libero nec felis. Morbi convallis quam quis est semper molestie. Suspendisse tempus sit amet quam ut aliquam. Donec nec metus fermentum libero aliquam molestie ut nec est. Curabitur suscipit ex pretium enim imperdiet, eget aliquet diam cursus. Nullam vel diam mattis dolor tincidunt aliquet. Etiam pellentesque ante et justo cursus pretium. Maecenas et elementum felis.";
-    __asm__ (
-    "mov $0xB8000, %edi\t\n"
-    "mov $500, %rcx\t\n"
-    "mov $0x1F201F201F201F20, %rax\t\n"
-    "rep stosq\t\n"
-    "mov $0xB8000, %edi\t\n"
-    "mov $0x1F6C1F6C1F651F48, %rax\t\n"
-    "mov %rax, (%edi)\t\n"
-    "mov $0x1F6F1F571F201F6F, %rax\t\n"
-    "mov %rax, 8(%edi)\t\n"
-    "mov $0x1F211F641F6C1F72, %rax\t\n"
-    "mov %rax, 16(%edi)\t\n"
-    );
 
-    __asm__ (
-    "cli; hlt; jmp ."
-    );
+    uint16_t *display_buffer = (uint16_t *) 0xB8000;
+    for (int x = 0; x < DISPLAY_WIDTH; ++x) {
+        for (int y = 0; y < DISPLAY_HEIGHT; ++y) {
+            display_buffer[y * DISPLAY_WIDTH + x] = DISPLAY_ENTRY(' ', DISPLAY_COLOR);
+        }
+    }
+
+    int x = 0;
+    int y = 0;
+    for (int i = 0; i < 512; ++i) {
+        display_buffer[y * DISPLAY_WIDTH + x] = DISPLAY_ENTRY(str[i], DISPLAY_COLOR);
+
+        ++x;
+        if (x > DISPLAY_WIDTH) {
+            x = 0;
+            ++y;
+        }
+    }
 }

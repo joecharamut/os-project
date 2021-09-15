@@ -48,7 +48,10 @@ static uint32_t fat32_next_cluster(fat32_volume_t *this, uint32_t current_cluste
     uint32_t fat_sector = this->first_fat_sector + (fat_offset / 512);
     uint32_t entry_offset = fat_offset % 512;
 
-    disk_read_sectors(this->disk, fat_table, this->first_sector + fat_sector, 1);
+    if (disk_read_sectors(this->disk, fat_table, this->first_sector + fat_sector, 1)) {
+        print_hexs("Error reading sector 0x", this->first_sector + fat_sector, "\n");
+        abort();
+    }
     cluster = (*(uint32_t *) &fat_table[entry_offset]) & 0x0FFFFFFF;
 
     return cluster;
@@ -136,6 +139,10 @@ uint32_t fat32_file_read(fat32_file_t *this, uint8_t *buf, uint32_t bytes) {
     }
 
     while (bytes_read < bytes && this->file_offset < this->file_size) {
+        buf[bytes_read] = cluster_buf[this->file_offset % cluster_size];
+        bytes_read++;
+        this->file_offset++;
+
         if (this->file_offset % cluster_size == 0 && bytes_read != 0) {
             this->current_cluster = fat32_next_cluster(this->volume, this->current_cluster);
             if (fat32_read_cluster(this->volume, cluster_buf, this->current_cluster)) {
@@ -143,10 +150,6 @@ uint32_t fat32_file_read(fat32_file_t *this, uint8_t *buf, uint32_t bytes) {
                 abort();
             }
         }
-
-        buf[bytes_read] = cluster_buf[this->file_offset % cluster_size];
-        bytes_read++;
-        this->file_offset++;
     }
 
     return bytes_read;

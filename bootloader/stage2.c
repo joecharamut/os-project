@@ -69,34 +69,15 @@ uint32_t map_page(uint64_t paddr, uint64_t vaddr) {
     return page_map_free;
 }
 
-uint8_t get_boot_disk() {
-    extern uint8_t _boot_disk_ptr;
-    void *ptr = &_boot_disk_ptr;
-    return *(uint8_t *) ptr;
-}
-
 void main() {
     // load boot disk from first byte of scratch space
-    uint8_t boot_disk = get_boot_disk();
+    uint8_t boot_disk = *((uint8_t *) 0x70000);
 
     print_str("\xC9\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBB");
     print_str("\xBA                            bruh loader v1.0                                  \xBA");
     print_str("\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC");
 
-    const char *spinner = "|/-\\";
-    int spin_index = 0;
-
-    uint32_t current_time, start_time = get_system_time();
-    print_str("Waiting for debugger....");
-    while (current_time < (start_time + 20)) {
-        print_chr('\b');
-        print_chr(spinner[spin_index]);
-        spin_index = ((spin_index + 1) % 4);
-
-        current_time = get_system_time();
-        delay(2);
-    }
-    print_str("\b \n");
+    print_str("Hello World!\n");
 
     if (!get_a20_line_state()) {
         // todo enable a20 if disabled
@@ -307,7 +288,7 @@ void main() {
                 print_chr(spinner[spin_index]);
                 spin_index = ((spin_index + 1) % 4);
 
-                uint32_t loaded = fat32_file_read(file, (void *) (pht[i].paddr + count), block_size);
+                uint32_t loaded = fat32_file_read(file, ((uint8_t *) pht[i].paddr) + count, block_size);
                 if (loaded == 0) {
                     fail("Error reading kernel file");
                 }
@@ -337,6 +318,20 @@ void main() {
             print_hexs("align 0x", pht[i].align, "]\n");
         }
     }
+
+    print_str("All loaded up, have a nice time in long mode :3\n");
+
+    print_str("Press any key to continue....\n");
+    const char *spinner = "|/-\\";
+    int spin_index = 0;
+    while (!peek_keystroke()) {
+        print_chr('\b');
+        print_chr(spinner[spin_index]);
+        spin_index = ((spin_index + 1) % 4);
+
+        delay(2);
+    }
+    print_str("\b \n");
 
     enter_long_mode(header->entry);
 }

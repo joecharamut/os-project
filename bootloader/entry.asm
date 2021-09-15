@@ -5,7 +5,7 @@ extern main
 global _start:function
 _start:
     jmp .real_start
-    db "SWAG"
+    db "BOOT"
 
 .real_start:
     call main

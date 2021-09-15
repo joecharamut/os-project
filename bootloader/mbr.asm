@@ -54,7 +54,8 @@ _boot_reloc:
     mov sp, 0xFF00
 
     ; save boot disk id
-    a32 mov [0x70000], dl
+    mov eax, 0x70000
+    mov [eax], dl
 
     ; INT13h function 41h - Check Extensions Present
     mov ah, 0x41
@@ -87,7 +88,7 @@ _boot_reloc:
     cmp ebx, 768 ; load 768 sectors (384 KiB)
     jle .read_loop
 
-    cmp dword [0x0700 + 2], "SWAG"
+    cmp dword [0x0700 + 2], "BOOT" ; check for the stage2 signature
     mov si, invl_part_msg
     jne err_print
 
@@ -156,7 +157,7 @@ MiB equ (KiB*1024)
 GiB equ (MiB*1024)
 
 ; partition table
-partition_1: partition_entry 0x80, 0xDA, SECTOR(    512), SECTOR(512*KiB) ; boot=Y, type=DATA, start=512B, size=512KiB [stage2.bin]
+partition_1: partition_entry 0x80, 0xDA, SECTOR(    512), SECTOR(384*KiB) ; boot=Y, type=DATA, start=512B, size=512KiB [stage2.bin]
 partition_2: partition_entry 0x00, 0x0C, SECTOR(  1*MiB), SECTOR( 64*MiB) ; boot=N, type=FAT32+LBA, start=1MiB, size=64MiB [boot_fs.bin]
 partition_3: partition_entry 0x00, 0x83, SECTOR( 65*MiB), SECTOR( 64*MiB) ; boot=N, type=LINUX, start=64MiB, size=1MiB [fs.bin]
 partition_4: partition_entry 0x00, 0x00, 0x00, 0x00                       ; boot=N, type=EMPTY

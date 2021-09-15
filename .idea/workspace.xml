@@ -16,18 +16,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="cleanup">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="loads long mode now">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/cpu.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/cpu.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/disk.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/entry.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/entry.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test64/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test64/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/test64/linker.ld" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/test64/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -369,14 +365,7 @@
       <workItem from="1630112996894" duration="19519000" />
       <workItem from="1630525197305" duration="30692000" />
       <workItem from="1630768914723" duration="65533000" />
-      <workItem from="1631553853764" duration="4913000" />
-    </task>
-    <task id="LOCAL-00016" summary="whoops">
-      <created>1622820549549</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1622820549549</updated>
+      <workItem from="1631553853764" duration="13106000" />
     </task>
     <task id="LOCAL-00017" summary="math">
       <created>1622865471998</created>
@@ -714,7 +703,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631159812364</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="loads long mode now">
+      <created>1631568557207</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1631568557208</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -790,7 +786,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix include guards" />
     <MESSAGE value="make a boot fs" />
     <MESSAGE value="misc" />
     <MESSAGE value="writint asmemby" />
@@ -815,7 +810,8 @@
     <MESSAGE value="add loadable segments" />
     <MESSAGE value="fix characters not printing" />
     <MESSAGE value="cleanup" />
-    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
+    <MESSAGE value="loads long mode now" />
+    <option name="LAST_COMMIT_MESSAGE" value="loads long mode now" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

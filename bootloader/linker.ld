@@ -5,7 +5,7 @@ ENTRY(_start)
 MEMORY
 {
     /* Interrupt Vector Table [0x0000 - 0x03FF] */
-    IVT (rw) : ORIGIN = 0x0000, LENGTH = 1024
+    IVT (rw) : ORIGIN = 0x0000, LENGTH = 1K
 
     /* BIOS Data Area [0x0400 - 0x04FF] */
     BDA (r) : ORIGIN = 0x0400, LENGTH = 256
@@ -14,12 +14,12 @@ MEMORY
     MBR (rx) : ORIGIN = 0x0500, LENGTH = 512
 
     /* Code Segment [0x0700 - 0xEFFF] */
-    CS (rx) : ORIGIN = 0x0700, LENGTH = 61K + 768
+    CS (rx) : ORIGIN = 0x0700, LENGTH = 64K - 4K - 1K - 512 - 256
 
     /* Variables Segment [0xF000 - 0xFFFF] */
-    VAR (rw) : ORIGIN = 0xF000, LENGTH = 1K
+    VAR (rw) : ORIGIN = 0xF000, LENGTH = 4K
 
-    /* Page Map Segment [0x10000 - 0x1FFFF] */
+    /* Page Map Segment [0x10000 - 0x1FFFF] [0x10000 - 0x7FFFF (448K)] */
     PM (rw) : ORIGIN = 0x10000, LENGTH = 64K
 
     /* Data Segment [0x20000 - 0x5FFFF] */
@@ -54,8 +54,4 @@ SECTIONS
     .rodata : {
         *(.rodata)
     } > DS
-
-    .scratch : {
-        _boot_disk_ptr = .;
-    } > SCR
 }

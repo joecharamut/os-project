@@ -16,3 +16,62 @@ print_chr:
     mov esp, ebp
     pop ebp
     ret
+
+%define COM1 0x3F8
+%macro outb 2
+    mov dx, %1
+    mov al, %2
+    out dx, al
+%endmacro
+%macro inb 1
+    mov dx, %1
+    in al, dx
+%endmacro
+global serial_init:function
+serial_init:
+    push ebp
+    mov ebp, esp
+
+    outb COM1+1, 0x00 ; Disable all interrupts
+    outb COM1+3, 0x80 ; Enable DLAB (set baud rate divisor)
+    outb COM1+0, 0x03 ; Set divisor to 3 (lo byte) 38400 baud
+    outb COM1+1, 0x00 ;                  (hi byte)
+    outb COM1+3, 0x03 ; 8 bits, no parity, one stop bit
+    outb COM1+2, 0xC7 ; Enable FIFO, clear them, with 14-byte threshold
+    outb COM1+4, 0x0B ; IRQs enabled, RTS/DSR set
+    outb COM1+4, 0x1E ; Set in loopback mode, test the serial chip
+    outb COM1+0, 0xAE ; Test serial chip (send byte 0xAE and check if serial returns same byte)
+
+    ; Check if serial is faulty (i.e: not same byte as sent)
+    inb COM1+0
+    cmp al, 0xAE
+    je .works
+    ; doesnt work
+    mov eax, 0
+    jmp .exit
+
+.works:
+    ; If serial is not faulty set it in normal operation mode
+    ; (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
+    outb COM1+4, 0x0F
+    mov eax, 1
+
+.exit:
+    mov esp, ebp
+    pop ebp
+    ret
+
+global serial_write:function
+serial_write:
+    push ebp
+    mov ebp, esp
+
+    outb COM1+0, byte [ebp+8]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+
+
+

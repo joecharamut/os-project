@@ -6,7 +6,7 @@ static bool fat32_load_vbr(fat32_volume_t *this) {
     fat32_vbr_t *vbr = (fat32_vbr_t *) &vbr_buffer;
 
     if (disk_read_sectors(this->disk, vbr_buffer, this->first_sector, 1)) {
-        print_str("Read Error\n");
+        write_str("Read Error\n");
         return false;
     }
 
@@ -14,12 +14,12 @@ static bool fat32_load_vbr(fat32_volume_t *this) {
     fat32_fsinfo_t *fsinfo = (fat32_fsinfo_t *) &fsinfo_buffer;
 
     if (disk_read_sectors(this->disk, fsinfo_buffer, this->first_sector + vbr->fsinfo_sector, 1)) {
-        print_str("Read Error\n");
+        write_str("Read Error\n");
         return false;
     }
 
     if (fsinfo->lead_signature != 0x41615252 || fsinfo->mid_signature  != 0x61417272 || fsinfo->trail_signature != 0xAA550000) {
-        print_str("Invalid FSInfo Struct\n");
+        write_str("Invalid FSInfo Struct\n");
         return false;
     }
 
@@ -112,7 +112,7 @@ int fat32_read_directory(fat32_volume_t *this, fat32_directory_entry_t *entry_bu
 //            for (int i = 0; i < 2; ++i) {
 //                print_chr(lfn->group_3[i]);
 //            }
-//            print_str("\n");
+//            write_str("\n");
         }
     }
 

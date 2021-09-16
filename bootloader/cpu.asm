@@ -149,9 +149,5 @@ _entry_long_mode:
     mov gs, eax ; set all the data segments
 
     pop rax ; kernel entrypoint
-    call rax
+    jmp rax
 
-    cli
-.1:
-    hlt
-    jmp .1

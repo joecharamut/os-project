@@ -16,13 +16,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="loads long mode now">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="whoops it actually loads the disk now">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/cpu.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/cpu.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/entry.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/entry.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/mbr.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mbr.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/test64/main.c" afterDir="false" />
     </list>
@@ -365,14 +366,7 @@
       <workItem from="1630112996894" duration="19519000" />
       <workItem from="1630525197305" duration="30692000" />
       <workItem from="1630768914723" duration="65533000" />
-      <workItem from="1631553853764" duration="13106000" />
-    </task>
-    <task id="LOCAL-00017" summary="math">
-      <created>1622865471998</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1622865471998</updated>
+      <workItem from="1631553853764" duration="17198000" />
     </task>
     <task id="LOCAL-00018" summary="math">
       <created>1622865672758</created>
@@ -710,7 +704,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631568557208</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="whoops it actually loads the disk now">
+      <created>1631669438214</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1631669438214</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -786,7 +787,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="make a boot fs" />
     <MESSAGE value="misc" />
     <MESSAGE value="writint asmemby" />
     <MESSAGE value="make print_chr an extern asm function" />
@@ -811,7 +811,8 @@
     <MESSAGE value="fix characters not printing" />
     <MESSAGE value="cleanup" />
     <MESSAGE value="loads long mode now" />
-    <option name="LAST_COMMIT_MESSAGE" value="loads long mode now" />
+    <MESSAGE value="whoops it actually loads the disk now" />
+    <option name="LAST_COMMIT_MESSAGE" value="whoops it actually loads the disk now" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

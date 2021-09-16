@@ -9,8 +9,8 @@
 #include "elf.h"
 
 __attribute__((noreturn)) void fail(const char *msg) {
-    print_str("Boot Failure: ");
-    print_str(msg);
+    write_str("Boot Failure: ");
+    write_str(msg);
     abort();
 }
 
@@ -20,7 +20,7 @@ __attribute__((noreturn)) void fail(const char *msg) {
 #define PT_INDEX(addr) (((addr) >> 12) & 0x1FF)
 
 static uint32_t page_map_free = 0;
-uint32_t map_page(uint64_t paddr, uint64_t vaddr) {
+static uint32_t map_page(uint64_t paddr, uint64_t vaddr) {
     const uint32_t pml4_index = PML4_INDEX(vaddr);
     const uint32_t pdpt_index = PDPT_INDEX(vaddr);
     const uint32_t pd_index = PD_INDEX(vaddr);
@@ -73,18 +73,22 @@ void main() {
     // load boot disk from first byte of scratch space
     uint8_t boot_disk = *((uint8_t *) 0x70000);
 
-    print_str("\xC9\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBB");
-    print_str("\xBA                            bruh loader v1.0                                  \xBA");
-    print_str("\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC");
+    if (!serial_init()) {
+        fail("Failed to initialize serial");
+    }
 
-    print_str("Hello World!\n");
+    write_str("\xC9\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBB");
+    write_str("\xBA                            bruh loader v1.0                                  \xBA");
+    write_str("\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC");
+
+    write_str("Hello World!\n");
 
     if (!get_a20_line_state()) {
         // todo enable a20 if disabled
         fail("A20 Line Disabled");
     }
 
-    print_str("Detecting Memory...\n");
+    write_str("Detecting Memory...\n");
     bios_mmap_entry_t memory_map[16];
     uint32_t mmap_entries = get_system_memory_map(memory_map);
     if (mmap_entries == 0) {
@@ -95,31 +99,31 @@ void main() {
 
     for (uint32_t i = 0; i < mmap_entries; ++i) {
         print_decs("mmap ", i, ": [");
-        print_str(memory_map[i].type == 1 ? "\xFB, " : "-, ");
+        write_str(memory_map[i].type == 1 ? "\xFB, " : "-, ");
         print_hexs("Region: 0x", memory_map[i].base, "-");
         print_hexs("0x", ((uint64_t) memory_map[i].base) + memory_map[i].length, ", ");
 
         print_hexs("Size: 0x", memory_map[i].length, ", ");
         if (memory_map[i].length > 0x100000) {
-            print_str("(");
+            write_str("(");
             if ((uint32_t) memory_map[i].length % 0x100000 != 0) {
-                print_str("~");
+                write_str("~");
             }
             print_dec((uint32_t) memory_map[i].length / 0x100000);
-            print_str(" MiB)");
+            write_str(" MiB)");
         } else if (memory_map[i].length > 0x400) {
-            print_str("(");
+            write_str("(");
             if ((uint32_t) memory_map[i].length % 0x400 != 0) {
-                print_str("~");
+                write_str("~");
             }
             print_dec((uint32_t) memory_map[i].length / 0x400);
-            print_str(" KiB)");
+            write_str(" KiB)");
         } else {
-            print_str("(");
+            write_str("(");
             print_dec((uint32_t) memory_map[i].length);
-            print_str(" B)");
+            write_str(" B)");
         }
-        print_str("]\n");
+        write_str("]\n");
     }
 
     if (!__get_cpuid_max(0x80000001, NULL)) {
@@ -170,39 +174,39 @@ void main() {
     fat32_read_directory(volume, (fat32_directory_entry_t *) &directory, volume->root_cluster);
 
     print_hexs(" Volume in Drive 0x", boot_disk, " is ");
-    print_str(volume->volume_id);
-    print_str("\n");
+    write_str(volume->volume_id);
+    write_str("\n");
     print_hexs(" Volume Serial Number is ", volume->serial_number >> 16, "");
     print_hexs("-", volume->serial_number & 0xFFFF, "\n");
 
-    print_str("\n Directory of X:\\\n\n");
+    write_str("\n Directory of X:\\\n\n");
 
     for (int i = 0; i < entries; ++i) {
-        print_str("    ");
+        write_str("    ");
         for (int j = 0; j < 8; ++j) {
-            print_chr(directory[i].name[j]);
+            write_chr(directory[i].name[j]);
         }
-        print_str("  ");
+        write_str("  ");
         for (int j = 0; j < 3; ++j) {
-            print_chr(directory[i].ext[j]);
+            write_chr(directory[i].ext[j]);
         }
-        print_str("  ");
+        write_str("  ");
         if ((directory[i].attributes & FAT32_ATTR_DIRECTORY)) {
-            print_str("<DIR>");
+            write_str("<DIR>");
         } else {
             print_dec(directory[i].filesize);
         }
-        print_str("  [");
-        print_chr((directory[i].attributes & FAT32_ATTR_ARCHIVE) ? 'A' : '-');
-        print_chr((directory[i].attributes & FAT32_ATTR_SYSTEM) ? 'S' : '-');
-        print_chr((directory[i].attributes & FAT32_ATTR_HIDDEN) ? 'H' : '-');
-        print_chr((directory[i].attributes & FAT32_ATTR_READONLY) ? 'R' : '-');
-        print_str("]");
+        write_str("  [");
+        write_chr((directory[i].attributes & FAT32_ATTR_ARCHIVE) ? 'A' : '-');
+        write_chr((directory[i].attributes & FAT32_ATTR_SYSTEM) ? 'S' : '-');
+        write_chr((directory[i].attributes & FAT32_ATTR_HIDDEN) ? 'H' : '-');
+        write_chr((directory[i].attributes & FAT32_ATTR_READONLY) ? 'R' : '-');
+        write_str("]");
 
         print_hexs(" : cluster 0x", directory[i].cluster_hi << 16 | directory[i].cluster_lo, "\n");
     }
 
-    print_str("\n");
+    write_str("\n");
 
     const char *load_name = "TEST64  ";
     const char *load_ext = "BIN";
@@ -223,7 +227,7 @@ void main() {
         fail("Error opening kernel file");
     }
 
-    print_str("Loading Kernel File Header...\n");
+    write_str("Loading Kernel File Header...\n");
     uint8_t header_buf[64];
     if (fat32_file_read(file, header_buf, 64) != 64) {
         fail("Error reading kernel file header");
@@ -258,7 +262,7 @@ void main() {
     }
     print_hexs("Entrypoint is at 0x", header->entry, "\n");
 
-    print_str("Loading Program Header Table...\n");
+    write_str("Loading Program Header Table...\n");
 
     elf64_pht_entry_t pht[header->pht_entry_count];
     fat32_file_seek(file, (int) header->pht_offset, FAT32_SEEK_SET);
@@ -267,7 +271,7 @@ void main() {
     }
 
     // identity map first 1MiB
-    print_str("Identity mapping first 1MiB of RAM\n");
+    write_str("Identity mapping first 1MiB of RAM\n");
     for (uint64_t i = 0; i < 0x100000; i += 0x1000) {
         map_page(i, i);
     }
@@ -284,8 +288,8 @@ void main() {
             uint32_t count = 0;
             uint32_t block_size = 512;
             while (count < pht[i].filesize) {
-                print_chr('\b');
-                print_chr(spinner[spin_index]);
+                write_chr('\b');
+                write_chr(spinner[spin_index]);
                 spin_index = ((spin_index + 1) % 4);
 
                 uint32_t loaded = fat32_file_read(file, ((uint8_t *) pht[i].paddr) + count, block_size);
@@ -294,7 +298,7 @@ void main() {
                 }
                 count += loaded;
             }
-            print_str("\bDone!\n");
+            write_str("\bDone!\n");
 
             print_hexs("Mapping segment to vaddr 0x", pht[i].vaddr, "\n");
             for (uint64_t j = 0; j <= pht[i].filesize; j += 0x1000) {
@@ -305,10 +309,10 @@ void main() {
             print_hexs("type 0x", pht[i].type, ": ");
 
             print_hexs("flags 0x", pht[i].flags, " (");
-            print_chr((pht[i].flags & ELF_PFLAG_R) ? 'R' : '-');
-            print_chr((pht[i].flags & ELF_PFLAG_W) ? 'W' : '-');
-            print_chr((pht[i].flags & ELF_PFLAG_X) ? 'X' : '-');
-            print_str("): ");
+            write_chr((pht[i].flags & ELF_PFLAG_R) ? 'R' : '-');
+            write_chr((pht[i].flags & ELF_PFLAG_W) ? 'W' : '-');
+            write_chr((pht[i].flags & ELF_PFLAG_X) ? 'X' : '-');
+            write_str("): ");
 
             print_hexs("offset 0x", pht[i].offset, ": ");
             print_hexs("vaddr 0x", pht[i].vaddr, ": ");
@@ -319,19 +323,19 @@ void main() {
         }
     }
 
-    print_str("All loaded up, have a nice time in long mode :3\n");
+    write_str("All loaded up, have a nice time in long mode :3\n");
 
-    print_str("Press any key to continue....\n");
+    write_str("Press any key to continue....\n");
     const char *spinner = "|/-\\";
     int spin_index = 0;
     while (!peek_keystroke()) {
-        print_chr('\b');
-        print_chr(spinner[spin_index]);
+        write_chr('\b');
+        write_chr(spinner[spin_index]);
         spin_index = ((spin_index + 1) % 4);
 
         delay(2);
     }
-    print_str("\b \n");
+    write_str("\b \n");
 
     enter_long_mode(header->entry);
 }

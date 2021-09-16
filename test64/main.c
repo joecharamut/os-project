@@ -26,4 +26,6 @@ void _start() {
             ++y;
         }
     }
+
+    __asm__ ("cli; hlt; jmp .");
 }

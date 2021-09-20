@@ -35,6 +35,6 @@ extern bool serial_init();
 __attribute__((noreturn)) void abort();
 void write_chr(char c);
 void write_str(const char *str);
-void write_num(uint32_t num, uint32_t base);
+void write_num(uint64_t num, uint64_t base);
 
 #endif //LOADER_DEBUG_H

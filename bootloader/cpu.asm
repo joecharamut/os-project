@@ -88,6 +88,31 @@ pop_keystroke:
     int 16h
     ret
 
+global set_bios_target_mode:function
+set_bios_target_mode:
+    push ebp
+    mov ebp, esp
+    push ebx
+
+    mov ax, 0xEC00
+    mov bl, [ebp+8]
+    int 15h ; INT15h,EC00 [Detect Target Operating Mode Callback]
+    jnc .success
+
+    shr ax, 8 ; mov val in ah to al
+    test al, al
+    jnz .exit
+    mov al, 1
+    jmp .exit
+
+.success:
+    xor eax, eax
+.exit:
+    pop ebx
+    mov esp, ebp
+    pop ebp
+    ret
+
 global enter_long_mode:function
 enter_long_mode:
     xor ax, ax
@@ -123,21 +148,6 @@ enter_long_mode:
     push dword [ebp+0x8]
     jmp dword 08h:_entry_long_mode ; do it
 
-section .data
-GDT:
-    .Null: dq 0x0000000000000000
-    .Code: dq 0x00209A0000000000
-    .Data: dq 0x0000920000000000
-align 4
-    .Pointer:
-        dw $ - GDT - 1
-        dd GDT
-
-align 4
-IDT:
-    .length: dw 0
-    .base: dd 0
-
 bits 64
 section .text64
 _entry_long_mode:
@@ -151,3 +161,17 @@ _entry_long_mode:
     pop rax ; kernel entrypoint
     jmp rax
 
+bits 16
+section .data
+GDT:
+    .Null: dq 0x0000000000000000
+    .Code: dq 0x00209A0000000000
+    .Data: dq 0x0000920000000000
+align 4
+    .Pointer:
+        dw $ - GDT - 1
+        dd GDT
+align 4
+IDT:
+    .length: dw 0
+    .base: dd 0

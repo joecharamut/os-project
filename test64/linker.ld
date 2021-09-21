@@ -9,8 +9,9 @@ PHDRS
 KERNEL_VMA = 0xFFFFFFF800000000;
 SECTIONS
 {
-    . = KERNEL_VMA;
-    . += 1M;
+    . = 1M;
+    _page_table = .;
+    . += KERNEL_VMA + 1M;
 
     .text : AT(ADDR(.text) - KERNEL_VMA) {
         _code = .;
@@ -24,12 +25,12 @@ SECTIONS
         *(.data)
     } :load
 
-   .eh_frame : AT(ADDR(.eh_frame) - KERNEL_VMA)
-   {
-       _eh_frame = .;
-       *(.eh_frame)
-        . = ALIGN(4096);
-   } :load
+    .eh_frame : AT(ADDR(.eh_frame) - KERNEL_VMA)
+    {
+        _eh_frame = .;
+        *(.eh_frame)
+         . = ALIGN(4096);
+    } :load
 
     .bss ALIGN(4K) : AT(ADDR(.bss) - KERNEL_VMA) {
         _bss = .;

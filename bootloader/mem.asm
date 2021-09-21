@@ -1,32 +1,6 @@
 bits 16
 section .text
 
-; uint16_t get_memory_size()
-global get_memory_size:function
-get_memory_size:
-    clc
-    int 12h
-    jnc .exit ; carry flag set on error
-
-    ; on error set ax to -1
-    mov ax, -1
-.exit:
-    ret
-
-; uint16_t get_extended_memory_size()
-global get_extended_memory_size:function
-get_extended_memory_size:
-    clc
-    xor eax, eax
-    mov ah, 88h
-    int 15h      ; int 15h,88h [Get Extended Memory Size]
-    jnc .exit    ; cf set on error
-
-    ; return -1 on error
-    mov ax, -1
-.exit:
-    ret
-
 ; uint32_t get_system_memory_map(bios_mmap_entry_t *entry_buffer)
 global get_system_memory_map:function
 get_system_memory_map:
@@ -151,5 +125,3 @@ strncmp:
         mov esp, ebp
         pop ebp
         ret
-
-

@@ -69,6 +69,15 @@ static uint32_t map_page(uint64_t paddr, uint64_t vaddr) {
     return page_map_free;
 }
 
+static const char *spinner = "|/-\\";
+static int spin_index = 0;
+static void tick_spinner() {
+    write_chr('\b');
+    write_chr(spinner[spin_index]);
+    spin_index = ((spin_index + 1) % 4);
+    delay(1);
+}
+
 void main() {
     // load boot disk from first byte of scratch space
     uint8_t boot_disk = *((uint8_t *) 0x70000);
@@ -82,6 +91,7 @@ void main() {
     write_str("\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC");
 
     write_str("Hello World!\n");
+    delay(100);
 
     if (!get_a20_line_state()) {
         // todo enable a20 if disabled
@@ -218,7 +228,7 @@ void main() {
         }
     }
     if (file_index == -1) {
-        fail("Could not find KERNEL.BIN");
+        fail("Could not find TEST64.BIN");
     }
 
     uint8_t file_buf[sizeof(fat32_file_t)];
@@ -271,39 +281,45 @@ void main() {
     }
 
     // identity map first 1MiB
-    write_str("Identity mapping first 1MiB of RAM\n");
+    write_str("Identity mapping first 1MiB of RAM...");
     for (uint64_t i = 0; i < 0x100000; i += 0x1000) {
         map_page(i, i);
     }
+    write_str("OK!\n");
+
+    // recursive map pml4
+    write_str("Adding recursive mapping for PML4...");
+    {
+        uint64_t *pml4;
+        __asm__ volatile ("mov %%cr3, %0" : "=r" (pml4));
+        map_page((uint64_t) pml4, 0xfffffffffffff000);
+    }
+    write_str("OK!\n");
 
     for (int i = 0; i < header->pht_entry_count; ++i) {
         if (pht[i].type == ELF_PTYPE_LOAD) {
             print_decs("Segment ", i, ": Loading");
-            print_decs(" ", pht[i].filesize, " bytes");
-            print_hexs(" to 0x", pht[i].paddr, "....");
-            const char *spinner = "|/-\\";
-            int spin_index = 0;
+            print_decs(" ", pht[i].filesize, " bytes....");
             fat32_file_seek(file, (int) pht[i].offset, FAT32_SEEK_SET);
 
             uint32_t count = 0;
             uint32_t block_size = 512;
             while (count < pht[i].filesize) {
-                write_chr('\b');
-                write_chr(spinner[spin_index]);
-                spin_index = ((spin_index + 1) % 4);
-
+                tick_spinner();
                 uint32_t loaded = fat32_file_read(file, ((uint8_t *) pht[i].paddr) + count, block_size);
                 if (loaded == 0) {
-                    fail("Error reading kernel file");
+                    fail("Error reading file");
                 }
                 count += loaded;
             }
             write_str("\bDone!\n");
 
-            print_hexs("Mapping segment to vaddr 0x", pht[i].vaddr, "\n");
+            write_str("Mapping segment into virtual memory....");
             for (uint64_t j = 0; j <= pht[i].filesize; j += 0x1000) {
+                tick_spinner();
                 map_page(pht[i].paddr + j, pht[i].vaddr + j);
             }
+            write_str("\bDone!\n");
         } else {
             print_decs("Segment ", i, ": [");
             print_hexs("type 0x", pht[i].type, ": ");
@@ -323,16 +339,17 @@ void main() {
         }
     }
 
-    write_str("All loaded up, have a nice time in long mode :3\n");
+    write_str("All loaded up, good luck!\n");
+
+    // mode 2 = long mode only
+    uint8_t status = set_bios_target_mode(2);
+    if (status) {
+        print_hexs("Could not inform BIOS of intended operating mode (0x", status, ")\n");
+    }
 
     write_str("Press any key to continue....\n");
-    const char *spinner = "|/-\\";
-    int spin_index = 0;
     while (!peek_keystroke()) {
-        write_chr('\b');
-        write_chr(spinner[spin_index]);
-        spin_index = ((spin_index + 1) % 4);
-
+        tick_spinner();
         delay(2);
     }
     write_str("\b \n");

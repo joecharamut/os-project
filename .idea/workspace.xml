@@ -16,15 +16,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="whoops it actually loads the disk now">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add serial console">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/cpu.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/debug.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/cpu.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/cpu.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/disk.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/disk.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/linker.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mem.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.asm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/mem.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/test64/linker.ld" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/test64/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -366,14 +366,7 @@
       <workItem from="1630112996894" duration="19519000" />
       <workItem from="1630525197305" duration="30692000" />
       <workItem from="1630768914723" duration="65533000" />
-      <workItem from="1631553853764" duration="17198000" />
-    </task>
-    <task id="LOCAL-00018" summary="math">
-      <created>1622865672758</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1622865672758</updated>
+      <workItem from="1631553853764" duration="30751000" />
     </task>
     <task id="LOCAL-00019" summary="files">
       <created>1622905846600</created>
@@ -711,7 +704,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631669438214</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="add serial console">
+      <created>1631753274764</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1631753274764</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -787,7 +787,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="misc" />
     <MESSAGE value="writint asmemby" />
     <MESSAGE value="make print_chr an extern asm function" />
     <MESSAGE value="disk work" />
@@ -812,7 +811,8 @@
     <MESSAGE value="cleanup" />
     <MESSAGE value="loads long mode now" />
     <MESSAGE value="whoops it actually loads the disk now" />
-    <option name="LAST_COMMIT_MESSAGE" value="whoops it actually loads the disk now" />
+    <MESSAGE value="add serial console" />
+    <option name="LAST_COMMIT_MESSAGE" value="add serial console" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

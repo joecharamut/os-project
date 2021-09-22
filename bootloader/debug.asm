@@ -17,6 +17,43 @@ print_chr:
     pop ebp
     ret
 
+global set_chr:function
+set_chr:
+    push ebp
+    mov ebp, esp
+    push bx
+
+    ; save cursor position
+    mov ah, 0x03
+    xor bx, bx
+    int 10h
+    push dx
+
+    ; set cursor position
+    mov ah, 0x02
+    xor bx, bx
+    mov dh, byte [ebp+16] ; x
+    mov dl, byte [ebp+12] ; y
+    int 10h
+
+    ; write character
+    mov ah, 0x0A
+    mov al, byte [ebp+8]
+    xor bx, bx
+    mov cx, 1
+    int 10h
+
+    ; restore cursor position
+    mov ah, 0x02
+    xor bx, bx
+    pop dx
+    int 10h
+
+    pop bx
+    mov esp, ebp
+    pop ebp
+    ret
+
 %define COM1 0x3F8
 %macro outb 2
     mov dx, %1

@@ -14,6 +14,8 @@ void write_chr(char c) {
     serial_write(c);
 }
 
+extern void set_chr(char c, uint8_t x, uint8_t y);
+
 void write_str(const char *str) {
     char c;
     while ((c = *str)) {
@@ -83,4 +85,63 @@ void write_num(uint64_t num, uint64_t base) {
         write_num(div64(num, base), base);
     }
     write_chr(print_num_alphabet[mod64(num, base)]);
+}
+
+int strlen(const char *str) {
+    int len = 0;
+    while (*str++) len++;
+    return len;
+}
+
+const char *box_chars[] = {
+        // ╔   ╗   ╚   ╝   ═   ║
+        "\xC9\xBB\xC8\xBC\xCD\xBA",
+        "",
+};
+void draw_box(int x, int y, int w, int h, int style, const char *title) {
+    assert(x + w < 80);
+    assert(y + h < 25);
+    assert(w > 0);
+    assert(h > 0);
+
+    const char *charset = box_chars[style];
+
+    // corners
+    set_chr(charset[0], x, y);
+    set_chr(charset[1], x+w, y);
+    set_chr(charset[2], x, y+h);
+    set_chr(charset[3], x+w, y+h);
+
+    // top side
+    for (int i = 1; i < w; ++i) {
+        set_chr(charset[4], x+i, y);
+    }
+
+    // bottom side
+    for (int i = 1; i < w; ++i) {
+        set_chr(charset[4], x+i, y+h);
+    }
+
+    // left side
+    for (int i = 1; i < h; ++i) {
+        set_chr(charset[5], x, y+i);
+    }
+
+    // right side
+    for (int i = 1; i < h; ++i) {
+        set_chr(charset[5], x+w, y+i);
+    }
+
+    if (title) {
+        int len = strlen(title);
+        int box_half = (w / 2);
+        int str_half = (len / 2);
+        set_chr('[', x + box_half - str_half - (w % 2), y);
+
+        for (int i = 0; i < len; ++i) {
+            set_chr(title[i], x + box_half - str_half + i, y);
+        }
+
+        set_chr(']', x + box_half + str_half + (len % 2), y);
+    }
 }

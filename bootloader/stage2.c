@@ -91,8 +91,16 @@ void main() {
 //    write_str("\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC");
 
 //    write_str("Hello World!\n");
-    __asm__ volatile ("int $0x10\t\n" :: "ax" (0x0100), "cx" (0x1000));
-    draw_box(0, 0, 79, 24, 0, "bingus my beloved");
+    // reload video mode (clear screen)
+    __asm__ ("int $0x10\t\n" :: "ax" (0x00 | *((uint8_t *) 0x0449)));
+    // set bg color
+    __asm__ ("int $0x10\t\n" :: "ax" (0x0B00), "bx" (0x0001));
+    // disable cursor
+    __asm__ ("int $0x10\t\n" :: "ax" (0x0100), "cx" (0x1000));
+    draw_box(0, 0, 80, 25, 0, " MISSINGNO. ");
+    write_status(2, 2, 78, '?', "bruh");
+    write_status(2, 3, 78, '?', "bruh 2");
+    write_status(2, 4, 78, '?', "bruh continues");
     abort();
 
     if (!get_a20_line_state()) {

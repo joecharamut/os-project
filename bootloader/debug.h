@@ -36,6 +36,8 @@ __attribute__((noreturn)) void abort();
 void write_chr(char c);
 void write_str(const char *str);
 void write_num(uint64_t num, uint64_t base);
+
 void draw_box(int x, int y, int w, int h, int style, const char *title);
+void write_status(int x, int y, int w, char status, const char *str);
 
 #endif //LOADER_DEBUG_H

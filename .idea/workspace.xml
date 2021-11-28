@@ -12,13 +12,12 @@
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" ENABLED="true" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="try to tell bios we want long mode">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="box drawin">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/debug.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
@@ -241,8 +240,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="language.cpp.clang-tidy" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -259,6 +257,11 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
@@ -303,11 +306,6 @@
       <toRun name="qemu" type="CMakeRunConfiguration" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="CMake Application.qemu" />
       <item itemvalue="CMake Application.mbr.bin" />
@@ -315,7 +313,7 @@
       <item itemvalue="CMake Application.kernel.bin" />
       <item itemvalue="CMake Application.linker.ld" />
       <item itemvalue="CMake Application.test64.bin" />
-      <item itemvalue="GDB Remote Debug.GDB qemu" />
+      <item itemvalue="Remote Debug.GDB qemu" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
@@ -362,14 +360,9 @@
       <workItem from="1630112996894" duration="19519000" />
       <workItem from="1630525197305" duration="30692000" />
       <workItem from="1630768914723" duration="65533000" />
-      <workItem from="1631553853764" duration="37765000" />
-    </task>
-    <task id="LOCAL-00021" summary="disable logging">
-      <created>1622908709893</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1622908709893</updated>
+      <workItem from="1631553853764" duration="41833000" />
+      <workItem from="1633065808148" duration="3147000" />
+      <workItem from="1638143274061" duration="337000" />
     </task>
     <task id="LOCAL-00022" summary="testing">
       <created>1622909399448</created>
@@ -707,7 +700,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632231773020</updated>
     </task>
-    <option name="localTasksCounter" value="70" />
+    <task id="LOCAL-00070" summary="box drawin">
+      <created>1632314051894</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1632314051894</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -783,7 +783,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="disk work" />
     <MESSAGE value="rename assert" />
     <MESSAGE value="move print funcs to debug" />
     <MESSAGE value="add some helper macros for printing numbers in a string" />
@@ -808,7 +807,8 @@
     <MESSAGE value="add serial console" />
     <MESSAGE value="unify division" />
     <MESSAGE value="try to tell bios we want long mode" />
-    <option name="LAST_COMMIT_MESSAGE" value="try to tell bios we want long mode" />
+    <MESSAGE value="box drawin" />
+    <option name="LAST_COMMIT_MESSAGE" value="box drawin" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

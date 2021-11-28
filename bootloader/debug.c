@@ -96,13 +96,16 @@ int strlen(const char *str) {
 const char *box_chars[] = {
         // ╔   ╗   ╚   ╝   ═   ║
         "\xC9\xBB\xC8\xBC\xCD\xBA",
-        "",
+        // ┌   ┐   └   ┘   ─   │
+        "\xDA\xBF\xC0\xD9\xC4\xB3",
 };
 void draw_box(int x, int y, int w, int h, int style, const char *title) {
+    assert(w > 0);
+    w--;
+    assert(h > 0);
+    h--;
     assert(x + w < 80);
     assert(y + h < 25);
-    assert(w > 0);
-    assert(h > 0);
 
     const char *charset = box_chars[style];
 
@@ -143,5 +146,17 @@ void draw_box(int x, int y, int w, int h, int style, const char *title) {
         }
 
         set_chr(']', x + box_half + str_half + (len % 2), y);
+    }
+}
+
+void write_status(int x, int y, int w, char status, const char *str) {
+    set_chr('[', x+0, y);
+    set_chr(status, x+1, y);
+    set_chr(']', x+2, y);
+    set_chr(' ', x+3, y);
+
+    for (int i = x+4; i < w && *str; ++i) {
+        set_chr(*str, i, y);
+        str++;
     }
 }

@@ -38,6 +38,7 @@ void write_str(const char *str);
 void write_num(uint64_t num, uint64_t base);
 
 void draw_box(int x, int y, int w, int h, int style, const char *title);
-void write_status(int x, int y, int w, char status, const char *str);
+void write_centered_str(int x, int y, int w, const char *str);
+void set_cursor_pos(int x, int y);
 
 #endif //LOADER_DEBUG_H

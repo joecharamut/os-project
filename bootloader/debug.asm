@@ -54,6 +54,25 @@ set_chr:
     pop ebp
     ret
 
+global set_cursor_pos:function
+set_cursor_pos:
+    push ebp
+    mov ebp, esp
+
+    push ebx
+
+    mov ah, 0x02
+    xor bx, bx
+    mov dh, byte [ebp+12] ; x
+    mov dl, byte [ebp+8] ; y
+    int 10h
+
+    pop ebx
+
+    mov esp, ebp
+    pop ebp
+    ret
+
 %define COM1 0x3F8
 %macro outb 2
     mov dx, %1

@@ -16,8 +16,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="box drawin">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="box drawin 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bootloader/debug.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
@@ -81,8 +82,8 @@
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootloader/stage2.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootstrap/boot/boot.asm" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/bootstrap/linker.ld.in" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootloader/mbr.asm" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/bootstrap/linker.ld.in" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -362,14 +363,7 @@
       <workItem from="1630768914723" duration="65533000" />
       <workItem from="1631553853764" duration="41833000" />
       <workItem from="1633065808148" duration="3147000" />
-      <workItem from="1638143274061" duration="337000" />
-    </task>
-    <task id="LOCAL-00022" summary="testing">
-      <created>1622909399448</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1622909399448</updated>
+      <workItem from="1638143274061" duration="2775000" />
     </task>
     <task id="LOCAL-00023" summary="registers">
       <created>1625076563777</created>
@@ -707,7 +701,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632314051894</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="box drawin 2">
+      <created>1638143837902</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1638143837902</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -783,7 +784,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="rename assert" />
     <MESSAGE value="move print funcs to debug" />
     <MESSAGE value="add some helper macros for printing numbers in a string" />
     <MESSAGE value="add some comments" />
@@ -808,7 +808,8 @@
     <MESSAGE value="unify division" />
     <MESSAGE value="try to tell bios we want long mode" />
     <MESSAGE value="box drawin" />
-    <option name="LAST_COMMIT_MESSAGE" value="box drawin" />
+    <MESSAGE value="box drawin 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="box drawin 2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -149,14 +149,12 @@ void draw_box(int x, int y, int w, int h, int style, const char *title) {
     }
 }
 
-void write_status(int x, int y, int w, char status, const char *str) {
-    set_chr('[', x+0, y);
-    set_chr(status, x+1, y);
-    set_chr(']', x+2, y);
-    set_chr(' ', x+3, y);
+void write_centered_str(int x, int y, int w, const char *str) {
+    int len = strlen(str);
+    int middle = (w / 2) - 1;
+    int str_half = (len / 2);
 
-    for (int i = x+4; i < w && *str; ++i) {
-        set_chr(*str, i, y);
-        str++;
+    for (int i = 0; i < len; ++i) {
+        set_chr(str[i], x + middle - str_half + i, y);
     }
 }

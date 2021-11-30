@@ -4,6 +4,7 @@
     <generated>
       <config projectName="os" targetName="mbr.bin" />
       <config projectName="os" targetName="linker.ld" />
+      <config projectName="os" targetName="loader.efi" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="qemu" />
       <config projectName="os" targetName="test64.bin" />
@@ -16,10 +17,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="box drawin kinda useless">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="beep">
+      <change afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/lib/data.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/lib/lib.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/debug.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -78,9 +82,12 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/efiloader/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/run_qemu.sh" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootloader/stage2.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootstrap/boot/boot.asm" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/cmake-build-debug/CMakeFiles/qemu.dir/build.make" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootloader/mbr.asm" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootstrap/linker.ld.in" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -236,7 +243,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/efiloader/lib" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -244,6 +251,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/efiloader/lib" />
+      <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$/cross" />
@@ -281,6 +290,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="loader.efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="loader.efi" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="mbr.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="mbr.bin" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -312,6 +326,7 @@
       <item itemvalue="CMake Application.stage2.bin" />
       <item itemvalue="CMake Application.kernel.bin" />
       <item itemvalue="CMake Application.linker.ld" />
+      <item itemvalue="CMake Application.loader.efi" />
       <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
     </list>
@@ -362,14 +377,7 @@
       <workItem from="1630768914723" duration="65533000" />
       <workItem from="1631553853764" duration="41833000" />
       <workItem from="1633065808148" duration="3147000" />
-      <workItem from="1638143274061" duration="11321000" />
-    </task>
-    <task id="LOCAL-00024" summary="aaaaa">
-      <created>1628907156790</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1628907156790</updated>
+      <workItem from="1638143274061" duration="24056000" />
     </task>
     <task id="LOCAL-00025" summary="bootloader and convincing gcc to make real mode code">
       <created>1629225883643</created>
@@ -707,7 +715,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638162941708</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="beep">
+      <created>1638230828127</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1638230828127</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -783,7 +798,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add some helper macros for printing numbers in a string" />
     <MESSAGE value="add some comments" />
     <MESSAGE value="add func for getting bios mem map" />
     <MESSAGE value="move around some memory" />
@@ -808,7 +822,8 @@
     <MESSAGE value="box drawin" />
     <MESSAGE value="box drawin 2" />
     <MESSAGE value="box drawin kinda useless" />
-    <option name="LAST_COMMIT_MESSAGE" value="box drawin kinda useless" />
+    <MESSAGE value="beep" />
+    <option name="LAST_COMMIT_MESSAGE" value="beep" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

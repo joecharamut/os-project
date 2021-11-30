@@ -10,4 +10,6 @@ qemu-system-x86_64 \
             -m 256M \
             -vga std \
             -soundhw pcspk \
+            -drive if=pflash,format=raw,unit=0,file=OVMF_CODE.fd,readonly=on \
+            -drive if=pflash,format=raw,unit=1,file=OVMF_VARS.fd \
             -drive file=disk.img,format=raw

@@ -73,6 +73,44 @@ set_cursor_pos:
     pop ebp
     ret
 
+global beep:function
+beep:
+    push ebp
+    mov ebp, esp
+    pushad
+
+    ; control word
+    mov al, 0xB6
+    out 43h, al
+
+    ; send frequency
+    mov ax, [ebp+8]
+    out 42h, al
+    mov al, ah
+    out 42h, al
+
+    ; enable the pc speaker gate
+    in al, 61h
+    or al, 03h
+    out 61h, al
+
+    ; delay cx:dx microseconds
+    mov cx, [ebp+14]
+    mov dx, [ebp+12]
+    mov ah, 86h
+    int 15h
+
+    ; disable pc speaker
+    in al, 61h
+    and al, 0xFC
+    out 61h, al
+
+    popad
+    mov esp, ebp
+    pop ebp
+    ret
+
+
 %define COM1 0x3F8
 %macro outb 2
     mov dx, %1

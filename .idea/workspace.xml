@@ -16,12 +16,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="box drawin 2">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="box drawin kinda useless">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/debug.asm" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bootloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/debug.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootloader/stage2.c" beforeDir="false" afterPath="$PROJECT_DIR$/bootloader/stage2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -363,14 +362,7 @@
       <workItem from="1630768914723" duration="65533000" />
       <workItem from="1631553853764" duration="41833000" />
       <workItem from="1633065808148" duration="3147000" />
-      <workItem from="1638143274061" duration="2775000" />
-    </task>
-    <task id="LOCAL-00023" summary="registers">
-      <created>1625076563777</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1625076563777</updated>
+      <workItem from="1638143274061" duration="11321000" />
     </task>
     <task id="LOCAL-00024" summary="aaaaa">
       <created>1628907156790</created>
@@ -708,7 +700,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638143837902</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="box drawin kinda useless">
+      <created>1638162941708</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1638162941708</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -784,7 +783,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="move print funcs to debug" />
     <MESSAGE value="add some helper macros for printing numbers in a string" />
     <MESSAGE value="add some comments" />
     <MESSAGE value="add func for getting bios mem map" />
@@ -809,7 +807,8 @@
     <MESSAGE value="try to tell bios we want long mode" />
     <MESSAGE value="box drawin" />
     <MESSAGE value="box drawin 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="box drawin 2" />
+    <MESSAGE value="box drawin kinda useless" />
+    <option name="LAST_COMMIT_MESSAGE" value="box drawin kinda useless" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

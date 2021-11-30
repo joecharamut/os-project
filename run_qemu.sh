@@ -9,4 +9,5 @@ qemu-system-x86_64 \
             -serial stdio \
             -m 256M \
             -vga std \
+            -soundhw pcspk \
             -drive file=disk.img,format=raw

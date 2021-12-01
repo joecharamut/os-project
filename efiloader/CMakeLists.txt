@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
 find_program(X86_64_PE_COMPILER x86_64-w64-mingw32-gcc REQUIRED)
-find_library(EFI_LIBRARY efi REQUIRED)
 
 message(STATUS "x86_64_PE compiler is ${X86_64_PE_COMPILER}")
 
@@ -17,9 +16,22 @@ set(WARNING_FLAGS -Wall -Wextra -Wpedantic -Wformat)
 set(SUPPRESS_FLAGS "")
 set(ERROR_FLAGS -Werror=implicit-function-declaration)
 
-include_directories(/usr/include/efi)
-include_directories(/usr/include/efi/x86_64)
-include_directories(/usr/include/efi/protocol)
+include(ExternalProject)
+ExternalProject_Add(gnu-efi
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi
+        URL "https://downloads.sourceforge.net/project/gnu-efi/gnu-efi-3.0.14.tar.bz2"
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ${CMAKE_COMMAND} -E env
+            ARCH=x86_64
+            CROSS_COMPILE=x86_64-w64-mingw32-
+            make -C <SOURCE_DIR> lib
+        BUILD_IN_SOURCE TRUE
+        INSTALL_COMMAND ""
+        )
+
+#include_directories(/usr/include/efi)
+#include_directories(/usr/include/efi/x86_64)
+#include_directories(/usr/include/efi/protocol)
 add_compile_options(
         -ffreestanding
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
@@ -34,6 +46,13 @@ add_link_options(
         -Wl,--subsystem,10
         -e efi_main
 )
-
-add_executable(loader.efi lib/data.c main.c)
+add_executable(loader.efi main.c)
+target_include_directories(loader.efi PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/x86_64
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/protocol
+        )
+target_link_directories(loader.efi PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/x86_64/lib)
+target_link_libraries(loader.efi efi)
+add_dependencies(loader.efi gnu-efi)
 

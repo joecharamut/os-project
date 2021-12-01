@@ -6,6 +6,7 @@
       <config projectName="os" targetName="linker.ld" />
       <config projectName="os" targetName="loader.efi" />
       <config projectName="os" targetName="kernel.bin" />
+      <config projectName="os" targetName="gnu-efi" />
       <config projectName="os" targetName="qemu" />
       <config projectName="os" targetName="test64.bin" />
       <config projectName="os" targetName="stage2.bin" />
@@ -17,14 +18,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="beep">
-      <change afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/efiloader/lib/data.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/efiloader/lib/lib.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="basic uefi example">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,6 +278,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -326,6 +329,7 @@
       <item itemvalue="CMake Application.stage2.bin" />
       <item itemvalue="CMake Application.kernel.bin" />
       <item itemvalue="CMake Application.linker.ld" />
+      <item itemvalue="CMake Application.gnu-efi" />
       <item itemvalue="CMake Application.loader.efi" />
       <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
@@ -377,14 +381,7 @@
       <workItem from="1630768914723" duration="65533000" />
       <workItem from="1631553853764" duration="41833000" />
       <workItem from="1633065808148" duration="3147000" />
-      <workItem from="1638143274061" duration="24056000" />
-    </task>
-    <task id="LOCAL-00025" summary="bootloader and convincing gcc to make real mode code">
-      <created>1629225883643</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1629225883643</updated>
+      <workItem from="1638143274061" duration="34030000" />
     </task>
     <task id="LOCAL-00026" summary="touch up linker script and switch to unreal mode in mbr">
       <created>1629229864128</created>
@@ -722,7 +719,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638230828127</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="basic uefi example">
+      <created>1638256934461</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1638256934461</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -798,7 +802,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add some comments" />
     <MESSAGE value="add func for getting bios mem map" />
     <MESSAGE value="move around some memory" />
     <MESSAGE value="figured out the right rep movsb prefix" />
@@ -823,7 +826,8 @@
     <MESSAGE value="box drawin 2" />
     <MESSAGE value="box drawin kinda useless" />
     <MESSAGE value="beep" />
-    <option name="LAST_COMMIT_MESSAGE" value="beep" />
+    <MESSAGE value="basic uefi example" />
+    <option name="LAST_COMMIT_MESSAGE" value="basic uefi example" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

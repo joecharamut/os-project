@@ -18,9 +18,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fixed the example">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="yknow">
+      <change afterPath="$PROJECT_DIR$/efiloader/elf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,7 +239,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/efiloader/lib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/efiloader" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -247,8 +247,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/efiloader/lib" />
       <recent name="$PROJECT_DIR$/efiloader" />
+      <recent name="$PROJECT_DIR$/efiloader/lib" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$/cross" />
@@ -379,14 +379,7 @@
       <workItem from="1630768914723" duration="65533000" />
       <workItem from="1631553853764" duration="41833000" />
       <workItem from="1633065808148" duration="3147000" />
-      <workItem from="1638143274061" duration="38293000" />
-    </task>
-    <task id="LOCAL-00027" summary="build the real stage2 now">
-      <created>1629230153061</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1629230153061</updated>
+      <workItem from="1638143274061" duration="38420000" />
     </task>
     <task id="LOCAL-00028" summary="added long mode check">
       <created>1629231655391</created>
@@ -724,7 +717,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638327422582</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="yknow">
+      <created>1638409827767</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1638409827767</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -800,7 +800,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="move around some memory" />
     <MESSAGE value="figured out the right rep movsb prefix" />
     <MESSAGE value="move a20 detect into stage2" />
     <MESSAGE value="workin on fat32" />
@@ -825,7 +824,8 @@
     <MESSAGE value="beep" />
     <MESSAGE value="basic uefi example" />
     <MESSAGE value="fixed the example" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed the example" />
+    <MESSAGE value="yknow" />
+    <option name="LAST_COMMIT_MESSAGE" value="yknow" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

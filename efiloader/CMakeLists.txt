@@ -46,7 +46,9 @@ add_link_options(
         -Wl,--subsystem,10
         -e efi_main
 )
-add_executable(loader.efi main.c)
+add_executable(loader.efi
+        elf.h
+        main.c)
 target_include_directories(loader.efi PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/x86_64

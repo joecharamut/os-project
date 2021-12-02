@@ -18,10 +18,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="basic uefi example">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fixed the example">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -381,14 +379,7 @@
       <workItem from="1630768914723" duration="65533000" />
       <workItem from="1631553853764" duration="41833000" />
       <workItem from="1633065808148" duration="3147000" />
-      <workItem from="1638143274061" duration="34030000" />
-    </task>
-    <task id="LOCAL-00026" summary="touch up linker script and switch to unreal mode in mbr">
-      <created>1629229864128</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1629229864128</updated>
+      <workItem from="1638143274061" duration="38293000" />
     </task>
     <task id="LOCAL-00027" summary="build the real stage2 now">
       <created>1629230153061</created>
@@ -726,7 +717,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638256934461</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="fixed the example">
+      <created>1638327422582</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1638327422582</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -802,7 +800,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add func for getting bios mem map" />
     <MESSAGE value="move around some memory" />
     <MESSAGE value="figured out the right rep movsb prefix" />
     <MESSAGE value="move a20 detect into stage2" />
@@ -827,7 +824,8 @@
     <MESSAGE value="box drawin kinda useless" />
     <MESSAGE value="beep" />
     <MESSAGE value="basic uefi example" />
-    <option name="LAST_COMMIT_MESSAGE" value="basic uefi example" />
+    <MESSAGE value="fixed the example" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed the example" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -35,9 +35,13 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     // disable watchdog
     BS->SetWatchdogTimer(0, 0, 0, NULL);
 
-    ST->ConOut->SetAttribute(ST->ConOut, EFI_BACKGROUND_BLUE | EFI_WHITE);
     ST->ConOut->ClearScreen(ST->ConOut);
     Print(L"Hello UEFI World!\n");
+    Print(L"UEFI Version %d.%d [Vendor: %s, Revision: 0x%08X]\n", ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
+
+    uint64_t rip = 0xCCCCCCCCCCCCCCCC;
+    __asm__ ("1: lea 1b(%%rip), %0\n\t" : "=a" (rip));
+    Print(L"rip = 0x%016x\n", rip);
 
     EFI_STATUS status;
     EFI_FILE_HANDLE volume = GetVolume(ImageHandle);
@@ -57,6 +61,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return status;
     }
 
+    Print(L"Press any key to continue...\n");
     status = ST->ConIn->Reset(ST->ConIn, FALSE);
     if (EFI_ERROR(status)) {
         return status;

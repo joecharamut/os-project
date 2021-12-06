@@ -29,9 +29,6 @@ ExternalProject_Add(gnu-efi
         INSTALL_COMMAND ""
         )
 
-#include_directories(/usr/include/efi)
-#include_directories(/usr/include/efi/x86_64)
-#include_directories(/usr/include/efi/protocol)
 add_compile_options(
         -ffreestanding
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
@@ -46,15 +43,22 @@ add_link_options(
         -Wl,--subsystem,10
         -e efi_main
 )
-add_executable(loader.efi
+
+set(LOADER_SOURCES
         elf.h
-        main.c)
+        main.c main.h
+        file.c file.h)
+
+add_executable(loader.efi ${LOADER_SOURCES})
+add_dependencies(loader.efi gnu-efi)
+
 target_include_directories(loader.efi PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/x86_64
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/protocol
         )
-target_link_directories(loader.efi PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/x86_64/lib)
+target_link_directories(loader.efi PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/x86_64/lib
+        )
 target_link_libraries(loader.efi efi)
-add_dependencies(loader.efi gnu-efi)
 

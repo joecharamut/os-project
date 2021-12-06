@@ -2,7 +2,8 @@
 #define LOADER_ELF_H
 
 #include <stdint.h>
-#include "debug.h"
+
+#define static_assert _Static_assert
 
 #define ELF_IDENT_32BIT             1
 #define ELF_IDENT_64BIT             2

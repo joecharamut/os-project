@@ -1,32 +1,9 @@
+#include "main.h"
+
 #include <efi.h>
 #include <efilib.h>
-
-EFI_FILE_HANDLE GetVolume(EFI_HANDLE Image) {
-    EFI_LOADED_IMAGE *LoadedImage = NULL;
-    EFI_GUID ImageGuid = EFI_LOADED_IMAGE_PROTOCOL_GUID;
-
-    EFI_FILE_IO_INTERFACE *IOVolume;
-    EFI_GUID FsGuid = EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID;
-
-    EFI_FILE_HANDLE Volume;
-
-    BS->HandleProtocol(Image, &ImageGuid, (void **) &LoadedImage);
-    BS->HandleProtocol(LoadedImage->DeviceHandle, &FsGuid, (void **) &IOVolume);
-    IOVolume->OpenVolume(IOVolume, &Volume);
-
-    return Volume;
-}
-
-UINT64 FileSize(EFI_FILE_HANDLE Handle) {
-    UINT64 ret;
-    EFI_FILE_INFO *FileInfo;
-
-    FileInfo = LibFileInfo(Handle);
-    ret = FileInfo->FileSize;
-    FreePool(FileInfo);
-
-    return ret;
-}
+#include "elf.h"
+#include "file.h"
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // setup global vars
@@ -45,22 +22,62 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     EFI_STATUS status;
     EFI_FILE_HANDLE volume = GetVolume(ImageHandle);
-    EFI_FILE_HANDLE handle;
-    status = volume->Open(volume, &handle, L"KERNEL.BIN", EFI_FILE_MODE_READ, EFI_FILE_READ_ONLY | EFI_FILE_HIDDEN | EFI_FILE_SYSTEM);
+    if (!volume) {
+        return EFI_DEVICE_ERROR;
+    }
 
+    EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"KERNEL.BIN");
+    if (!kernelHandle) {
+        return EFI_NOT_FOUND;
+    }
+
+    Print(L"Loading Kernel Header...");
+    UINTN bufsz = 64;
+    void *buf = AllocatePool(bufsz);
+    status = kernelHandle->Read(kernelHandle, &bufsz, buf);
     if (EFI_ERROR(status)) {
-        ST->ConOut->OutputString(ST->ConOut, L"Error opening kernel.bin\r\n");
+        Print(L"Error\n");
         return status;
     }
-    Print(L"Filesize of kernel.bin: %llu bytes\n", FileSize(handle));
+    Print(L"OK!\n");
+
+    elf_identifier_t *ident = buf;
+    if (ident->magic[0] != 0x7F
+        || ident->magic[1] != 'E'
+        || ident->magic[2] != 'L'
+        || ident->magic[3] != 'F'
+        || ident->version != ELF_IDENT_CURRENT_VERSION) {
+        Print(L"Invalid ELF Header\n");
+        return EFI_UNSUPPORTED;
+    }
+
+    if (ident->bitness != ELF_IDENT_64BIT) {
+        Print(L"Unsupported ELF Bitness\n");
+        return EFI_UNSUPPORTED;
+    }
+
+    if (ident->endianness != ELF_IDENT_LITTLE_ENDIAN) {
+        Print(L"Unsupported ELF Endianness\n");
+        return EFI_UNSUPPORTED;
+    }
+
+    Print(L"Parsing Kernel Header...\n");
+    elf64_header_t *header = buf;
+
+    if (header->type != ELF_TYPE_EXEC) {
+        Print(L"Unsupported ELF Object Type\n");
+        return EFI_UNSUPPORTED;
+    }
+
+    if (header->instruction_set != 0x3E) {
+        Print(L"Unsupported ELF Instruction Set\n");
+        return EFI_UNSUPPORTED;
+    }
+
+    Print(L"Entrypoint is at 0x%08x\n", header->entry);
 
     EFI_INPUT_KEY key;
-
-    status = ST->ConOut->OutputString(ST->ConOut, L"Hello World\r\n");
-    if (EFI_ERROR(status)) {
-        return status;
-    }
-
+    Print(L"Hello World\n");
     Print(L"Press any key to continue...\n");
     status = ST->ConIn->Reset(ST->ConIn, FALSE);
     if (EFI_ERROR(status)) {
@@ -71,4 +88,81 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
 
     return status;
+}
+
+const CHAR16 *UEFI_MEMORY_TYPES[] = {
+        L"EfiReservedMemoryType",
+        L"EfiLoaderCode",
+        L"EfiLoaderData",
+        L"EfiBootServicesCode",
+        L"EfiBootServicesData",
+        L"EfiRuntimeServicesCode",
+        L"EfiRuntimeServicesData",
+        L"EfiConventionalMemory",
+        L"EfiUnusableMemory",
+        L"EfiACPIReclaimMemory",
+        L"EfiACPIMemoryNVS",
+        L"EfiMemoryMappedIO",
+        L"EfiMemoryMappedIOPortSpace",
+        L"EfiPalCode",
+        L"EfiMaxMemoryType"
+};
+const CHAR16 *efi_mem_type_string(UINT32 type) {
+    if (type < 15) {
+        return UEFI_MEMORY_TYPES[type];
+    } else if (type < 0x6FFFFFFF) {
+        return L"Reserved";
+    } else if (type < 0x7FFFFFFF) {
+        return L"Reserved (OEM)";
+    } else {
+        return L"Reserved (OSV)";
+    }
+}
+
+EFI_STATUS efi_print_mem_map(UINTN *MapKeyOut) {
+    EFI_STATUS status;
+
+    UINTN mmapSize = 0;
+    EFI_MEMORY_DESCRIPTOR *memoryMap = NULL;
+    UINTN mmapKey = 0;
+    UINTN descriptorSize = 0;
+    UINT32 descriptorVersion = 0;
+
+    while ((status = BS->GetMemoryMap(&mmapSize, memoryMap, &mmapKey, &descriptorSize, &descriptorVersion)) == EFI_BUFFER_TOO_SMALL) {
+        mmapSize += descriptorSize * 8;
+
+        if (memoryMap) {
+            FreePool(memoryMap);
+        }
+        memoryMap = AllocatePool(mmapSize);
+    }
+
+    Print(L"MemoryMap: [Entries: %d, MapKey: 0x%x, DescriptorVersion: 0x%x]\n",
+          mmapSize / descriptorSize, mmapKey, descriptorVersion);
+    for (UINTN i = 0; i < mmapSize / descriptorSize; ++i) {
+        Print(L" [%lld]: Type: %s, PhysAddr: 0x%llx, VirtAddr: 0x%llx, Pages: %lld, Attr: [%c%c%c] (0x%llx)\n",
+              i,efi_mem_type_string(memoryMap[i].Type),
+              memoryMap[i].PhysicalStart, memoryMap[i].VirtualStart,
+              memoryMap[i].NumberOfPages,
+
+              (memoryMap[i].Attribute & EFI_MEMORY_RP) ? '-' : 'R',
+              (memoryMap[i].Attribute & EFI_MEMORY_WP) ? '-' : 'W',
+              (memoryMap[i].Attribute & EFI_MEMORY_XP) ? '-' : 'X',
+              memoryMap[i].Attribute);
+    }
+
+    if (EFI_ERROR(status)) {
+        Print(L"Failed to get memory map: 0x%llx\n", status);
+        return status;
+    }
+
+    if (MapKeyOut) {
+        *MapKeyOut = mmapKey;
+    }
+
+    return EFI_SUCCESS;
+}
+
+EFI_STATUS efi_exit() {
+
 }

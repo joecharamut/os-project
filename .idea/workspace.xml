@@ -18,9 +18,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="yknow">
-      <change afterPath="$PROJECT_DIR$/efiloader/elf.h" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="copy over elf.h">
+      <change afterPath="$PROJECT_DIR$/efiloader/file.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/file.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/elf.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/elf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,7 +151,7 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="OCResolveContextSettings">
-    <option name="configuration" value="0-Debug-stage2.bin" />
+    <option name="configuration" value="0-Debug-loader.efi" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="120" />
@@ -379,14 +384,7 @@
       <workItem from="1630768914723" duration="65533000" />
       <workItem from="1631553853764" duration="41833000" />
       <workItem from="1633065808148" duration="3147000" />
-      <workItem from="1638143274061" duration="38420000" />
-    </task>
-    <task id="LOCAL-00028" summary="added long mode check">
-      <created>1629231655391</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1629231655391</updated>
+      <workItem from="1638143274061" duration="48721000" />
     </task>
     <task id="LOCAL-00029" summary="remove old stage2">
       <created>1629231683042</created>
@@ -724,7 +722,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638409827767</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="copy over elf.h">
+      <created>1638409908155</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1638409908156</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -800,7 +805,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="figured out the right rep movsb prefix" />
     <MESSAGE value="move a20 detect into stage2" />
     <MESSAGE value="workin on fat32" />
     <MESSAGE value="save and load boot disk directly instead of using dl" />
@@ -825,7 +829,8 @@
     <MESSAGE value="basic uefi example" />
     <MESSAGE value="fixed the example" />
     <MESSAGE value="yknow" />
-    <option name="LAST_COMMIT_MESSAGE" value="yknow" />
+    <MESSAGE value="copy over elf.h" />
+    <option name="LAST_COMMIT_MESSAGE" value="copy over elf.h" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

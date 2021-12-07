@@ -46,12 +46,12 @@ EFI_FILE_HANDLE OpenFile(EFI_FILE_HANDLE Volume, CHAR16 *Path) {
 }
 
 UINT64 FileSize(EFI_FILE_HANDLE Handle) {
-    UINT64 ret;
+    UINT64 size;
     EFI_FILE_INFO *FileInfo;
 
     FileInfo = LibFileInfo(Handle);
-    ret = FileInfo->FileSize;
+    size = FileInfo->FileSize;
     FreePool(FileInfo);
 
-    return ret;
+    return size;
 }

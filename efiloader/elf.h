@@ -2,6 +2,7 @@
 #define LOADER_ELF_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define static_assert _Static_assert
 
@@ -85,5 +86,8 @@ typedef struct {
     uint64_t entry_size;
 } __attribute__((packed)) elf64_sht_entry_t;
 static_assert(sizeof(elf64_sht_entry_t) == 64, "Invalid Size");
+
+bool elf_is_header_valid(void *header_buf);
+bool elf_is_64_bit(void *header_buf);
 
 #endif //LOADER_ELF_H

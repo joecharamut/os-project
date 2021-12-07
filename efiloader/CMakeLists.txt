@@ -33,6 +33,7 @@ add_compile_options(
         -ffreestanding
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
         -std=c11
+        -fshort-wchar
         ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS}
 )
 
@@ -45,7 +46,7 @@ add_link_options(
 )
 
 set(LOADER_SOURCES
-        elf.h
+        elf.h elf.c
         main.c main.h
         file.c file.h)
 

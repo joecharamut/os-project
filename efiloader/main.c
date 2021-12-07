@@ -6,7 +6,7 @@
 #include "file.h"
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
-    // setup global vars
+    // init gnu-efi
     InitializeLib(ImageHandle, SystemTable);
 
     // disable watchdog
@@ -41,23 +41,13 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
     Print(L"OK!\n");
 
-    elf_identifier_t *ident = buf;
-    if (ident->magic[0] != 0x7F
-        || ident->magic[1] != 'E'
-        || ident->magic[2] != 'L'
-        || ident->magic[3] != 'F'
-        || ident->version != ELF_IDENT_CURRENT_VERSION) {
+    if (!elf_is_header_valid(buf)) {
         Print(L"Invalid ELF Header\n");
         return EFI_UNSUPPORTED;
     }
 
-    if (ident->bitness != ELF_IDENT_64BIT) {
-        Print(L"Unsupported ELF Bitness\n");
-        return EFI_UNSUPPORTED;
-    }
-
-    if (ident->endianness != ELF_IDENT_LITTLE_ENDIAN) {
-        Print(L"Unsupported ELF Endianness\n");
+    if (!elf_is_64_bit(buf)) {
+        Print(L"Unsupported ELF Format\n");
         return EFI_UNSUPPORTED;
     }
 
@@ -77,7 +67,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     Print(L"Entrypoint is at 0x%08x\n", header->entry);
 
     EFI_INPUT_KEY key;
-    Print(L"Hello World\n");
     Print(L"Press any key to continue...\n");
     status = ST->ConIn->Reset(ST->ConIn, FALSE);
     if (EFI_ERROR(status)) {
@@ -86,6 +75,35 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     while ((status = ST->ConIn->ReadKeyStroke(ST->ConIn, &key)) == EFI_NOT_READY) {
         // do nothing
     }
+
+    UINTN mapKey = 0;
+    UINTN mapSize = 0;
+    EFI_MEMORY_DESCRIPTOR *mmap = efi_get_mem_map(&mapKey, &mapSize);
+    efi_dump_mem_map(mmap, mapSize);
+
+    while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
+        FreePool(mmap);
+        mmap = efi_get_mem_map(&mapKey, &mapSize);
+    }
+
+    UINTN descriptorSize = 0;
+    UINT32 descriptorVersion = 0;
+    BS->GetMemoryMap(&mapSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
+
+    UINT64 convMem = 0;
+    for (UINTN i = 0; i < mapSize; ++i) {
+        if (mmap[i].Type == EfiConventionalMemory) {
+            if (mmap[i].NumberOfPages > convMem) {
+                convMem = mmap[i].NumberOfPages;
+            }
+        }
+    }
+
+    __asm__ ("mov %0, %%r12\t\n"
+             "cli\t\n"
+             "hlt\t\n"
+             "jmp .\t\n"
+             :: "a" (convMem));
 
     return status;
 }
@@ -119,7 +137,7 @@ const CHAR16 *efi_mem_type_string(UINT32 type) {
     }
 }
 
-EFI_STATUS efi_print_mem_map(UINTN *MapKeyOut) {
+EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries) {
     EFI_STATUS status;
 
     UINTN mmapSize = 0;
@@ -137,32 +155,51 @@ EFI_STATUS efi_print_mem_map(UINTN *MapKeyOut) {
         memoryMap = AllocatePool(mmapSize);
     }
 
-    Print(L"MemoryMap: [Entries: %d, MapKey: 0x%x, DescriptorVersion: 0x%x]\n",
-          mmapSize / descriptorSize, mmapKey, descriptorVersion);
-    for (UINTN i = 0; i < mmapSize / descriptorSize; ++i) {
-        Print(L" [%lld]: Type: %s, PhysAddr: 0x%llx, VirtAddr: 0x%llx, Pages: %lld, Attr: [%c%c%c] (0x%llx)\n",
-              i,efi_mem_type_string(memoryMap[i].Type),
-              memoryMap[i].PhysicalStart, memoryMap[i].VirtualStart,
-              memoryMap[i].NumberOfPages,
-
-              (memoryMap[i].Attribute & EFI_MEMORY_RP) ? '-' : 'R',
-              (memoryMap[i].Attribute & EFI_MEMORY_WP) ? '-' : 'W',
-              (memoryMap[i].Attribute & EFI_MEMORY_XP) ? '-' : 'X',
-              memoryMap[i].Attribute);
-    }
-
     if (EFI_ERROR(status)) {
         Print(L"Failed to get memory map: 0x%llx\n", status);
-        return status;
+        return NULL;
     }
 
-    if (MapKeyOut) {
-        *MapKeyOut = mmapKey;
+    if (MapKey) {
+        *MapKey = mmapKey;
     }
 
-    return EFI_SUCCESS;
+    if (Entries) {
+        *Entries = mmapSize / descriptorSize;
+    }
+
+    return memoryMap;
+}
+
+void efi_dump_mem_map(EFI_MEMORY_DESCRIPTOR *mmap, UINTN size) {
+    Print(L"Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
+    for (UINTN i = 0; i < size; ++i) {
+        Print(L"%lld,%s (%d),0x%08llx,0x%08llx,%lld,[%c%c%c] (0x%llx)\n",
+              i, efi_mem_type_string(mmap[i].Type), mmap[i].Type,
+              mmap[i].PhysicalStart, mmap[i].VirtualStart,
+              mmap[i].NumberOfPages,
+
+              (mmap[i].Attribute & EFI_MEMORY_RP) ? '-' : 'R',
+              (mmap[i].Attribute & EFI_MEMORY_WP) ? '-' : 'W',
+              (mmap[i].Attribute & EFI_MEMORY_XP) ? '-' : 'X',
+              mmap[i].Attribute);
+    }
+}
+
+void efi_print_mem_map(EFI_MEMORY_DESCRIPTOR *mmap, UINTN size) {
+    for (UINTN i = 0; i < size; ++i) {
+        Print(L" [%lld]: Type: %s, PhysAddr: 0x%llx, VirtAddr: 0x%llx, Pages: %lld, Attr: [%c%c%c] (0x%llx)\n",
+              i,efi_mem_type_string(mmap[i].Type),
+              mmap[i].PhysicalStart, mmap[i].VirtualStart,
+              mmap[i].NumberOfPages,
+
+              (mmap[i].Attribute & EFI_MEMORY_RP) ? '-' : 'R',
+              (mmap[i].Attribute & EFI_MEMORY_WP) ? '-' : 'W',
+              (mmap[i].Attribute & EFI_MEMORY_XP) ? '-' : 'X',
+              mmap[i].Attribute);
+    }
 }
 
 EFI_STATUS efi_exit() {
-
+    return EFI_SUCCESS;
 }

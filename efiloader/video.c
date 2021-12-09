@@ -1,6 +1,11 @@
 #include "video.h"
 #include <efilib.h>
 
+#define _STDINT_H
+#define SSFN_CONSOLEBITMAP_TRUECOLOR
+#include <ssfn.h>
+#include <fonts/unifont.sfn.h>
+
 EFI_GRAPHICS_OUTPUT_PROTOCOL *GOP = NULL;
 
 EFI_STATUS video_init() {
@@ -50,8 +55,25 @@ EFI_STATUS video_init() {
 
     for (UINT32 y = 0; y < GOP->Mode->Info->VerticalResolution; ++y) {
         for (UINT32 x = 0; x < GOP->Mode->Info->HorizontalResolution; ++x) {
-            plot_pixel(x, y, make_color(0x00, 0xff, 0xff));
+//            plot_pixel(x, y, make_color(0x00, 0xff, 0xff));
         }
+    }
+
+    ssfn_src = (ssfn_font_t *) &unifont_sfn;
+
+    ssfn_dst.ptr = (void *) GOP->Mode->FrameBufferBase;
+    ssfn_dst.w = (INT16) GOP->Mode->Info->HorizontalResolution;
+    ssfn_dst.h = (INT16) GOP->Mode->Info->VerticalResolution;
+    ssfn_dst.p = 4 * GOP->Mode->Info->PixelsPerScanLine;
+    ssfn_dst.x = ssfn_dst.y = 0;
+    ssfn_dst.fg = 0xFFFFFF;
+
+    for (int i = 0; i < 256; ++i) {
+        ssfn_putc('H');
+        ssfn_putc('e');
+        ssfn_putc('l');
+        ssfn_putc('l');
+        ssfn_putc('o');
     }
 
     return EFI_SUCCESS;

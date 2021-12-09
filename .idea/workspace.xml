@@ -3,6 +3,7 @@
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="os" targetName="mbr.bin" />
+      <config projectName="os" targetName="scalable-font2" />
       <config projectName="os" targetName="linker.ld" />
       <config projectName="os" targetName="loader.efi" />
       <config projectName="os" targetName="kernel.bin" />
@@ -18,13 +19,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="idk">
-      <change afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/efiloader/video.h" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="video kinda">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -260,11 +258,11 @@
       <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/bootloader" />
       <recent name="$PROJECT_DIR$/bootstrap/io" />
       <recent name="$PROJECT_DIR$/image" />
       <recent name="$PROJECT_DIR$/image/boot" />
-      <recent name="$PROJECT_DIR$/bootstrap/fs" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
@@ -307,6 +305,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="scalable-font2" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="scalable-font2" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="stage2.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="stage2.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="stage2.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -330,6 +333,7 @@
       <item itemvalue="CMake Application.linker.ld" />
       <item itemvalue="CMake Application.gnu-efi" />
       <item itemvalue="CMake Application.loader.efi" />
+      <item itemvalue="CMake Application.scalable-font2" />
       <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
     </list>
@@ -384,14 +388,7 @@
       <workItem from="1638823639700" duration="1099000" />
       <workItem from="1638825811265" duration="94000" />
       <workItem from="1638826076336" duration="9486000" />
-      <workItem from="1639025852383" duration="3424000" />
-    </task>
-    <task id="LOCAL-00032" summary="move print funcs to module">
-      <created>1629240641924</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1629240641924</updated>
+      <workItem from="1639025852383" duration="7776000" />
     </task>
     <task id="LOCAL-00033" summary="generate listings for stage2">
       <created>1629241325592</created>
@@ -729,7 +726,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638893139711</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="video kinda">
+      <created>1639029429072</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1639029429073</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -804,7 +808,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="save and load boot disk directly instead of using dl" />
     <MESSAGE value="add a little bootloader check" />
     <MESSAGE value="working on fat32" />
     <MESSAGE value="more fat32 stuff" />
@@ -829,7 +832,8 @@
     <MESSAGE value="copy over elf.h" />
     <MESSAGE value="move file stuff into a separate unit" />
     <MESSAGE value="idk" />
-    <option name="LAST_COMMIT_MESSAGE" value="idk" />
+    <MESSAGE value="video kinda" />
+    <option name="LAST_COMMIT_MESSAGE" value="video kinda" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

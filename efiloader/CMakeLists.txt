@@ -29,6 +29,21 @@ ExternalProject_Add(gnu-efi
         INSTALL_COMMAND ""
         )
 
+ExternalProject_Add(scalable-font2
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2
+        URL "https://gitlab.com/bztsrc/scalable-font2/-/archive/master/scalable-font2-master.zip"
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND
+            echo $(pwd) &&
+            gunzip -kvf ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2/fonts/unifont.sfn.gz &&
+            cd ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2/fonts &&
+            xxd -i unifont.sfn > unifont.sfn.h &&
+            cd -
+        BUILD_IN_SOURCE TRUE
+        USES_TERMINAL_BUILD TRUE
+        INSTALL_COMMAND ""
+        )
+
 add_compile_options(
         -ffreestanding
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
@@ -51,12 +66,13 @@ set(LOADER_SOURCES
         file.c file.h video.c video.h)
 
 add_executable(loader.efi ${LOADER_SOURCES})
-add_dependencies(loader.efi gnu-efi)
+add_dependencies(loader.efi gnu-efi scalable-font2)
 
 target_include_directories(loader.efi PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/x86_64
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/protocol
+        ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2
         )
 target_link_directories(loader.efi PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/x86_64/lib

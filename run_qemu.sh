@@ -7,7 +7,7 @@ qemu-system-x86_64 \
             -no-shutdown \
             -d guest_errors,cpu_reset \
             -serial stdio \
-            -m 1G \
+            -m 128M \
             -vga std \
             -soundhw pcspk \
             -drive if=pflash,format=raw,unit=0,file=OVMF_CODE.fd,readonly=on \

@@ -48,7 +48,7 @@ add_link_options(
 set(LOADER_SOURCES
         elf.h elf.c
         main.c main.h
-        file.c file.h)
+        file.c file.h video.c video.h)
 
 add_executable(loader.efi ${LOADER_SOURCES})
 add_dependencies(loader.efi gnu-efi)

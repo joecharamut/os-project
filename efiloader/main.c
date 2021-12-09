@@ -2,8 +2,10 @@
 
 #include <efi.h>
 #include <efilib.h>
+
 #include "elf.h"
 #include "file.h"
+#include "video.h"
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi
@@ -12,7 +14,12 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     // disable watchdog
     BS->SetWatchdogTimer(0, 0, 0, NULL);
 
+    // clear screen
     ST->ConOut->ClearScreen(ST->ConOut);
+
+    // setup graphics
+    video_init();
+
     Print(L"Hello UEFI World!\n");
     Print(L"UEFI Version %d.%d [Vendor: %s, Revision: 0x%08X]\n", ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
 
@@ -72,38 +79,36 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     if (EFI_ERROR(status)) {
         return status;
     }
-    while ((status = ST->ConIn->ReadKeyStroke(ST->ConIn, &key)) == EFI_NOT_READY) {
-        // do nothing
-    }
+//    while ((status = ST->ConIn->ReadKeyStroke(ST->ConIn, &key)) == EFI_NOT_READY) {
+//         // do nothing
+//    }
 
     UINTN mapKey = 0;
     UINTN mapSize = 0;
     EFI_MEMORY_DESCRIPTOR *mmap = efi_get_mem_map(&mapKey, &mapSize);
-    efi_dump_mem_map(mmap, mapSize);
+//    efi_dump_mem_map(mmap, mapSize);
 
     while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
         FreePool(mmap);
         mmap = efi_get_mem_map(&mapKey, &mapSize);
     }
 
-    UINTN descriptorSize = 0;
-    UINT32 descriptorVersion = 0;
-    BS->GetMemoryMap(&mapSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
+//    UINTN descriptorSize = 0;
+//    UINT32 descriptorVersion = 0;
+//    BS->GetMemoryMap(&mapSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
+//
+//    UINT64 convMem = 0;
+//    for (UINTN i = 0; i < mapSize; ++i) {
+//        if (mmap[i].Type == EfiConventionalMemory) {
+//            if (mmap[i].NumberOfPages > convMem) {
+//                convMem = mmap[i].NumberOfPages;
+//            }
+//        }
+//    }
 
-    UINT64 convMem = 0;
-    for (UINTN i = 0; i < mapSize; ++i) {
-        if (mmap[i].Type == EfiConventionalMemory) {
-            if (mmap[i].NumberOfPages > convMem) {
-                convMem = mmap[i].NumberOfPages;
-            }
-        }
-    }
-
-    __asm__ ("mov %0, %%r12\t\n"
-             "cli\t\n"
+    __asm__ ("cli\t\n"
              "hlt\t\n"
-             "jmp .\t\n"
-             :: "a" (convMem));
+             "jmp .\t\n");
 
     return status;
 }

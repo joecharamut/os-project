@@ -3,9 +3,17 @@
 #include <efi.h>
 #include <efilib.h>
 
+#include "strings.h"
 #include "elf.h"
 #include "file.h"
 #include "video.h"
+#include "serial.h"
+#include "printf.h"
+
+__attribute__((noreturn)) void halt() {
+    __asm__ ("cli; hlt; jmp .");
+    __builtin_unreachable();
+}
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi
@@ -14,24 +22,46 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     // disable watchdog
     BS->SetWatchdogTimer(0, 0, 0, NULL);
 
-    // clear screen
-    ST->ConOut->ClearScreen(ST->ConOut);
-
-    // setup graphics
-    video_init();
-
     Print(L"Hello UEFI World!\n");
     Print(L"UEFI Version %d.%d [Vendor: %s, Revision: 0x%08X]\n", ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
-
-    uint64_t rip = 0xCCCCCCCCCCCCCCCC;
-    __asm__ ("1: lea 1b(%%rip), %0\n\t" : "=a" (rip));
-    Print(L"rip = 0x%016x\n", rip);
 
     EFI_STATUS status;
     EFI_FILE_HANDLE volume = GetVolume(ImageHandle);
     if (!volume) {
         return EFI_DEVICE_ERROR;
     }
+
+    // setup console
+    status = video_init();
+    if (EFI_ERROR(status)) {
+        return status;
+    }
+
+    status = serial_init();
+    if (EFI_ERROR(status)) {
+        return status;
+    }
+
+    EFI_FILE_HANDLE consoleFont = OpenFile(volume, L"\\qOS\\unifont.sfn");
+    if (!consoleFont) {
+        return EFI_NOT_FOUND;
+    }
+
+    UINT64 fontSize = FileSize(consoleFont);
+    void *fontBuf = AllocatePool(fontSize);
+    status = consoleFont->Read(consoleFont, &fontSize, fontBuf);
+    if (EFI_ERROR(status)) {
+        return status;
+    }
+
+    set_background_color(make_color(0x20, 0x10, 0x20));
+    set_foreground_color(make_color(0xee, 0xee, 0xee));
+    clear_screen();
+    set_font(fontBuf);
+    write_string("console font test\n");
+    printf("printf test\n");
+
+    halt();
 
     EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"KERNEL.BIN");
     if (!kernelHandle) {
@@ -106,33 +136,14 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 //        }
 //    }
 
-    __asm__ ("cli\t\n"
-             "hlt\t\n"
-             "jmp .\t\n");
-
+    halt();
     return status;
 }
 
-const CHAR16 *UEFI_MEMORY_TYPES[] = {
-        L"EfiReservedMemoryType",
-        L"EfiLoaderCode",
-        L"EfiLoaderData",
-        L"EfiBootServicesCode",
-        L"EfiBootServicesData",
-        L"EfiRuntimeServicesCode",
-        L"EfiRuntimeServicesData",
-        L"EfiConventionalMemory",
-        L"EfiUnusableMemory",
-        L"EfiACPIReclaimMemory",
-        L"EfiACPIMemoryNVS",
-        L"EfiMemoryMappedIO",
-        L"EfiMemoryMappedIOPortSpace",
-        L"EfiPalCode",
-        L"EfiMaxMemoryType"
-};
+
 const CHAR16 *efi_mem_type_string(UINT32 type) {
     if (type < 15) {
-        return UEFI_MEMORY_TYPES[type];
+        return EFI_MEMORY_TYPE_STRINGS[type];
     } else if (type < 0x6FFFFFFF) {
         return L"Reserved";
     } else if (type < 0x7FFFFFFF) {

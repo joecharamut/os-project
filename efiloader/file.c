@@ -1,4 +1,5 @@
 #include "file.h"
+#include "strings.h"
 #include <efilib.h>
 
 EFI_FILE_HANDLE GetVolume(EFI_HANDLE Image) {
@@ -36,9 +37,16 @@ EFI_FILE_HANDLE OpenFile(EFI_FILE_HANDLE Volume, CHAR16 *Path) {
     EFI_FILE_HANDLE File;
     EFI_STATUS Status;
 
-    Status = Volume->Open(Volume, &File, Path, EFI_FILE_MODE_READ, EFI_FILE_READ_ONLY | EFI_FILE_HIDDEN | EFI_FILE_SYSTEM);
+    Status = Volume->Open(Volume, &File, Path, EFI_FILE_MODE_READ, 0);
+
+    if (Status == EFI_INVALID_PARAMETER) {
+        Print(L"Error opening file: '%s' (%s)\n", Path, EFI_ERROR_TYPE_STRINGS[Status & 255]);
+        Print(L"(Make sure you use \\ instead of / because microsoft)\n");
+        return NULL;
+    }
+
     if (EFI_ERROR(Status)) {
-        Print(L"Error opening file: '%s'\n", Path);
+        Print(L"Error opening file: '%s' (%s)\n", Path, EFI_ERROR_TYPE_STRINGS[Status & 255]);
         return NULL;
     }
 

@@ -34,11 +34,8 @@ ExternalProject_Add(scalable-font2
         URL "https://gitlab.com/bztsrc/scalable-font2/-/archive/master/scalable-font2-master.zip"
         CONFIGURE_COMMAND ""
         BUILD_COMMAND
-            echo $(pwd) &&
-            gunzip -kvf ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2/fonts/unifont.sfn.gz &&
-            cd ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2/fonts &&
-            xxd -i unifont.sfn > unifont.sfn.h &&
-            cd -
+            cd ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2/sfnconv && make && cd - &&
+            cd ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2/sfnedit && make && cd -
         BUILD_IN_SOURCE TRUE
         USES_TERMINAL_BUILD TRUE
         INSTALL_COMMAND ""
@@ -61,9 +58,12 @@ add_link_options(
 )
 
 set(LOADER_SOURCES
-        elf.h elf.c
         main.c main.h
-        file.c file.h video.c video.h)
+        elf.c elf.h
+        file.c file.h
+        video.c video.h
+        strings.c strings.h
+        printf.c printf.h serial.c serial.h)
 
 add_executable(loader.efi ${LOADER_SOURCES})
 add_dependencies(loader.efi gnu-efi scalable-font2)

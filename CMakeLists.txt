@@ -19,13 +19,16 @@ add_custom_command(OUTPUT esp.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS test64/test64.bin
         DEPENDS efiloader/loader.efi
+        DEPENDS efiloader/unifont.sfn
         VERBATIM
         COMMAND dd if=/dev/zero of=esp.bin bs=1M count=128 &&
         mkfs.vfat -F32 -n "SYSTEM" esp.bin &&
         mmd -i esp.bin ::/EFI &&
         mmd -i esp.bin ::/EFI/BOOT &&
-        mcopy -i esp.bin test64/test64.bin ::/KERNEL.BIN &&
-        mcopy -i esp.bin efiloader/loader.efi ::/EFI/BOOT/BOOTX64.EFI
+        mcopy -i esp.bin efiloader/loader.efi ::/EFI/BOOT/BOOTX64.EFI &&
+        mmd -i esp.bin ::/QOS &&
+        mcopy -i esp.bin ${CMAKE_SOURCE_DIR}/efiloader/unifont.sfn ::/QOS/unifont.sfn &&
+        mcopy -i esp.bin test64/test64.bin ::/KERNEL.BIN
         )
 
 add_custom_command(OUTPUT disk.img

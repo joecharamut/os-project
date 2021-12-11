@@ -19,10 +19,21 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="video kinda">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fonts almost work">
+      <change afterPath="$PROJECT_DIR$/efiloader/printf.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/printf.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/serial.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/serial.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/strings.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/strings.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/unifont.sfn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/file.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/file.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -388,14 +399,7 @@
       <workItem from="1638823639700" duration="1099000" />
       <workItem from="1638825811265" duration="94000" />
       <workItem from="1638826076336" duration="9486000" />
-      <workItem from="1639025852383" duration="7776000" />
-    </task>
-    <task id="LOCAL-00033" summary="generate listings for stage2">
-      <created>1629241325592</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1629241325592</updated>
+      <workItem from="1639025852383" duration="23485000" />
     </task>
     <task id="LOCAL-00034" summary="pass boot disk to main()">
       <created>1629318232285</created>
@@ -733,7 +737,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639029429073</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="fonts almost work">
+      <created>1639079582470</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1639079582470</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -808,7 +819,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add a little bootloader check" />
     <MESSAGE value="working on fat32" />
     <MESSAGE value="more fat32 stuff" />
     <MESSAGE value="can actually load a file lets go" />
@@ -833,7 +843,8 @@
     <MESSAGE value="move file stuff into a separate unit" />
     <MESSAGE value="idk" />
     <MESSAGE value="video kinda" />
-    <option name="LAST_COMMIT_MESSAGE" value="video kinda" />
+    <MESSAGE value="fonts almost work" />
+    <option name="LAST_COMMIT_MESSAGE" value="fonts almost work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

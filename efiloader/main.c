@@ -58,53 +58,49 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     set_foreground_color(make_color(0xee, 0xee, 0xee));
     clear_screen();
     set_font(fontBuf);
-    write_string("console font test\n");
-    printf("printf test\n");
-
-    halt();
 
     EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"KERNEL.BIN");
     if (!kernelHandle) {
         return EFI_NOT_FOUND;
     }
 
-    Print(L"Loading Kernel Header...");
+    printf("Loading Kernel Header...");
     UINTN bufsz = 64;
     void *buf = AllocatePool(bufsz);
     status = kernelHandle->Read(kernelHandle, &bufsz, buf);
     if (EFI_ERROR(status)) {
-        Print(L"Error\n");
+        printf("Error\n");
         return status;
     }
-    Print(L"OK!\n");
+    printf("OK!\n");
 
     if (!elf_is_header_valid(buf)) {
-        Print(L"Invalid ELF Header\n");
+        printf("Invalid ELF Header\n");
         return EFI_UNSUPPORTED;
     }
 
     if (!elf_is_64_bit(buf)) {
-        Print(L"Unsupported ELF Format\n");
+        printf("Unsupported ELF Format\n");
         return EFI_UNSUPPORTED;
     }
 
-    Print(L"Parsing Kernel Header...\n");
+    printf("Parsing Kernel Header...\n");
     elf64_header_t *header = buf;
 
     if (header->type != ELF_TYPE_EXEC) {
-        Print(L"Unsupported ELF Object Type\n");
+        printf("Unsupported ELF Object Type\n");
         return EFI_UNSUPPORTED;
     }
 
     if (header->instruction_set != 0x3E) {
-        Print(L"Unsupported ELF Instruction Set\n");
+        printf("Unsupported ELF Instruction Set\n");
         return EFI_UNSUPPORTED;
     }
 
-    Print(L"Entrypoint is at 0x%08x\n", header->entry);
+    printf("Entrypoint is at 0x%08llx\n", (uint64_t) header->entry);
 
     EFI_INPUT_KEY key;
-    Print(L"Press any key to continue...\n");
+    printf("Press any key to continue...\n");
     status = ST->ConIn->Reset(ST->ConIn, FALSE);
     if (EFI_ERROR(status)) {
         return status;

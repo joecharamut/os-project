@@ -19,10 +19,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="something i hope">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="yep">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/printf.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/printf.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,11 +242,11 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/efiloader" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-debug" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -266,14 +265,14 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
       <method v="2">
@@ -388,14 +387,8 @@
       <workItem from="1638823639700" duration="1099000" />
       <workItem from="1638825811265" duration="94000" />
       <workItem from="1638826076336" duration="9486000" />
-      <workItem from="1639025852383" duration="27487000" />
-    </task>
-    <task id="LOCAL-00035" summary="pass boot disk to main()">
-      <created>1629318339788</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1629318339788</updated>
+      <workItem from="1639025852383" duration="27495000" />
+      <workItem from="1639338701679" duration="3436000" />
     </task>
     <task id="LOCAL-00036" summary="fix include guards">
       <created>1629513680139</created>
@@ -733,7 +726,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639202828983</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="yep">
+      <created>1639333154199</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1639333154199</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -808,7 +808,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="more fat32 stuff" />
     <MESSAGE value="can actually load a file lets go" />
     <MESSAGE value="pick compilers automagically" />
     <MESSAGE value="split up makefiles" />
@@ -833,7 +832,8 @@
     <MESSAGE value="video kinda" />
     <MESSAGE value="fonts almost work" />
     <MESSAGE value="something i hope" />
-    <option name="LAST_COMMIT_MESSAGE" value="something i hope" />
+    <MESSAGE value="yep" />
+    <option name="LAST_COMMIT_MESSAGE" value="yep" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -97,17 +97,18 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_UNSUPPORTED;
     }
 
-    printf("Entrypoint is at 0x%08llx\n", (uint64_t) header->entry);
+    printf("Entrypoint is at 0x%08llx\n", header->entry);
+    printf("Loading program headers...\n");
+    UINTN pht_size = header->pht_entry_count * header->pht_entry_size;
+    elf64_pht_entry_t *pht = AllocatePool(pht_size);
+    kernelHandle->SetPosition(kernelHandle, header->pht_offset);
+    kernelHandle->Read(kernelHandle, &pht_size, pht);
 
-    EFI_INPUT_KEY key;
-    printf("Press any key to continue...\n");
-    status = ST->ConIn->Reset(ST->ConIn, FALSE);
-    if (EFI_ERROR(status)) {
-        return status;
+    for (uint16_t i = 0; i < header->pht_entry_count; ++i) {
+        printf("Header %d:\n Offset: 0x%llx\n Virtual: 0x%llx\n Physical: 0x%llx",
+               i
+        );
     }
-//    while ((status = ST->ConIn->ReadKeyStroke(ST->ConIn, &key)) == EFI_NOT_READY) {
-//         // do nothing
-//    }
 
     UINTN mapKey = 0;
     UINTN mapSize = 0;

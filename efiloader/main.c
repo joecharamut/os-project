@@ -2,6 +2,7 @@
 
 #include <efi.h>
 #include <efilib.h>
+#include <stdnoreturn.h>
 
 #include "strings.h"
 #include "elf.h"
@@ -10,7 +11,7 @@
 #include "serial.h"
 #include "printf.h"
 
-__attribute__((noreturn)) void halt() {
+noreturn void halt() {
     __asm__ ("cli; hlt; jmp .");
     __builtin_unreachable();
 }
@@ -21,9 +22,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     // disable watchdog
     BS->SetWatchdogTimer(0, 0, 0, NULL);
-
-    Print(L"Hello UEFI World!\n");
-    Print(L"UEFI Version %d.%d [Vendor: %s, Revision: 0x%08X]\n", ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
 
     EFI_STATUS status;
     EFI_FILE_HANDLE volume = GetVolume(ImageHandle);
@@ -63,6 +61,9 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     if (!kernelHandle) {
         return EFI_NOT_FOUND;
     }
+
+    printf("Starting EFILoader!\n");
+    printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%08X]\n", ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
 
     printf("Loading Kernel Header...");
     UINTN bufsz = 64;

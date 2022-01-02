@@ -18,6 +18,12 @@ void emit_str(char *str) {
     }
 }
 
+void emit_wstr(CHAR16 *wstr) {
+    while (*wstr) {
+        emit_char((char) *wstr++);
+    }
+}
+
 static const char *alphabet_lower = "0123456789abcdef";
 static const char *alphabet_upper = "0123456789ABCDEF";
 
@@ -77,7 +83,11 @@ void vprintf(const char *fmt, va_list args) {
                     break;
 
                 case 's':
-                    emit_str(va_arg(args, char *));
+                    if (width == 0) {
+                        emit_str(va_arg(args, char *));
+                    } else {
+                        emit_wstr(va_arg(args, CHAR16 *));
+                    }
                     in_format = false;
                     break;
 

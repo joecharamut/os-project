@@ -37,23 +37,23 @@ EFI_STATUS video_init() {
     }
 
     if (EFI_ERROR(status)) {
-        Print(L"Unable to get native graphics mode\n");
+//        Print(L"Unable to get native graphics mode\n");
         return status;
     } else {
         nativeMode = GOP->Mode->Mode;
         numModes = GOP->Mode->MaxMode;
     }
 
-    for (UINTN i = 0; i < numModes; ++i) {
-        status = GOP->QueryMode(GOP, i, &infoSize, &modeInfo);
-        Print(L"Mode %03d {Width %d, Height %d, Format %x}%s\n",
-              i,
-              modeInfo->HorizontalResolution,
-              modeInfo->VerticalResolution,
-              modeInfo->PixelFormat,
-              i == nativeMode ? L" (current)" : L""
-              );
-    }
+//    for (UINTN i = 0; i < numModes; ++i) {
+//        status = GOP->QueryMode(GOP, i, &infoSize, &modeInfo);
+//        Print(L"Mode %03d {Width %d, Height %d, Format %x}%s\n",
+//              i,
+//              modeInfo->HorizontalResolution,
+//              modeInfo->VerticalResolution,
+//              modeInfo->PixelFormat,
+//              i == nativeMode ? L" (current)" : L""
+//              );
+//    }
 
     ssfn_dst.ptr = (void *) GOP->Mode->FrameBufferBase;
     ssfn_dst.w = (INT16) GOP->Mode->Info->HorizontalResolution;

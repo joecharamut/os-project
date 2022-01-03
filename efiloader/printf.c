@@ -2,14 +2,12 @@
 
 #include <stdarg.h>
 
-#include "efi.h"
-#include "efilib.h"
 #include "video.h"
 #include "serial.h"
 
 void emit_char(char c) {
     write_char(c);
-    serial_write(1, &c);
+    serial_write(c);
 }
 
 void emit_str(char *str) {
@@ -38,8 +36,7 @@ uint32_t num_digits(uint64_t num, uint32_t base) {
 
 void print_num(uint64_t num, uint32_t base, bool uppercase) {
     uint32_t digits = num_digits(num, base);
-    char *buf = AllocatePool(digits + 1);
-    SetMem(buf, digits + 1, 0);
+    char buf[32] = { 0 };
 
     uint32_t i = digits - 1;
     while (1) {

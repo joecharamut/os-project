@@ -11,7 +11,7 @@
 #include "serial.h"
 #include "printf.h"
 
-noreturn void halt() {
+static noreturn void halt() {
     __asm__ ("cli; hlt; jmp .");
     __builtin_unreachable();
 }
@@ -35,9 +35,9 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return status;
     }
 
-    status = serial_init();
-    if (EFI_ERROR(status)) {
-        return status;
+    // init serial
+    if (serial_init()) {
+        return EFI_DEVICE_ERROR;
     }
 
     EFI_FILE_HANDLE consoleFont = OpenFile(volume, L"\\qOS\\unifont.sfn");
@@ -63,7 +63,8 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
 
     printf("Starting EFILoader!\n");
-    printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%08X]\n", ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
+    printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%08X]\n",
+           ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
 
     printf("Loading Kernel Header...");
     UINTN bufsz = 64;
@@ -106,52 +107,60 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     kernelHandle->Read(kernelHandle, &pht_size, pht);
 
     for (uint16_t i = 0; i < header->pht_entry_count; ++i) {
-        printf("Header %d:\n Offset: 0x%llx\n Virtual: 0x%llx\n Physical: 0x%llx",
-               i
+        printf("Header %d:\n Type: %d\n Flags: 0x%x\n Offset: 0x%llx\n Virtual: 0x%llx\n Physical: 0x%llx\n",
+               i,
+               pht[i].type,
+               pht[i].flags,
+               pht[i].offset,
+               pht[i].vaddr,
+               pht[i].paddr
         );
     }
 
     UINTN mapKey = 0;
     UINTN mapSize = 0;
-    EFI_MEMORY_DESCRIPTOR *mmap = efi_get_mem_map(&mapKey, &mapSize);
-//    efi_dump_mem_map(mmap, mapSize);
+    UINTN descriptorSize = 0;
+    UINT8 *mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
+    efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
     while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
         FreePool(mmap);
-        mmap = efi_get_mem_map(&mapKey, &mapSize);
+        mmap = efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
     }
 
-//    UINTN descriptorSize = 0;
-//    UINT32 descriptorVersion = 0;
-//    BS->GetMemoryMap(&mapSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
-//
-//    UINT64 convMem = 0;
-//    for (UINTN i = 0; i < mapSize; ++i) {
-//        if (mmap[i].Type == EfiConventionalMemory) {
-//            if (mmap[i].NumberOfPages > convMem) {
-//                convMem = mmap[i].NumberOfPages;
-//            }
-//        }
-//    }
+    UINTN convMemory = 0;
+    UINTN reclaimMemory = 0;
+    for (UINTN i = 0; i < mapSize; ++i) {
+        EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
 
+        if (entry->Type == EfiConventionalMemory) {
+            convMemory += entry->NumberOfPages * 4;
+        } else if (entry->Type == EfiBootServicesCode || entry->Type == EfiBootServicesData) {
+            reclaimMemory += entry->NumberOfPages * 4;
+        }
+    }
+    printf("%lld KiB of free memory\n", convMemory);
+    printf("%lld KiB of memory able to be reclaimed\n", reclaimMemory);
+    printf("Boot services terminated\n");
+
+    printf("Halted.");
     halt();
-    return status;
 }
 
 
-const CHAR16 *efi_mem_type_string(UINT32 type) {
+const char *efi_mem_type_string(UINT32 type) {
     if (type < 15) {
         return EFI_MEMORY_TYPE_STRINGS[type];
     } else if (type < 0x6FFFFFFF) {
-        return L"Reserved";
+        return "Reserved";
     } else if (type < 0x7FFFFFFF) {
-        return L"Reserved (OEM)";
+        return "Reserved (OEM)";
     } else {
-        return L"Reserved (OSV)";
+        return "Reserved (OSV)";
     }
 }
 
-EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries) {
+EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *DescriptorSize) {
     EFI_STATUS status;
 
     UINTN mmapSize = 0;
@@ -182,38 +191,28 @@ EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries) {
         *Entries = mmapSize / descriptorSize;
     }
 
+    if (DescriptorSize) {
+        *DescriptorSize = descriptorSize;
+    }
+
     return memoryMap;
 }
 
-void efi_dump_mem_map(EFI_MEMORY_DESCRIPTOR *mmap, UINTN size) {
-    Print(L"Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
+void efi_dump_mem_map(unsigned char *mmap_buf, UINTN size, UINTN descriptorSize) {
+    EFI_MEMORY_DESCRIPTOR *mmap = mmap_buf;
+    printf("Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
     for (UINTN i = 0; i < size; ++i) {
-        Print(L"%lld,%s (%d),0x%08llx,0x%08llx,%lld,[%c%c%c] (0x%llx)\n",
-              i, efi_mem_type_string(mmap[i].Type), mmap[i].Type,
-              mmap[i].PhysicalStart, mmap[i].VirtualStart,
-              mmap[i].NumberOfPages,
+        printf("%s%lld,%s (%d),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
+              mmap->NumberOfPages == 0 ? "!!! " : "",
+              i, efi_mem_type_string(mmap->Type), mmap->Type,
+              mmap->PhysicalStart, mmap->VirtualStart,
+              mmap->NumberOfPages, mmap->NumberOfPages * 4,
 
-              (mmap[i].Attribute & EFI_MEMORY_RP) ? '-' : 'R',
-              (mmap[i].Attribute & EFI_MEMORY_WP) ? '-' : 'W',
-              (mmap[i].Attribute & EFI_MEMORY_XP) ? '-' : 'X',
-              mmap[i].Attribute);
+              (mmap->Attribute & EFI_MEMORY_RP) ? '-' : 'R',
+              (mmap->Attribute & EFI_MEMORY_WP) ? '-' : 'W',
+              (mmap->Attribute & EFI_MEMORY_XP) ? '-' : 'X',
+              mmap->Attribute);
+        mmap_buf += descriptorSize;
+        mmap = mmap_buf;
     }
-}
-
-void efi_print_mem_map(EFI_MEMORY_DESCRIPTOR *mmap, UINTN size) {
-    for (UINTN i = 0; i < size; ++i) {
-        Print(L" [%lld]: Type: %s, PhysAddr: 0x%llx, VirtAddr: 0x%llx, Pages: %lld, Attr: [%c%c%c] (0x%llx)\n",
-              i,efi_mem_type_string(mmap[i].Type),
-              mmap[i].PhysicalStart, mmap[i].VirtualStart,
-              mmap[i].NumberOfPages,
-
-              (mmap[i].Attribute & EFI_MEMORY_RP) ? '-' : 'R',
-              (mmap[i].Attribute & EFI_MEMORY_WP) ? '-' : 'W',
-              (mmap[i].Attribute & EFI_MEMORY_XP) ? '-' : 'X',
-              mmap[i].Attribute);
-    }
-}
-
-EFI_STATUS efi_exit() {
-    return EFI_SUCCESS;
 }

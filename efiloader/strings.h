@@ -3,7 +3,7 @@
 
 #include "efi.h"
 
-extern const CHAR16 * const EFI_MEMORY_TYPE_STRINGS[15];
+extern const char * const EFI_MEMORY_TYPE_STRINGS[15];
 extern const CHAR16 * const EFI_ERROR_TYPE_STRINGS[32];
 
 #endif //LOADER_STRINGS_H

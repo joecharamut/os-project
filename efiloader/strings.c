@@ -1,21 +1,21 @@
 #include "strings.h"
 
-const CHAR16 * const EFI_MEMORY_TYPE_STRINGS[] = {
-        L"EfiReservedMemoryType",
-        L"EfiLoaderCode",
-        L"EfiLoaderData",
-        L"EfiBootServicesCode",
-        L"EfiBootServicesData",
-        L"EfiRuntimeServicesCode",
-        L"EfiRuntimeServicesData",
-        L"EfiConventionalMemory",
-        L"EfiUnusableMemory",
-        L"EfiACPIReclaimMemory",
-        L"EfiACPIMemoryNVS",
-        L"EfiMemoryMappedIO",
-        L"EfiMemoryMappedIOPortSpace",
-        L"EfiPalCode",
-        L"EfiMaxMemoryType"
+const char * const EFI_MEMORY_TYPE_STRINGS[] = {
+        "EfiReservedMemoryType",
+        "EfiLoaderCode",
+        "EfiLoaderData",
+        "EfiBootServicesCode",
+        "EfiBootServicesData",
+        "EfiRuntimeServicesCode",
+        "EfiRuntimeServicesData",
+        "EfiConventionalMemory",
+        "EfiUnusableMemory",
+        "EfiACPIReclaimMemory",
+        "EfiACPIMemoryNVS",
+        "EfiMemoryMappedIO",
+        "EfiMemoryMappedIOPortSpace",
+        "EfiPalCode",
+        "EfiMaxMemoryType"
 };
 
 const CHAR16 * const EFI_ERROR_TYPE_STRINGS[] = {

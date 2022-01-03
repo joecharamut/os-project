@@ -19,9 +19,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="yep">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="print to graphics console instead">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/printf.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/printf.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/serial.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/serial.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/serial.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/serial.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -265,14 +269,14 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
       <method v="2">
@@ -389,14 +393,8 @@
       <workItem from="1638826076336" duration="9486000" />
       <workItem from="1639025852383" duration="27495000" />
       <workItem from="1639338701679" duration="3436000" />
-      <workItem from="1641155717185" duration="426000" />
-    </task>
-    <task id="LOCAL-00036" summary="fix include guards">
-      <created>1629513680139</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1629513680140</updated>
+      <workItem from="1641155717185" duration="1506000" />
+      <workItem from="1641157237236" duration="3655000" />
     </task>
     <task id="LOCAL-00037" summary="make a boot fs">
       <created>1629513697129</created>
@@ -734,7 +732,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639333154199</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="print to graphics console instead">
+      <created>1641156404595</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1641156404596</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -809,7 +814,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="can actually load a file lets go" />
     <MESSAGE value="pick compilers automagically" />
     <MESSAGE value="split up makefiles" />
     <MESSAGE value="add loadable segments" />
@@ -834,7 +838,8 @@
     <MESSAGE value="fonts almost work" />
     <MESSAGE value="something i hope" />
     <MESSAGE value="yep" />
-    <option name="LAST_COMMIT_MESSAGE" value="yep" />
+    <MESSAGE value="print to graphics console instead" />
+    <option name="LAST_COMMIT_MESSAGE" value="print to graphics console instead" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

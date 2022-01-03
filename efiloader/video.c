@@ -1,4 +1,5 @@
 #include "video.h"
+#include "serial.h"
 #include <efilib.h>
 
 #define _STDINT_H
@@ -79,6 +80,20 @@ void write_string(const char *str) {
 }
 
 void write_char(char c) {
+    if ((ssfn_dst.y + ssfn_src->height) > ssfn_dst.h) {
+        UINT32 *src = ssfn_dst.ptr + (ssfn_dst.p * ssfn_src->height);
+        UINT32 *dst = ssfn_dst.ptr;
+
+        for (int i = 0; i < ssfn_dst.h * ssfn_dst.p / 4; ++i) {
+            dst[i] = src[i];
+        }
+
+        for (int i = (ssfn_dst.y - ssfn_src->height) * ssfn_dst.p / 4; i < ssfn_dst.h * ssfn_dst.p / 4; ++i) {
+            dst[i] = background_color;
+        }
+
+        ssfn_dst.y -= ssfn_src->height;
+    }
     ssfn_putc(c);
 }
 

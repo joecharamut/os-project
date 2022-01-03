@@ -19,13 +19,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="print to graphics console instead">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="print to graphics console instead more">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/printf.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/printf.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/serial.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/serial.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/serial.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/serial.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -273,11 +271,6 @@
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -394,14 +387,8 @@
       <workItem from="1639025852383" duration="27495000" />
       <workItem from="1639338701679" duration="3436000" />
       <workItem from="1641155717185" duration="1506000" />
-      <workItem from="1641157237236" duration="3655000" />
-    </task>
-    <task id="LOCAL-00037" summary="make a boot fs">
-      <created>1629513697129</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1629513697129</updated>
+      <workItem from="1641157237236" duration="4532000" />
+      <workItem from="1641195336890" duration="2281000" />
     </task>
     <task id="LOCAL-00038" summary="misc">
       <created>1629513705002</created>
@@ -739,7 +726,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641156404596</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="print to graphics console instead more">
+      <created>1641178712050</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1641178712050</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -814,7 +808,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="pick compilers automagically" />
     <MESSAGE value="split up makefiles" />
     <MESSAGE value="add loadable segments" />
     <MESSAGE value="fix characters not printing" />
@@ -839,7 +832,8 @@
     <MESSAGE value="something i hope" />
     <MESSAGE value="yep" />
     <MESSAGE value="print to graphics console instead" />
-    <option name="LAST_COMMIT_MESSAGE" value="print to graphics console instead" />
+    <MESSAGE value="print to graphics console instead more" />
+    <option name="LAST_COMMIT_MESSAGE" value="print to graphics console instead more" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

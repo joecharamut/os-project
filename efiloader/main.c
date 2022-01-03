@@ -99,6 +99,8 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_UNSUPPORTED;
     }
 
+    printf("");
+
     printf("Entrypoint is at 0x%08llx\n", header->entry);
     printf("Loading program headers...\n");
     UINTN pht_size = header->pht_entry_count * header->pht_entry_size;
@@ -198,21 +200,19 @@ EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *Des
     return memoryMap;
 }
 
-void efi_dump_mem_map(unsigned char *mmap_buf, UINTN size, UINTN descriptorSize) {
-    EFI_MEMORY_DESCRIPTOR *mmap = mmap_buf;
+void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize) {
     printf("Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
     for (UINTN i = 0; i < size; ++i) {
+        EFI_MEMORY_DESCRIPTOR *entry = mmap + (i * descriptorSize);
         printf("%s%lld,%s (%d),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
-              mmap->NumberOfPages == 0 ? "!!! " : "",
-              i, efi_mem_type_string(mmap->Type), mmap->Type,
-              mmap->PhysicalStart, mmap->VirtualStart,
-              mmap->NumberOfPages, mmap->NumberOfPages * 4,
+              entry->NumberOfPages == 0 ? "!!! " : "",
+              i, efi_mem_type_string(entry->Type), entry->Type,
+              entry->PhysicalStart, entry->VirtualStart,
+              entry->NumberOfPages, entry->NumberOfPages * 4,
 
-              (mmap->Attribute & EFI_MEMORY_RP) ? '-' : 'R',
-              (mmap->Attribute & EFI_MEMORY_WP) ? '-' : 'W',
-              (mmap->Attribute & EFI_MEMORY_XP) ? '-' : 'X',
-              mmap->Attribute);
-        mmap_buf += descriptorSize;
-        mmap = mmap_buf;
+              (entry->Attribute & EFI_MEMORY_RP) ? '-' : 'R',
+              (entry->Attribute & EFI_MEMORY_WP) ? '-' : 'W',
+              (entry->Attribute & EFI_MEMORY_XP) ? '-' : 'X',
+              entry->Attribute);
     }
 }

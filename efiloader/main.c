@@ -99,14 +99,31 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_UNSUPPORTED;
     }
 
-    printf("");
+    FreePool(buf);
+    printf("ELF header looks okay... Loading the whole kernel!\n");
 
+    UINT64 kernelSize = FileSize(kernelHandle);
+    printf("Kernel size is %lld bytes\n", kernelSize);
+
+    UINT64 readSize = kernelSize;
+    void *kernelBuf = AllocatePool(kernelSize);
+    if (!kernelBuf) {
+        printf("Unable to allocate memory\n");
+        return EFI_OUT_OF_RESOURCES;
+    }
+
+    kernelHandle->SetPosition(kernelHandle, 0);
+    kernelHandle->Read(kernelHandle, &readSize, kernelBuf);
+    if (readSize != kernelSize) {
+        printf("Kernel was not fully loaded\n");
+        return EFI_DEVICE_ERROR;
+    }
+
+    header = kernelBuf;
     printf("Entrypoint is at 0x%08llx\n", header->entry);
-    printf("Loading program headers...\n");
+    printf("Parsing program headers...\n");
     UINTN pht_size = header->pht_entry_count * header->pht_entry_size;
-    elf64_pht_entry_t *pht = AllocatePool(pht_size);
-    kernelHandle->SetPosition(kernelHandle, header->pht_offset);
-    kernelHandle->Read(kernelHandle, &pht_size, pht);
+    elf64_pht_entry_t *pht = kernelBuf + header->pht_offset;
 
     for (uint16_t i = 0; i < header->pht_entry_count; ++i) {
         printf("Header %d:\n Type: %d\n Flags: 0x%x\n Offset: 0x%llx\n Virtual: 0x%llx\n Physical: 0x%llx\n",
@@ -127,11 +144,12 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
         FreePool(mmap);
-        mmap = efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
+        mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
     }
 
     UINTN convMemory = 0;
     UINTN reclaimMemory = 0;
+    UINTN otherMemory = 0;
     for (UINTN i = 0; i < mapSize; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
 
@@ -139,11 +157,20 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
             convMemory += entry->NumberOfPages * 4;
         } else if (entry->Type == EfiBootServicesCode || entry->Type == EfiBootServicesData) {
             reclaimMemory += entry->NumberOfPages * 4;
+        } else {
+            otherMemory += entry->NumberOfPages * 4;
         }
     }
-    printf("%lld KiB of free memory\n", convMemory);
-    printf("%lld KiB of memory able to be reclaimed\n", reclaimMemory);
+    UINTN totalMemory = convMemory + reclaimMemory + otherMemory;
+
+    printf("mmap reports %lld KiB of memory:\n", totalMemory);
+    printf(" Free: %lld KiB (~%lld%%)\n", convMemory, convMemory * 100 / totalMemory);
+    printf(" Reclaimable: %lld KiB (~%lld%%)\n", reclaimMemory, reclaimMemory * 100 / totalMemory);
+    printf(" Reserved: %lld KiB (~%lld%%)\n", otherMemory, otherMemory * 100 / totalMemory);
     printf("Boot services terminated\n");
+
+//    __asm__ volatile ("call *%0\n\t" :: "r" (header->entry));
+    ((void (*)()) header->entry)();
 
     printf("Halted.");
     halt();

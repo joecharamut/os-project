@@ -19,11 +19,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="print to graphics console instead more">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="screen scrollin">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -388,14 +386,7 @@
       <workItem from="1639338701679" duration="3436000" />
       <workItem from="1641155717185" duration="1506000" />
       <workItem from="1641157237236" duration="4532000" />
-      <workItem from="1641195336890" duration="2281000" />
-    </task>
-    <task id="LOCAL-00038" summary="misc">
-      <created>1629513705002</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1629513705002</updated>
+      <workItem from="1641195336890" duration="5977000" />
     </task>
     <task id="LOCAL-00039" summary="writint asmemby">
       <created>1629514658294</created>
@@ -733,7 +724,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641178712050</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="screen scrollin">
+      <created>1641197878182</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1641197878182</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -808,7 +806,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="split up makefiles" />
     <MESSAGE value="add loadable segments" />
     <MESSAGE value="fix characters not printing" />
     <MESSAGE value="cleanup" />
@@ -833,7 +830,8 @@
     <MESSAGE value="yep" />
     <MESSAGE value="print to graphics console instead" />
     <MESSAGE value="print to graphics console instead more" />
-    <option name="LAST_COMMIT_MESSAGE" value="print to graphics console instead more" />
+    <MESSAGE value="screen scrollin" />
+    <option name="LAST_COMMIT_MESSAGE" value="screen scrollin" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

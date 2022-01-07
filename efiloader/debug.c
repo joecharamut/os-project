@@ -1,16 +1,16 @@
-#include "serial.h"
-#include <stdint.h>
-#include "../io/port.h"
+#include "debug.h"
+
+void outb(uint16_t port, uint8_t value) {
+    asm volatile("outb %0, %1" :: "a" (value), "dN" (port));
+}
+
+uint8_t inb(uint16_t port) {
+    uint8_t value;
+    asm volatile("inb %1, %0" : "=a" (value) : "dN" (port));
+    return value;
+}
 
 #define COM0_PORT 0x3f8
-
-int serial_received() {
-    return inb(COM0_PORT + 5) & 1;
-}
-
-int is_transmit_empty() {
-    return inb(COM0_PORT + 5) & 0x20;
-}
 
 int serial_init() {
     outb(COM0_PORT + 1, 0x00);    // Disable all interrupts
@@ -34,18 +34,6 @@ int serial_init() {
     return 0;
 }
 
-char serial_read() {
-    while (serial_received() == 0);
-    return inb(COM0_PORT);
-}
-
-void serial_putchar(char c) {
-    while (is_transmit_empty() == 0);
+void serial_write(char c) {
     outb(COM0_PORT, c);
-}
-
-void serial_write(const char *str) {
-    for (int i = 0; str[i]; i++) {
-        serial_putchar(str[i]);
-    }
 }

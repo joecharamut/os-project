@@ -1,5 +1,4 @@
 #include "video.h"
-#include "serial.h"
 #include <efilib.h>
 
 #define _STDINT_H

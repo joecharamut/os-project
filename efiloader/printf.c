@@ -3,7 +3,7 @@
 #include <stdarg.h>
 
 #include "video.h"
-#include "serial.h"
+#include "debug.h"
 
 void emit_char(char c) {
     write_char(c);

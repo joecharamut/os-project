@@ -4,7 +4,6 @@
 #include <efilib.h>
 #include <stdnoreturn.h>
 
-#include "strings.h"
 #include "elf.h"
 #include "file.h"
 #include "video.h"
@@ -49,6 +48,24 @@ typedef struct {
     UINT64 pages;
     UINT64 flags;
 } memory_map_entry_t;
+
+const char * const EFI_MEMORY_TYPE_STRINGS[] = {
+        "EfiReservedMemoryType",
+        "EfiLoaderCode",
+        "EfiLoaderData",
+        "EfiBootServicesCode",
+        "EfiBootServicesData",
+        "EfiRuntimeServicesCode",
+        "EfiRuntimeServicesData",
+        "EfiConventionalMemory",
+        "EfiUnusableMemory",
+        "EfiACPIReclaimMemory",
+        "EfiACPIMemoryNVS",
+        "EfiMemoryMappedIO",
+        "EfiMemoryMappedIOPortSpace",
+        "EfiPalCode",
+        "EfiMaxMemoryType"
+};
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi

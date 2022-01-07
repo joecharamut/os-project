@@ -12,9 +12,44 @@
 #include "printf.h"
 
 static noreturn void halt() {
-    __asm__ ("cli; hlt; jmp .");
+    __asm__ volatile ("cli; hlt; jmp .");
     __builtin_unreachable();
 }
+
+static void *memcpy(void *dst, void *src, UINT64 num) {
+    for (UINT64 i = 0; i < num; ++i) {
+        ((char*) dst)[i] = ((char*) src)[i];
+    }
+    return dst;
+}
+
+static void *memset(void *ptr, unsigned char value, UINT64 num) {
+    for (UINT64 i = 0; i < num; ++i) {
+        *((unsigned char *) ptr + i) = value;
+    }
+    return ptr;
+}
+
+typedef enum {
+    MemoryTypeNull,
+    MemoryTypeFree,
+    MemoryTypeUsed,
+    MemoryTypeReserved,
+} memory_type_t;
+const char *memory_type_t_strings[] = {
+    "MemoryTypeNull",
+    "MemoryTypeFree",
+    "MemoryTypeUsed",
+    "MemoryTypeReserved",
+};
+
+typedef struct {
+    memory_type_t type;
+    UINT64 paddr;
+    UINT64 vaddr;
+    UINT64 pages;
+    UINT64 flags;
+} memory_map_entry_t;
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi
@@ -57,14 +92,15 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     clear_screen();
     set_font(fontBuf);
 
-    EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"KERNEL.BIN");
-    if (!kernelHandle) {
-        return EFI_NOT_FOUND;
-    }
-
     printf("Starting EFILoader!\n");
     printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%08X]\n",
            ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
+    printf("GOP Framebuffer is at 0x%016llx\n", (UINT64) get_framebuffer());
+
+    EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"KERNEL2.BIN");
+    if (!kernelHandle) {
+        return EFI_NOT_FOUND;
+    }
 
     printf("Loading Kernel Header...");
     UINTN bufsz = 64;
@@ -119,57 +155,154 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_DEVICE_ERROR;
     }
 
-    header = kernelBuf;
-    printf("Entrypoint is at 0x%08llx\n", header->entry);
-    printf("Parsing program headers...\n");
-    UINTN pht_size = header->pht_entry_count * header->pht_entry_size;
-    elf64_pht_entry_t *pht = kernelBuf + header->pht_offset;
-
-    for (uint16_t i = 0; i < header->pht_entry_count; ++i) {
-        printf("Header %d:\n Type: %d\n Flags: 0x%x\n Offset: 0x%llx\n Virtual: 0x%llx\n Physical: 0x%llx\n",
-               i,
-               pht[i].type,
-               pht[i].flags,
-               pht[i].offset,
-               pht[i].vaddr,
-               pht[i].paddr
-        );
-    }
-
     UINTN mapKey = 0;
     UINTN mapSize = 0;
     UINTN descriptorSize = 0;
     UINT8 *mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
-    efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
     while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
         FreePool(mmap);
         mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
     }
+    printf("Boot services terminated successfully\n");
 
-    UINTN convMemory = 0;
-    UINTN reclaimMemory = 0;
-    UINTN otherMemory = 0;
-    for (UINTN i = 0; i < mapSize; ++i) {
+//    mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
+    efi_dump_mem_map(mmap, mapSize, descriptorSize);
+
+    UINT64 convMemory = 0;
+    UINT64 reclaimMemory = 0;
+    UINT64 runtimeMemory = 0;
+    UINT64 otherMemory = 0;
+    for (UINT64 i = 0; i < mapSize; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
 
         if (entry->Type == EfiConventionalMemory) {
             convMemory += entry->NumberOfPages * 4;
-        } else if (entry->Type == EfiBootServicesCode || entry->Type == EfiBootServicesData) {
+        } else if (entry->Type == EfiBootServicesCode || entry->Type == EfiBootServicesData || entry->Type == EfiLoaderCode || entry->Type == EfiLoaderData) {
             reclaimMemory += entry->NumberOfPages * 4;
+        } else if (entry->Type == EfiRuntimeServicesCode || entry->Type == EfiRuntimeServicesData) {
+            runtimeMemory += entry->NumberOfPages * 4;
         } else {
             otherMemory += entry->NumberOfPages * 4;
         }
     }
-    UINTN totalMemory = convMemory + reclaimMemory + otherMemory;
+    UINT64 totalMemory = convMemory + reclaimMemory + runtimeMemory + otherMemory;
 
     printf("mmap reports %lld KiB of memory:\n", totalMemory);
     printf(" Free: %lld KiB (~%lld%%)\n", convMemory, convMemory * 100 / totalMemory);
     printf(" Reclaimable: %lld KiB (~%lld%%)\n", reclaimMemory, reclaimMemory * 100 / totalMemory);
-    printf(" Reserved: %lld KiB (~%lld%%)\n", otherMemory, otherMemory * 100 / totalMemory);
-    printf("Boot services terminated\n");
+    printf(" Runtime Services: %lld KiB (~%lld%%)\n", runtimeMemory, runtimeMemory * 100 / totalMemory);
+    printf(" Other: %lld KiB (~%lld%%)\n", otherMemory, otherMemory * 100 / totalMemory);
 
-//    __asm__ volatile ("call *%0\n\t" :: "r" (header->entry));
+    UINTN rip, rsp, rbp;
+    __asm__ volatile ("1: lea 1b(%%rip), %0\n\t"
+                      "movq %%rsp, %1\n\t"
+                      "movq %%rbp, %2\n\t"
+                      : "=a" (rip), "=g" (rsp), "=g" (rbp)
+                      );
+    printf("rip is currently: 0x%016llx\n", rip);
+    printf("rsp is currently: 0x%016llx\n", rsp);
+    printf("rbp is currently: 0x%016llx\n", rbp);
+
+    for (UINTN i = 0; i < mapSize; ++i) {
+        EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
+        UINT64 start = entry->PhysicalStart;
+        UINT64 end = start + (entry->NumberOfPages * 4096);
+
+        if (rip > start && rip < end) {
+            printf("rip is in mmap descriptor %lld\n", i);
+        }
+
+        if (rsp > start && rsp < end) {
+            printf("rsp is in mmap descriptor %lld\n", i);
+        }
+
+        if (rbp > start && rbp < end) {
+            printf("rbp is in mmap descriptor %lld\n", i);
+        }
+
+        if (((UINT64) kernelBuf) > start && ((UINT64) kernelBuf) < end) {
+            printf("kernel image is in mmap descriptor %lld\n", i);
+        }
+    }
+
+    printf("Condensing mmap...\n");
+    UINT64 condensedSize = 0;
+    memory_map_entry_t condensedMmap[mapSize];
+    memset(condensedMmap, 0, mapSize * sizeof(memory_map_entry_t));
+
+    for (UINTN i = 0; i < mapSize; ++i) {
+        EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
+
+        memory_type_t entryType = MemoryTypeNull;
+        if (entry->Type == EfiConventionalMemory || entry->Type == EfiBootServicesCode || entry->Type == EfiBootServicesData) {
+            entryType = MemoryTypeFree;
+        } else if (entry->Type == EfiLoaderCode || entry->Type == EfiLoaderData) {
+            entryType = MemoryTypeUsed;
+        } else {
+            entryType = MemoryTypeReserved;
+        }
+
+        if (condensedMmap[condensedSize].type == MemoryTypeNull) {
+            condensedMmap[condensedSize].type = entryType;
+            condensedMmap[condensedSize].paddr = entry->PhysicalStart;
+            condensedMmap[condensedSize].vaddr = entry->VirtualStart;
+            condensedMmap[condensedSize].pages = entry->NumberOfPages;
+            condensedMmap[condensedSize].flags = entry->Attribute;
+        }
+
+        if (condensedMmap[condensedSize].type != entryType) {
+            ++condensedSize;
+            --i;
+            continue;
+        }
+
+        condensedMmap[condensedSize].pages += entry->NumberOfPages;
+    }
+
+    printf("New mmap:\n");
+    for (UINT64 i = 0; i < condensedSize; ++i) {
+        printf("%lld,%s (%d),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
+               i, memory_type_t_strings[condensedMmap[i].type], condensedMmap[i].type,
+               condensedMmap[i].paddr, condensedMmap[i].vaddr,
+               condensedMmap[i].pages, condensedMmap[i].pages * 4,
+
+               (condensedMmap[i].flags & EFI_MEMORY_RP) ? '-' : 'R',
+               (condensedMmap[i].flags & EFI_MEMORY_WP) ? '-' : 'W',
+               (condensedMmap[i].flags & EFI_MEMORY_XP) ? '-' : 'X',
+               condensedMmap[i].flags);
+    }
+
+    UINT64 cr3;
+    __asm__ volatile ("mov %%cr3, %0\n\t" : "=g" (cr3));
+    printf("cr3 is 0x%016llx\n", cr3);
+
+
+
+    header = kernelBuf;
+    printf("Parsing kernel phdrs...\n");
+
+    for (uint16_t i = 0; i < header->pht_entry_count; ++i) {
+        elf64_pht_entry_t *entry = (void *) (((char *) kernelBuf) + header->pht_offset + (i * header->pht_entry_size));
+        printf("Header %d:\n Type: %s (%d)\n Flags: [%c%c%c]\n Offset: 0x%llx\n Virtual: 0x%llx\n Physical: 0x%llx\n",
+               i,
+               elf_ptype_strings[entry->type], entry->type,
+               (entry->flags & ELF_PFLAG_R ? 'R' : '-'),
+               (entry->flags & ELF_PFLAG_W ? 'W' : '-'),
+               (entry->flags & ELF_PFLAG_X ? 'X' : '-'),
+               entry->offset,
+               entry->vaddr,
+               entry->paddr
+        );
+
+        if (entry->type == ELF_PTYPE_LOAD) {
+            printf("Trying to load segment %d (0x%llx bytes) to phys address 0x%016llx...", i, entry->filesize, entry->paddr);
+            memcpy((void *) entry->paddr, ((char *) kernelBuf) + entry->offset, entry->filesize);
+            printf("OK!\n");
+        }
+    }
+
+    printf("Setup complete, calling the kernel!\n\n\n\n\n");
     ((void (*)()) header->entry)();
 
     printf("Halted.");
@@ -230,7 +363,7 @@ EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *Des
 void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize) {
     printf("Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
     for (UINTN i = 0; i < size; ++i) {
-        EFI_MEMORY_DESCRIPTOR *entry = mmap + (i * descriptorSize);
+        EFI_MEMORY_DESCRIPTOR *entry = (void *) (((char *) mmap) + (i * descriptorSize));
         printf("%s%lld,%s (%d),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
               entry->NumberOfPages == 0 ? "!!! " : "",
               i, efi_mem_type_string(entry->Type), entry->Type,

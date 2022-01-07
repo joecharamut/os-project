@@ -48,9 +48,9 @@ typedef struct {
 } __attribute__((packed)) elf64_header_t;
 static_assert(sizeof(elf64_header_t) == 64, "Invalid Size");
 
-#define ELF_PFLAG_R 1
+#define ELF_PFLAG_R 4
 #define ELF_PFLAG_W 2
-#define ELF_PFLAG_X 4
+#define ELF_PFLAG_X 1
 
 #define ELF_PTYPE_NULL      0x00000000
 #define ELF_PTYPE_LOAD      0x00000001
@@ -60,6 +60,8 @@ static_assert(sizeof(elf64_header_t) == 64, "Invalid Size");
 #define ELF_PTYPE_SHLIB     0x00000005
 #define ELF_PTYPE_PHDR      0x00000006
 #define ELF_PTYPE_TLS       0x00000007
+
+extern const char * const elf_ptype_strings[];
 
 typedef struct {
     uint32_t type;

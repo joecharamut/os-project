@@ -1,5 +1,16 @@
 #include "elf.h"
 
+const char * const elf_ptype_strings[] = {
+        "ELF_PTYPE_NULL",
+        "ELF_PTYPE_LOAD",
+        "ELF_PTYPE_DYNAMIC",
+        "ELF_PTYPE_INTERP",
+        "ELF_PTYPE_NOTE",
+        "ELF_PTYPE_SHLIB",
+        "ELF_PTYPE_PHDR",
+        "ELF_PTYPE_TLS",
+};
+
 bool elf_is_header_valid(void *header_buf) {
     elf_identifier_t *ident = header_buf;
     if (ident->magic[0] != 0x7F

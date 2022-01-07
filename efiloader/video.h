@@ -13,6 +13,7 @@ void write_char(char c);
 void clear_screen();
 void set_background_color(UINT32 color);
 void set_foreground_color(UINT32 color);
+void *get_framebuffer();
 
 void plot_pixel(UINT32 x, UINT32 y, UINT32 color);
 

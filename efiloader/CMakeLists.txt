@@ -46,6 +46,9 @@ add_compile_options(
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
         -std=c11
         -fshort-wchar
+        -g
+        -ggdb
+        -O0
         ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS}
 )
 
@@ -55,6 +58,8 @@ add_link_options(
         -shared
         -Wl,--subsystem,10
         -e efi_main
+        -g
+        -ggdb
 )
 
 set(LOADER_SOURCES
@@ -63,7 +68,7 @@ set(LOADER_SOURCES
         file.c file.h
         video.c video.h
         strings.c strings.h
-        printf.c printf.h serial.c serial.h)
+        printf.c printf.h serial.c serial.h mem.c mem.h)
 
 add_executable(loader.efi ${LOADER_SOURCES})
 add_dependencies(loader.efi gnu-efi scalable-font2)
@@ -77,5 +82,5 @@ target_include_directories(loader.efi PUBLIC
 target_link_directories(loader.efi PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/x86_64/lib
         )
-target_link_libraries(loader.efi efi)
+target_link_libraries(loader.efi efi gcc)
 

@@ -10,6 +10,7 @@
       <config projectName="os" targetName="gnu-efi" />
       <config projectName="os" targetName="qemu" />
       <config projectName="os" targetName="test64.bin" />
+      <config projectName="os" targetName="kernel2.bin" />
       <config projectName="os" targetName="stage2.bin" />
     </generated>
   </component>
@@ -19,9 +20,21 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="screen scrollin">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="check free mem">
+      <change afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/efiloader/mem.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel2/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel2/linker.ld" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel2/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/elf.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/elf.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/elf.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/elf.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,12 +92,12 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/bootstrap/linker.ld.in" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootloader/stage2.c" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/bootloader/mbr.asm" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/run_qemu.sh" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bootstrap/boot/boot.asm" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/bootstrap/linker.ld.in" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/bootloader/mbr.asm" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/efiloader/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
@@ -242,17 +255,19 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-debug" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.make" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/efiloader/lib" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$/cross" />
     </key>
@@ -265,11 +280,25 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
+    <configuration name="GDB qemu (efiloader)" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/efiloader/loader.efi" sysroot="">
+      <debugger kind="GDB">/usr/bin/gdb</debugger>
+      <method v="2" />
+    </configuration>
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="kernel2.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel2.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel2.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -328,8 +357,10 @@
       <item itemvalue="CMake Application.gnu-efi" />
       <item itemvalue="CMake Application.loader.efi" />
       <item itemvalue="CMake Application.scalable-font2" />
+      <item itemvalue="CMake Application.kernel2.bin" />
       <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
+      <item itemvalue="Remote Debug.GDB qemu (efiloader)" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
@@ -386,14 +417,11 @@
       <workItem from="1639338701679" duration="3436000" />
       <workItem from="1641155717185" duration="1506000" />
       <workItem from="1641157237236" duration="4532000" />
-      <workItem from="1641195336890" duration="5977000" />
-    </task>
-    <task id="LOCAL-00039" summary="writint asmemby">
-      <created>1629514658294</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1629514658294</updated>
+      <workItem from="1641195336890" duration="7884000" />
+      <workItem from="1641370294707" duration="13656000" />
+      <workItem from="1641452355076" duration="987000" />
+      <workItem from="1641453370552" duration="3633000" />
+      <workItem from="1641525487381" duration="4225000" />
     </task>
     <task id="LOCAL-00040" summary="make print_chr an extern asm function">
       <created>1629547917288</created>
@@ -731,7 +759,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641197878182</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="check free mem">
+      <created>1641332169228</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1641332169229</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -806,7 +841,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add loadable segments" />
     <MESSAGE value="fix characters not printing" />
     <MESSAGE value="cleanup" />
     <MESSAGE value="loads long mode now" />
@@ -831,7 +865,8 @@
     <MESSAGE value="print to graphics console instead" />
     <MESSAGE value="print to graphics console instead more" />
     <MESSAGE value="screen scrollin" />
-    <option name="LAST_COMMIT_MESSAGE" value="screen scrollin" />
+    <MESSAGE value="check free mem" />
+    <option name="LAST_COMMIT_MESSAGE" value="check free mem" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

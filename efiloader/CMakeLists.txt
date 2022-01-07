@@ -68,7 +68,7 @@ set(LOADER_SOURCES
         file.c file.h
         video.c video.h
         strings.c strings.h
-        printf.c printf.h mem.c mem.h debug.c debug.h)
+        mem.c mem.h debug.c debug.h)
 
 add_executable(loader.efi ${LOADER_SOURCES})
 add_dependencies(loader.efi gnu-efi scalable-font2)

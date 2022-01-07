@@ -8,7 +8,6 @@
 #include "elf.h"
 #include "file.h"
 #include "video.h"
-#include "printf.h"
 #include "debug.h"
 
 static noreturn void halt() {

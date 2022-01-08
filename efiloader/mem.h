@@ -93,11 +93,28 @@ typedef struct {
 } pt_entry_t;
 static_assert(sizeof(pt_entry_t) == 8, "Invalid Size");
 
+typedef enum {
+    MemoryTypeNull,
+    MemoryTypeFree,
+    MemoryTypeUsed,
+    MemoryTypeReserved,
+} memory_type_t;
+
+typedef struct {
+    memory_type_t type;
+    UINT64 paddr;
+    UINT64 vaddr;
+    UINT64 pages;
+    UINT64 flags;
+} memory_map_entry_t;
+
 extern const char * const EFI_MEMORY_TYPE_STRINGS[];
+extern const char * const memory_type_t_strings[];
+
 const char *efi_mem_type_string(UINT32 type);
 EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *DescriptorSize);
 void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize);
-void *memcpy(void *dst, void *src, uint64_t num);
-void *memset(void *ptr, unsigned char value, uint64_t num);
+void *kmemcpy(void *dst, void *src, uint64_t num);
+void *kmemset(void *ptr, unsigned char value, uint64_t num);
 
 #endif //LOADER_MEM_H

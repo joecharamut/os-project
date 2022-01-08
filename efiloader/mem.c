@@ -21,6 +21,13 @@ const char * const EFI_MEMORY_TYPE_STRINGS[] = {
         "EfiMaxMemoryType"
 };
 
+const char * const memory_type_t_strings[] = {
+        "MemoryTypeNull",
+        "MemoryTypeFree",
+        "MemoryTypeUsed",
+        "MemoryTypeReserved",
+};
+
 const char *efi_mem_type_string(UINT32 type) {
     if (type < 15) {
         return EFI_MEMORY_TYPE_STRINGS[type];
@@ -88,14 +95,14 @@ void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize) {
     }
 }
 
-void *memcpy(void *dst, void *src, uint64_t num) {
+void *kmemcpy(void *dst, void *src, uint64_t num) {
     for (uint64_t i = 0; i < num; ++i) {
         ((char*) dst)[i] = ((char*) src)[i];
     }
     return dst;
 }
 
-void *memset(void *ptr, unsigned char value, uint64_t num) {
+void *kmemset(void *ptr, unsigned char value, uint64_t num) {
     for (uint64_t i = 0; i < num; ++i) {
         *((unsigned char *) ptr + i) = value;
     }

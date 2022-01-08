@@ -1,40 +1,19 @@
 #include "main.h"
 
-#include <efi.h>
-#include <efilib.h>
-#include <stdnoreturn.h>
-
 #include "elf.h"
 #include "file.h"
 #include "video.h"
 #include "debug.h"
 #include "mem.h"
 
+#include <efi.h>
+#include <efilib.h>
+#include <stdnoreturn.h>
+
 static noreturn void halt() {
     __asm__ volatile ("cli; hlt; jmp .");
     __builtin_unreachable();
 }
-
-typedef enum {
-    MemoryTypeNull,
-    MemoryTypeFree,
-    MemoryTypeUsed,
-    MemoryTypeReserved,
-} memory_type_t;
-const char *memory_type_t_strings[] = {
-    "MemoryTypeNull",
-    "MemoryTypeFree",
-    "MemoryTypeUsed",
-    "MemoryTypeReserved",
-};
-
-typedef struct {
-    memory_type_t type;
-    UINT64 paddr;
-    UINT64 vaddr;
-    UINT64 pages;
-    UINT64 flags;
-} memory_map_entry_t;
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi
@@ -214,7 +193,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     printf("Condensing mmap...\n");
     UINT64 condensedSize = 0;
     memory_map_entry_t condensedMmap[mapSize];
-    memset(condensedMmap, 0, mapSize * sizeof(memory_map_entry_t));
+    kmemset(condensedMmap, 0, mapSize * sizeof(memory_map_entry_t));
 
     for (UINTN i = 0; i < mapSize; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
@@ -327,7 +306,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
         if (entry->type == ELF_PTYPE_LOAD) {
             printf("Trying to load segment %d (0x%llx bytes) to phys address 0x%016llx...", i, entry->filesize, entry->paddr);
-            memcpy((void *) entry->paddr, ((char *) kernelBuf) + entry->offset, entry->filesize);
+            kmemcpy((void *) entry->paddr, ((char *) kernelBuf) + entry->offset, entry->filesize);
             printf("OK!\n");
         }
     }

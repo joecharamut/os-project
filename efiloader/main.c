@@ -8,24 +8,11 @@
 #include "file.h"
 #include "video.h"
 #include "debug.h"
+#include "mem.h"
 
 static noreturn void halt() {
     __asm__ volatile ("cli; hlt; jmp .");
     __builtin_unreachable();
-}
-
-static void *memcpy(void *dst, void *src, UINT64 num) {
-    for (UINT64 i = 0; i < num; ++i) {
-        ((char*) dst)[i] = ((char*) src)[i];
-    }
-    return dst;
-}
-
-static void *memset(void *ptr, unsigned char value, UINT64 num) {
-    for (UINT64 i = 0; i < num; ++i) {
-        *((unsigned char *) ptr + i) = value;
-    }
-    return ptr;
 }
 
 typedef enum {
@@ -48,24 +35,6 @@ typedef struct {
     UINT64 pages;
     UINT64 flags;
 } memory_map_entry_t;
-
-const char * const EFI_MEMORY_TYPE_STRINGS[] = {
-        "EfiReservedMemoryType",
-        "EfiLoaderCode",
-        "EfiLoaderData",
-        "EfiBootServicesCode",
-        "EfiBootServicesData",
-        "EfiRuntimeServicesCode",
-        "EfiRuntimeServicesData",
-        "EfiConventionalMemory",
-        "EfiUnusableMemory",
-        "EfiACPIReclaimMemory",
-        "EfiACPIMemoryNVS",
-        "EfiMemoryMappedIO",
-        "EfiMemoryMappedIOPortSpace",
-        "EfiPalCode",
-        "EfiMaxMemoryType"
-};
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi
@@ -293,7 +262,52 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     __asm__ volatile ("mov %%cr3, %0\n\t" : "=g" (cr3));
     printf("cr3 is 0x%016llx\n", cr3);
 
+    for (int i = 0; i < 512; ++i) {
+        pml4_entry_t pml4Entry = ((pml4_entry_t *) cr3)[i];
+        if (pml4Entry.present) {
+//            printf("pml4 entry %lld -> 0x%016llx @@ 0x%016llx\n", i, pml4Entry.value, pml4Entry.page_ppn);
+            printf("pml4[%lld] -> P:%llx W:%llx U:%llx WT:%llx CD:%llx A:%llx I3:%llx S:%llx I2:%llx PP:%llx I1:%llx NX:%llx\n",
+                   i,
+                   pml4Entry.present,
+                   pml4Entry.writeable,
+                   pml4Entry.user_access,
+                   pml4Entry.write_through,
+                   pml4Entry.cache_disabled,
+                   pml4Entry.accessed,
+                   pml4Entry.ignored_3,
+                   pml4Entry.size,
+                   pml4Entry.ignored_2,
+                   pml4Entry.page_ppn,
+                   pml4Entry.ignored_1,
+                   pml4Entry.execution_disabled
+            );
 
+            for (int j = 0; j < 512; ++j) {
+                pdpt_entry_t pdptEntry = ((pdpt_entry_t *) (pml4Entry.page_ppn * 0x1000))[j];
+
+                if (pdptEntry.present) {
+//                    printf("pdpt entry %lld:%lld is present\n", i, j);
+                    printf("pml4[%lld][%lld] -> P:%lld W:%lld U:%lld WT:%lld CD:%lld A:%lld I3:%lld S:%lld I2:%lld PP:%lld I1:%lld NX:%lld\n",
+                           i, j,
+                           pdptEntry.present,
+                           pdptEntry.writeable,
+                           pdptEntry.user_access,
+                           pdptEntry.write_through,
+                           pdptEntry.cache_disabled,
+                           pdptEntry.accessed,
+                           pdptEntry.ignored_3,
+                           pdptEntry.size,
+                           pdptEntry.ignored_2,
+                           pdptEntry.page_ppn,
+                           pdptEntry.ignored_1,
+                           pdptEntry.execution_disabled
+                    );
+                }
+            }
+        }
+    }
+
+    halt();
 
     header = kernelBuf;
     printf("Parsing kernel phdrs...\n");
@@ -323,72 +337,4 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     printf("Halted.");
     halt();
-}
-
-
-const char *efi_mem_type_string(UINT32 type) {
-    if (type < 15) {
-        return EFI_MEMORY_TYPE_STRINGS[type];
-    } else if (type < 0x6FFFFFFF) {
-        return "Reserved";
-    } else if (type < 0x7FFFFFFF) {
-        return "Reserved (OEM)";
-    } else {
-        return "Reserved (OSV)";
-    }
-}
-
-EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *DescriptorSize) {
-    EFI_STATUS status;
-
-    UINTN mmapSize = 0;
-    EFI_MEMORY_DESCRIPTOR *memoryMap = NULL;
-    UINTN mmapKey = 0;
-    UINTN descriptorSize = 0;
-    UINT32 descriptorVersion = 0;
-
-    while ((status = BS->GetMemoryMap(&mmapSize, memoryMap, &mmapKey, &descriptorSize, &descriptorVersion)) == EFI_BUFFER_TOO_SMALL) {
-        mmapSize += descriptorSize * 8;
-
-        if (memoryMap) {
-            FreePool(memoryMap);
-        }
-        memoryMap = AllocatePool(mmapSize);
-    }
-
-    if (EFI_ERROR(status)) {
-        Print(L"Failed to get memory map: 0x%llx\n", status);
-        return NULL;
-    }
-
-    if (MapKey) {
-        *MapKey = mmapKey;
-    }
-
-    if (Entries) {
-        *Entries = mmapSize / descriptorSize;
-    }
-
-    if (DescriptorSize) {
-        *DescriptorSize = descriptorSize;
-    }
-
-    return memoryMap;
-}
-
-void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize) {
-    printf("Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
-    for (UINTN i = 0; i < size; ++i) {
-        EFI_MEMORY_DESCRIPTOR *entry = (void *) (((char *) mmap) + (i * descriptorSize));
-        printf("%s%lld,%s (%d),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
-              entry->NumberOfPages == 0 ? "!!! " : "",
-              i, efi_mem_type_string(entry->Type), entry->Type,
-              entry->PhysicalStart, entry->VirtualStart,
-              entry->NumberOfPages, entry->NumberOfPages * 4,
-
-              (entry->Attribute & EFI_MEMORY_RP) ? '-' : 'R',
-              (entry->Attribute & EFI_MEMORY_WP) ? '-' : 'W',
-              (entry->Attribute & EFI_MEMORY_XP) ? '-' : 'X',
-              entry->Attribute);
-    }
 }

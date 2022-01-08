@@ -9,18 +9,18 @@
 typedef struct {
     union {
         struct {
-            uint64_t present             :1;
-            uint64_t writeable           :1;
-            uint64_t user_access         :1;
-            uint64_t write_through       :1;
-            uint64_t cache_disabled      :1;
-            uint64_t accessed            :1;
-            uint64_t ignored_3           :1;
-            uint64_t size                :1; // must be 0
-            uint64_t ignored_2           :4;
-            uint64_t page_ppn            :40;
-            uint64_t ignored_1           :11;
-            uint64_t execution_disabled  :1;
+            bool present            :1;
+            bool writeable          :1;
+            bool user_access        :1;
+            bool write_through      :1;
+            bool cache_disabled     :1;
+            bool accessed           :1;
+            uint8_t ignored_3       :1;
+            bool size               :1; // must be 0
+            uint8_t ignored_2       :4;
+            uint64_t page_ppn       :40;
+            uint16_t ignored_1      :11;
+            bool execution_disabled :1;
         } __attribute__ ((packed));
         uint64_t value;
     };
@@ -30,18 +30,18 @@ static_assert(sizeof(pml4_entry_t) == 8, "Invalid Size");
 typedef struct {
     union {
         struct {
-            uint64_t present             :1;
-            uint64_t writeable           :1;
-            uint64_t user_access         :1;
-            uint64_t write_through       :1;
-            uint64_t cache_disabled      :1;
-            uint64_t accessed            :1;
-            uint64_t ignored_3           :1;
-            uint64_t size                :1;
-            uint64_t ignored_2           :4;
-            uint64_t page_ppn            :40;
-            uint64_t ignored_1           :11;
-            uint64_t execution_disabled  :1;
+            bool present            :1;
+            bool writeable          :1;
+            bool user_access        :1;
+            bool write_through      :1;
+            bool cache_disabled     :1;
+            bool accessed           :1;
+            uint8_t ignored_3       :1;
+            bool size               :1;
+            uint8_t ignored_2       :4;
+            uint64_t page_ppn       :40;
+            uint16_t ignored_1      :11;
+            bool execution_disabled :1;
         } __attribute__ ((packed));
         uint64_t value;
     };

@@ -82,7 +82,7 @@ void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize) {
     printf("Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
     for (UINTN i = 0; i < size; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (void *) (((char *) mmap) + (i * descriptorSize));
-        printf("%s%lld,%s (%d),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
+        printf("%s%lu,%s (%d),0x%08lx,0x%08lx,%lu (%lu KiB),[%c%c%c] (0x%lx)\n",
                entry->NumberOfPages == 0 ? "!!! " : "",
                i, efi_mem_type_string(entry->Type), entry->Type,
                entry->PhysicalStart, entry->VirtualStart,

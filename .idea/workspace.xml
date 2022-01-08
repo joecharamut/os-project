@@ -20,10 +20,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="memory type beat">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="no memset allowed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -278,11 +278,6 @@
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -411,14 +406,8 @@
       <workItem from="1641370294707" duration="13656000" />
       <workItem from="1641452355076" duration="987000" />
       <workItem from="1641453370552" duration="3633000" />
-      <workItem from="1641525487381" duration="12052000" />
-    </task>
-    <task id="LOCAL-00045" summary="add some helper macros for printing numbers in a string">
-      <created>1629689290059</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1629689290059</updated>
+      <workItem from="1641525487381" duration="12301000" />
+      <workItem from="1641669688056" duration="761000" />
     </task>
     <task id="LOCAL-00046" summary="add some helper macros for printing numbers in a string">
       <created>1629689326018</created>
@@ -756,7 +745,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641669244314</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="no memset allowed">
+      <created>1641669588359</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1641669588359</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -831,7 +827,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="unify division" />
     <MESSAGE value="try to tell bios we want long mode" />
     <MESSAGE value="box drawin" />
     <MESSAGE value="box drawin 2" />
@@ -856,7 +851,8 @@
     <MESSAGE value="remove printf.c" />
     <MESSAGE value="remove strings.c" />
     <MESSAGE value="memory type beat" />
-    <option name="LAST_COMMIT_MESSAGE" value="memory type beat" />
+    <MESSAGE value="no memset allowed" />
+    <option name="LAST_COMMIT_MESSAGE" value="no memset allowed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

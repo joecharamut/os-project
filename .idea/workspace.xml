@@ -20,11 +20,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="no memset allowed">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fix printf specifiers">
+      <change afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel2/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel2/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -252,6 +256,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+    <property name="structure.view.defaults.are.configured" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -262,14 +267,19 @@
       <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/common" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/bootloader" />
       <recent name="$PROJECT_DIR$/bootstrap/io" />
       <recent name="$PROJECT_DIR$/image" />
-      <recent name="$PROJECT_DIR$/image/boot" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GDB qemu (efiloader)" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/efiloader/loader.efi" sysroot="">
       <debugger kind="GDB">/usr/bin/gdb</debugger>
       <method v="2" />
@@ -407,21 +417,7 @@
       <workItem from="1641452355076" duration="987000" />
       <workItem from="1641453370552" duration="3633000" />
       <workItem from="1641525487381" duration="12301000" />
-      <workItem from="1641669688056" duration="761000" />
-    </task>
-    <task id="LOCAL-00046" summary="add some helper macros for printing numbers in a string">
-      <created>1629689326018</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1629689326018</updated>
-    </task>
-    <task id="LOCAL-00047" summary="add some comments">
-      <created>1629788799160</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1629788799160</updated>
+      <workItem from="1641669688056" duration="6957000" />
     </task>
     <task id="LOCAL-00048" summary="add func for getting bios mem map">
       <created>1629788814052</created>
@@ -752,7 +748,21 @@
       <option name="project" value="LOCAL" />
       <updated>1641669588359</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="fix printf specifiers">
+      <created>1641670504758</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1641670504759</updated>
+    </task>
+    <task id="LOCAL-00096" summary="fix printf specifiers">
+      <created>1641670676251</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1641670676251</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -827,7 +837,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="try to tell bios we want long mode" />
     <MESSAGE value="box drawin" />
     <MESSAGE value="box drawin 2" />
     <MESSAGE value="box drawin kinda useless" />
@@ -852,7 +861,8 @@
     <MESSAGE value="remove strings.c" />
     <MESSAGE value="memory type beat" />
     <MESSAGE value="no memset allowed" />
-    <option name="LAST_COMMIT_MESSAGE" value="no memset allowed" />
+    <MESSAGE value="fix printf specifiers" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix printf specifiers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

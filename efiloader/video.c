@@ -1,4 +1,5 @@
 #include "video.h"
+#include "debug.h"
 #include <efilib.h>
 
 #define _STDINT_H
@@ -55,6 +56,13 @@ EFI_STATUS video_init() {
 //              );
 //    }
 
+    printf("Framebuffer address: 0x%llx, size 0x%llx, width %lld, height %lld, pixelsperline %lld\n",
+           GOP->Mode->FrameBufferBase,
+           GOP->Mode->FrameBufferSize,
+           GOP->Mode->Info->HorizontalResolution,
+           GOP->Mode->Info->VerticalResolution,
+           GOP->Mode->Info->PixelsPerScanLine
+           );
     ssfn_dst.ptr = (void *) GOP->Mode->FrameBufferBase;
     ssfn_dst.w = (INT16) GOP->Mode->Info->HorizontalResolution;
     ssfn_dst.h = (INT16) GOP->Mode->Info->VerticalResolution;

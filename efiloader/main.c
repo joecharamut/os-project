@@ -5,6 +5,7 @@
 #include "video.h"
 #include "debug.h"
 #include "mem.h"
+#include "../common/boot_data.h"
 
 #include <efi.h>
 #include <efilib.h>
@@ -241,6 +242,73 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     __asm__ volatile ("mov %%cr3, %0\n\t" : "=g" (cr3));
     printf("cr3 is 0x%016lx\n", cr3);
 
+    pml4_entry_t *new_pml4 = (pml4_entry_t *) 0x100000; // +1.00 MiB
+    pdpt_entry_t *new_pdpt = (pdpt_entry_t *) 0x101000; // +1.01 MiB
+
+    kmemset(new_pml4, 0, 512 * sizeof(pml4_entry_t));
+    kmemset(new_pdpt, 0, 512 * sizeof(pdpt_entry_t));
+
+    new_pml4[0] = (pml4_entry_t) {
+            .present = true,
+            .writeable = true,
+            .user_access = false,
+            .write_through = true,
+            .cache_disabled = true,
+            .accessed = false,
+            .size = 0,
+            .page_ppn = ((uint64_t) new_pdpt) / 0x1000,
+            .execution_disabled = false,
+    };
+
+    new_pdpt[0] = (pdpt_entry_t) {
+            .present = true,
+            .writeable = true,
+            .user_access = false,
+            .write_through = true,
+            .cache_disabled = true,
+            .accessed = false,
+            .size = 1,
+            .page_ppn = 0,
+            .execution_disabled = false,
+    };
+    new_pdpt[1] = (pdpt_entry_t) {
+            .present = true,
+            .writeable = true,
+            .user_access = false,
+            .write_through = true,
+            .cache_disabled = true,
+            .accessed = false,
+            .size = 1,
+            .page_ppn = 0x40000000 / 0x1000,
+            .execution_disabled = false,
+    };
+    new_pdpt[2] = (pdpt_entry_t) {
+            .present = true,
+            .writeable = true,
+            .user_access = false,
+            .write_through = true,
+            .cache_disabled = true,
+            .accessed = false,
+            .size = 1,
+            .page_ppn = 0x80000000 / 0x1000,
+            .execution_disabled = false,
+    };
+    new_pdpt[3] = (pdpt_entry_t) {
+            .present = true,
+            .writeable = true,
+            .user_access = false,
+            .write_through = true,
+            .cache_disabled = true,
+            .accessed = false,
+            .size = 1,
+            .page_ppn = 0xC0000000 / 0x1000,
+            .execution_disabled = false,
+    };
+
+    printf("Switching to new page map...\n");
+    __asm__ volatile ("mov %%rax, %%cr3\n\t" :: "a" (new_pml4));
+    printf("Worked?\n");
+
     for (int i = 0; i < 512; ++i) {
         pml4_entry_t pml4Entry = ((pml4_entry_t *) cr3)[i];
         if (pml4Entry.present) {
@@ -309,7 +377,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         }
     }
 
-    printf("Setup complete, calling the kernel!\n\n\n\n\n");
+    printf("Setup complete, calling the kernel!\n");
     ((void (*)()) header->entry)();
 
     printf("Halted.");

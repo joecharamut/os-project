@@ -6,6 +6,20 @@
 #include <assert.h>
 #include <efi.h>
 
+typedef union {
+    uint64_t value;
+    struct {
+        uint64_t offset: 12;
+        uint64_t pt_index: 9;
+        uint64_t pd_index: 9;
+        uint64_t pdpt_index: 9;
+        uint64_t pml4_index: 9;
+        uint64_t reserved: 16;
+    };
+} address_t;
+typedef address_t virtual_address_t;
+typedef address_t physical_address_t;
+
 typedef struct {
     union {
         uint64_t value;
@@ -108,6 +122,12 @@ typedef struct {
     UINT64 flags;
 } memory_map_entry_t;
 
+typedef enum {
+    PageSize4KiB,
+    PageSize2MiB,
+    PageSize1GiB,
+} page_size_t;
+
 extern const char * const EFI_MEMORY_TYPE_STRINGS[];
 extern const char * const memory_type_t_strings[];
 
@@ -116,5 +136,9 @@ EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *Des
 void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize);
 void *kmemcpy(void *dst, void *src, uint64_t num);
 void *kmemset(void *ptr, unsigned char value, uint64_t num);
+void *lomem_allocate(uint64_t size);
+
+void load_page_map();
+void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size);
 
 #endif //LOADER_MEM_H

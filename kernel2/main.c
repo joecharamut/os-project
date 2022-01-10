@@ -14,7 +14,11 @@ section(".bootstrap_data") const char *str = "Lorem ipsum dolor sit amet, consec
 section(".bootstrap") attribute(unused) void bootstrap(boot_data_t *bootData) {
     // todo: setup pagetables
 
-    uint32_t *display_buffer = (uint32_t *) 0x80000000;
+    if (bootData->signature != BOOT_DATA_SIGNATURE) {
+        return;
+    }
+
+    uint32_t *display_buffer = (uint32_t *) bootData->video_info.bufferAddress;
     for (int x = 0; x < DISPLAY_WIDTH; ++x) {
         for (int y = 0; y < DISPLAY_HEIGHT; ++y) {
             display_buffer[y * DISPLAY_WIDTH + x] = 0xFFFF00FF;

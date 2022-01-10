@@ -63,7 +63,7 @@ add_link_options(
 )
 
 set(LOADER_SOURCES
-        main.c main.h
+        main.c
         elf.c elf.h
         file.c file.h
         video.c video.h

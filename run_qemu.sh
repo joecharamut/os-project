@@ -3,17 +3,14 @@
 cd cmake-build-debug || exit
 qemu-system-x86_64 \
             -s \
+            -enable-kvm \
             -no-reboot \
             -no-shutdown \
             -d guest_errors,cpu_reset \
             -serial stdio \
-            -debugcon file:debug.log \
-            -global isa-debugcon.iobase=0x402 \
-            -m 1G \
+            -m 128M \
             -vga std \
-            -soundhw pcspk \
+            -net none \
+            -audiodev id=pa,driver=pa \
             -bios OVMF.fd \
             -drive file=disk.img,format=raw
-
-            #-drive if=pflash,format=raw,unit=0,file=OVMF_CODE.fd,readonly=on \
-            #-drive if=pflash,format=raw,unit=1,file=OVMF_VARS.fd \

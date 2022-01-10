@@ -109,3 +109,79 @@ void *kmemset(void *ptr, unsigned char value, uint64_t num) {
     return ptr;
 }
 
+static uint64_t lomem_allocate_ptr = 0x100000; // +1MiB
+void *lomem_allocate(uint64_t size) {
+    void *ret = (void *) lomem_allocate_ptr;
+    lomem_allocate_ptr += size;
+
+#ifdef DEBUG
+    kmemset(ret, 0xCD, size);
+#endif
+
+    return ret;
+}
+
+
+static pml4_entry_t *pml4_pointer = NULL;
+
+void load_page_map() {
+    __asm__ volatile (
+            "mov %%rax, %%cr3\n\t"
+            :
+            : "a" (pml4_pointer)
+            :
+    );
+}
+
+void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size) {
+    if (!pml4_pointer) {
+        pml4_pointer = lomem_allocate(sizeof(pml4_entry_t) * 512);
+        printf("allocating new pml4 at 0x%016llx\n", pml4_pointer);
+        kmemset(pml4_pointer, 0, sizeof(pml4_entry_t) * 512);
+    }
+
+    if (!pml4_pointer[vaddr.pml4_index].present) {
+        pml4_pointer[vaddr.pml4_index] = (pml4_entry_t){
+                .present = true,
+                .writeable = true,
+                .user_access = false,
+                .write_through = true,
+                .cache_disabled = true,
+                .accessed = false,
+                .size = 0,
+                .page_ppn = 0,
+                .execution_disabled = false,
+        };
+    }
+
+    pdpt_entry_t *pdpt = (pdpt_entry_t *) (pml4_pointer[vaddr.pml4_index].page_ppn * 0x1000);
+    if (!pdpt) {
+        pdpt = lomem_allocate(sizeof(pdpt_entry_t) * 512);
+        printf("allocating new pdpt at 0x%016llx\n", pdpt);
+        kmemset(pdpt, 0, sizeof(pdpt_entry_t) * 512);
+        pml4_pointer[vaddr.pml4_index].page_ppn = ((uint64_t) pdpt) / 0x1000;
+    }
+
+    if (size == PageSize1GiB) {
+        // 1GiB = PML4->PDPT
+        pdpt[vaddr.pdpt_index] = (pdpt_entry_t) {
+                .present = true,
+                .writeable = true,
+                .user_access = false,
+                .write_through = true,
+                .cache_disabled = true,
+                .accessed = false,
+                .size = 1,
+                .page_ppn = paddr.value / 0x1000,
+                .execution_disabled = false,
+        };
+        return;
+    }
+
+    if (size == PageSize2MiB) {
+        // 2MiB = PML4->PDPT->PD
+    } else {
+        // 4KiB = PML4->PDPT->PD->PT
+    }
+}
+

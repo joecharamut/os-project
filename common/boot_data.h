@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define BOOT_DATA_SIGNATURE 0x534B52554E4B4C59
+
 typedef struct {
     uint64_t signature;
 

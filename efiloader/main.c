@@ -1,5 +1,3 @@
-#include "main.h"
-
 #include "elf.h"
 #include "file.h"
 #include "video.h"
@@ -15,6 +13,9 @@ static noreturn void halt() {
     __asm__ volatile ("cli; hlt; jmp .");
     __builtin_unreachable();
 }
+
+#define __sysv_abi __attribute__((sysv_abi))
+typedef void (__sysv_abi *bootstrap_entry_func)(boot_data_t *);
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi
@@ -131,7 +132,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
     printf("Boot services terminated successfully\n");
 
-//    mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
     efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
     UINT64 convMemory = 0;
@@ -240,119 +240,16 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     UINT64 cr3;
     __asm__ volatile ("mov %%cr3, %0\n\t" : "=g" (cr3));
-    printf("cr3 is 0x%016lx\n", cr3);
 
-    pml4_entry_t *new_pml4 = (pml4_entry_t *) 0x100000; // +1.00 MiB
-    pdpt_entry_t *new_pdpt = (pdpt_entry_t *) 0x101000; // +1.01 MiB
+    printf("Setting up identity page map for first 4GiB of address space\n");
 
-    kmemset(new_pml4, 0, 512 * sizeof(pml4_entry_t));
-    kmemset(new_pdpt, 0, 512 * sizeof(pdpt_entry_t));
-
-    new_pml4[0] = (pml4_entry_t) {
-            .present = true,
-            .writeable = true,
-            .user_access = false,
-            .write_through = true,
-            .cache_disabled = true,
-            .accessed = false,
-            .size = 0,
-            .page_ppn = ((uint64_t) new_pdpt) / 0x1000,
-            .execution_disabled = false,
-    };
-
-    new_pdpt[0] = (pdpt_entry_t) {
-            .present = true,
-            .writeable = true,
-            .user_access = false,
-            .write_through = true,
-            .cache_disabled = true,
-            .accessed = false,
-            .size = 1,
-            .page_ppn = 0,
-            .execution_disabled = false,
-    };
-    new_pdpt[1] = (pdpt_entry_t) {
-            .present = true,
-            .writeable = true,
-            .user_access = false,
-            .write_through = true,
-            .cache_disabled = true,
-            .accessed = false,
-            .size = 1,
-            .page_ppn = 0x40000000 / 0x1000,
-            .execution_disabled = false,
-    };
-    new_pdpt[2] = (pdpt_entry_t) {
-            .present = true,
-            .writeable = true,
-            .user_access = false,
-            .write_through = true,
-            .cache_disabled = true,
-            .accessed = false,
-            .size = 1,
-            .page_ppn = 0x80000000 / 0x1000,
-            .execution_disabled = false,
-    };
-    new_pdpt[3] = (pdpt_entry_t) {
-            .present = true,
-            .writeable = true,
-            .user_access = false,
-            .write_through = true,
-            .cache_disabled = true,
-            .accessed = false,
-            .size = 1,
-            .page_ppn = 0xC0000000 / 0x1000,
-            .execution_disabled = false,
-    };
-
-    printf("Switching to new page map...\n");
-    __asm__ volatile ("mov %%rax, %%cr3\n\t" :: "a" (new_pml4));
-    printf("Worked?\n");
-
-    for (int i = 0; i < 512; ++i) {
-        pml4_entry_t pml4Entry = ((pml4_entry_t *) cr3)[i];
-        if (pml4Entry.present) {
-//            printf("pml4 entry %lld -> 0x%016llx @@ 0x%016llx\n", i, pml4Entry.value, pml4Entry.page_ppn);
-            printf("pml4[%d] -> P:%x W:%x U:%x WT:%x CD:%x A:%x I3:%x S:%x I2:%x PP:%lx I1:%x NX:%x\n",
-                   i,
-                   pml4Entry.present,
-                   pml4Entry.writeable,
-                   pml4Entry.user_access,
-                   pml4Entry.write_through,
-                   pml4Entry.cache_disabled,
-                   pml4Entry.accessed,
-                   pml4Entry.ignored_3,
-                   pml4Entry.size,
-                   pml4Entry.ignored_2,
-                   pml4Entry.page_ppn,
-                   pml4Entry.ignored_1,
-                   pml4Entry.execution_disabled
-            );
-
-            for (int j = 0; j < 512; ++j) {
-                pdpt_entry_t pdptEntry = ((pdpt_entry_t *) (pml4Entry.page_ppn * 0x1000))[j];
-
-                if (pdptEntry.present) {
-//                    printf("pdpt entry %lld:%lld is present\n", i, j);
-                    printf("pml4[%d][%d] -> P:%x W:%x U:%x WT:%x CD:%x A:%x I3:%x S:%x I2:%x PP:%lx I1:%x NX:%x\n",
-                           i, j,
-                           pdptEntry.present,
-                           pdptEntry.writeable,
-                           pdptEntry.user_access,
-                           pdptEntry.write_through,
-                           pdptEntry.cache_disabled,
-                           pdptEntry.accessed,
-                           pdptEntry.ignored_3,
-                           pdptEntry.size,
-                           pdptEntry.ignored_2,
-                           pdptEntry.page_ppn,
-                           pdptEntry.ignored_1,
-                           pdptEntry.execution_disabled
-                    );
-                }
-            }
-        }
+    for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
+        map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i }, PageSize1GiB);
     }
+//    map_page((physical_address_t) { .value=0x100000000 }, (virtual_address_t){ .value=0x100000000 }, PageSize4KiB);
+
+    printf("Enabling the new page map\n");
+    load_page_map();
 
     header = kernelBuf;
     printf("Parsing kernel phdrs...\n");
@@ -378,8 +275,13 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
 
     printf("Setup complete, calling the kernel!\n");
-    ((void (*)()) header->entry)();
+    boot_data_t *bootData = lomem_allocate(sizeof(boot_data_t));
+    bootData->signature = BOOT_DATA_SIGNATURE;
+    bootData->video_info.bufferAddress = (uint64_t) get_framebuffer();
 
-    printf("Halted.");
+    ((bootstrap_entry_func) header->entry)(bootData);
+
+    printf("Kernel returned\n");
+    printf("Halted.\n");
     halt();
 }

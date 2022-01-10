@@ -20,15 +20,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fix printf specifiers">
-      <change afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="working on calling the kernel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/boot_data.h" beforeDir="false" afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel2/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel2/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -249,7 +250,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-debug" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -260,10 +261,10 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/efiloader/lib" />
-      <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -417,14 +418,7 @@
       <workItem from="1641452355076" duration="987000" />
       <workItem from="1641453370552" duration="3633000" />
       <workItem from="1641525487381" duration="12301000" />
-      <workItem from="1641669688056" duration="6957000" />
-    </task>
-    <task id="LOCAL-00048" summary="add func for getting bios mem map">
-      <created>1629788814052</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1629788814052</updated>
+      <workItem from="1641669688056" duration="17464000" />
     </task>
     <task id="LOCAL-00049" summary="move around some memory">
       <created>1629831359692</created>
@@ -762,7 +756,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641670676251</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <task id="LOCAL-00097" summary="working on calling the kernel">
+      <created>1641716851023</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1641716851023</updated>
+    </task>
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -837,7 +838,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="box drawin" />
     <MESSAGE value="box drawin 2" />
     <MESSAGE value="box drawin kinda useless" />
     <MESSAGE value="beep" />
@@ -862,7 +862,8 @@
     <MESSAGE value="memory type beat" />
     <MESSAGE value="no memset allowed" />
     <MESSAGE value="fix printf specifiers" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix printf specifiers" />
+    <MESSAGE value="working on calling the kernel" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on calling the kernel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

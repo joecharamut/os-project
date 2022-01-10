@@ -238,16 +238,10 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
                condensedMmap[i].flags);
     }
 
-    UINT64 cr3;
-    __asm__ volatile ("mov %%cr3, %0\n\t" : "=g" (cr3));
-
-    printf("Setting up identity page map for first 4GiB of address space\n");
-
+    printf("Identity mapping first 4GiB of address space\n");
     for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
         map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i }, PageSize1GiB);
     }
-//    map_page((physical_address_t) { .value=0x100000000 }, (virtual_address_t){ .value=0x100000000 }, PageSize4KiB);
-
     printf("Enabling the new page map\n");
     load_page_map();
 

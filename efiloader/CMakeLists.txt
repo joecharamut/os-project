@@ -46,8 +46,6 @@ add_compile_options(
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
         -std=c11
         -fshort-wchar
-        -g
-        -ggdb
         -O0
         ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS}
 )
@@ -58,8 +56,6 @@ add_link_options(
         -shared
         -Wl,--subsystem,10
         -e efi_main
-        -g
-        -ggdb
 )
 
 set(LOADER_SOURCES

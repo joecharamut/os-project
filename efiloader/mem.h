@@ -113,6 +113,7 @@ typedef enum {
     MemoryTypeUsed,
     MemoryTypeReserved,
 } memory_type_t;
+extern const char * const memory_type_t_strings[];
 
 typedef struct {
     memory_type_t type;
@@ -129,7 +130,6 @@ typedef enum {
 } page_size_t;
 
 extern const char * const EFI_MEMORY_TYPE_STRINGS[];
-extern const char * const memory_type_t_strings[];
 
 const char *efi_mem_type_string(UINT32 type);
 EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *DescriptorSize);

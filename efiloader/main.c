@@ -60,9 +60,8 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     printf("Starting EFILoader!\n");
     printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%08X]\n",
            ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
-    printf("GOP Framebuffer is at 0x%016lx\n", (UINT64) get_framebuffer());
 
-    EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"KERNEL2.BIN");
+    EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"RKERNEL.BIN");
     if (!kernelHandle) {
         return EFI_NOT_FOUND;
     }
@@ -241,6 +240,10 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
         map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i }, PageSize1GiB);
     }
+    printf("Mapping last 4GiB of address space\n");
+    for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
+        map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i + 0xFFFFFFF800000000 }, PageSize1GiB);
+    }
     printf("Enabling the new page map\n");
     load_page_map();
 
@@ -249,6 +252,8 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     for (uint16_t i = 0; i < header->pht_entry_count; ++i) {
         elf64_pht_entry_t *entry = (void *) (((char *) kernelBuf) + header->pht_offset + (i * header->pht_entry_size));
+        if (entry->type != ELF_PTYPE_LOAD) continue;
+
         printf("Header %d:\n Type: %s (%d)\n Flags: [%c%c%c]\n Offset: 0x%lx\n Virtual: 0x%lx\n Physical: 0x%lx\n",
                i,
                elf_ptype_strings[entry->type], entry->type,
@@ -268,9 +273,10 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
 
     printf("Setup complete, calling the kernel!\n");
+
     boot_data_t *bootData = lomem_allocate(sizeof(boot_data_t));
     bootData->signature = BOOT_DATA_SIGNATURE;
-    bootData->video_info.bufferAddress = (uint64_t) get_framebuffer();
+    copy_video_info(bootData);
 
     ((bootstrap_entry_func) header->entry)(bootData);
 

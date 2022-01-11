@@ -140,11 +140,14 @@ UINT32 make_color(UINT8 r, UINT8 g, UINT8 b) {
     }
 }
 
-void *get_framebuffer() {
-    return (void *) GOP->Mode->FrameBufferBase;
-}
-
 void plot_pixel(UINT32 x, UINT32 y, UINT32 color) {
     UINT32 pitch = 4 * GOP->Mode->Info->PixelsPerScanLine;
     *((UINT32 *) (GOP->Mode->FrameBufferBase + (y * pitch) + (x * 4))) = color;
+}
+
+void copy_video_info(boot_data_t *bootData) {
+    bootData->video_info.bufferAddress = GOP->Mode->FrameBufferBase;
+    bootData->video_info.horizontalResolution = GOP->Mode->Info->HorizontalResolution;
+    bootData->video_info.verticalResolution = GOP->Mode->Info->VerticalResolution;
+    bootData->video_info.pixelsPerScanLine = GOP->Mode->Info->PixelsPerScanLine;
 }

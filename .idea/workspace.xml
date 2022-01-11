@@ -2,27 +2,43 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="os" targetName="rkernel.bin" />
+      <config projectName="os" targetName="loader.efi" />
+      <config projectName="os" targetName="qemu" />
+      <config projectName="os" targetName="kernel2.bin" />
+      <config projectName="os" targetName="stage2.bin" />
       <config projectName="os" targetName="mbr.bin" />
       <config projectName="os" targetName="scalable-font2" />
       <config projectName="os" targetName="linker.ld" />
-      <config projectName="os" targetName="loader.efi" />
+      <config projectName="os" targetName="libkernel.a" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="gnu-efi" />
-      <config projectName="os" targetName="qemu" />
       <config projectName="os" targetName="test64.bin" />
-      <config projectName="os" targetName="kernel2.bin" />
-      <config projectName="os" targetName="stage2.bin" />
     </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=/opt/cross/bin" />
-      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=/opt/cross/bin" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=&quot;/opt/cross/bin;/home/joseph/.cargo/bin&quot;" />
+      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=&quot;/opt/cross/bin;/home/joseph/.cargo/bin&quot;" />
     </configurations>
   </component>
+  <component name="CargoProjects">
+    <cargoProject FILE="$PROJECT_DIR$/rkernel/kernel/Cargo.toml" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fix build system">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="dont need that define">
+      <change afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/Cargo.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/Cargo.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/linker.ld" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/target.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +49,7 @@
     <option name="formatViaClangd" value="false" />
     <option name="clangWarnings" value="-Wno-language-extension-token" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -145,6 +161,9 @@
       </list>
     </option>
   </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="o60fay7f" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -240,32 +259,39 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-release" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/rkernel/kernel" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="structure.view.defaults.are.configured" value="true" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/cmake-build-release" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/efiloader" />
-      <recent name="$PROJECT_DIR$/efiloader/lib" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/common" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/bootloader" />
       <recent name="$PROJECT_DIR$/bootstrap/io" />
-      <recent name="$PROJECT_DIR$/image" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GDB qemu (efiloader)" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/efiloader/loader.efi" sysroot="">
       <debugger kind="GDB">/usr/bin/gdb</debugger>
       <method v="2" />
@@ -273,11 +299,6 @@
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
     </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
       <method v="2">
@@ -290,6 +311,11 @@
       </method>
     </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="libkernel.a" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="libkernel.a" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -310,6 +336,11 @@
       </method>
     </configuration>
     <configuration name="qemu" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$ContentRoot$/run_qemu.sh" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$CMakeCurrentBuildDir$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="qemu" CONFIG_NAME="Debug" RUN_PATH="/bin/bash">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="rkernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="rkernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="rkernel.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -344,10 +375,15 @@
       <item itemvalue="CMake Application.loader.efi" />
       <item itemvalue="CMake Application.scalable-font2" />
       <item itemvalue="CMake Application.kernel2.bin" />
+      <item itemvalue="CMake Application.libkernel.a" />
+      <item itemvalue="CMake Application.rkernel.bin" />
       <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
       <item itemvalue="Remote Debug.GDB qemu (efiloader)" />
     </list>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -409,14 +445,8 @@
       <workItem from="1641453370552" duration="3633000" />
       <workItem from="1641525487381" duration="12301000" />
       <workItem from="1641669688056" duration="19923000" />
-      <workItem from="1641864701250" duration="2526000" />
-    </task>
-    <task id="LOCAL-00053" summary="cleanup">
-      <created>1629896652849</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1629896652849</updated>
+      <workItem from="1641864701250" duration="5256000" />
+      <workItem from="1641919829403" duration="14186000" />
     </task>
     <task id="LOCAL-00054" summary="workin on fat32">
       <created>1629938672046</created>
@@ -754,7 +784,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641869734699</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="dont need that define">
+      <created>1641869839007</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1641869839007</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -829,7 +866,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixed the example" />
     <MESSAGE value="yknow" />
     <MESSAGE value="copy over elf.h" />
     <MESSAGE value="move file stuff into a separate unit" />
@@ -854,7 +890,8 @@
     <MESSAGE value="cleanup a bit" />
     <MESSAGE value="add extra doc" />
     <MESSAGE value="fix build system" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix build system" />
+    <MESSAGE value="dont need that define" />
+    <option name="LAST_COMMIT_MESSAGE" value="dont need that define" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

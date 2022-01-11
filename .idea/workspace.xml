@@ -21,12 +21,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add extra doc">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="fix build system">
+      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -413,14 +409,7 @@
       <workItem from="1641453370552" duration="3633000" />
       <workItem from="1641525487381" duration="12301000" />
       <workItem from="1641669688056" duration="19923000" />
-      <workItem from="1641864701250" duration="2438000" />
-    </task>
-    <task id="LOCAL-00052" summary="move a20 detect into stage2">
-      <created>1629857517503</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1629857517503</updated>
+      <workItem from="1641864701250" duration="2526000" />
     </task>
     <task id="LOCAL-00053" summary="cleanup">
       <created>1629896652849</created>
@@ -758,7 +747,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641795360131</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="fix build system">
+      <created>1641869734698</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1641869734699</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -833,7 +829,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="basic uefi example" />
     <MESSAGE value="fixed the example" />
     <MESSAGE value="yknow" />
     <MESSAGE value="copy over elf.h" />
@@ -858,7 +853,8 @@
     <MESSAGE value="memory mapped" />
     <MESSAGE value="cleanup a bit" />
     <MESSAGE value="add extra doc" />
-    <option name="LAST_COMMIT_MESSAGE" value="add extra doc" />
+    <MESSAGE value="fix build system" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix build system" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

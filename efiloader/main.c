@@ -14,8 +14,7 @@ static noreturn void halt() {
     __builtin_unreachable();
 }
 
-#define __sysv_abi __attribute__((sysv_abi))
-typedef void (__sysv_abi *bootstrap_entry_func)(boot_data_t *);
+typedef void (__attribute__((sysv_abi)) *bootstrap_entry_func)(boot_data_t *);
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi

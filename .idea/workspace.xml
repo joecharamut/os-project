@@ -16,12 +16,17 @@
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=/opt/cross/bin" />
+      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=/opt/cross/bin" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="cleanup a bit">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add extra doc">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +37,7 @@
     <option name="formatViaClangd" value="false" />
     <option name="clangWarnings" value="-Wno-language-extension-token" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -148,9 +153,6 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
-  <component name="OCResolveContextSettings">
-    <option name="configuration" value="0-Debug-loader.efi" />
-  </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="120" />
     <option name="width" value="1600" />
@@ -242,22 +244,22 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-debug" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-release" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="structure.view.defaults.are.configured" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cmake-build-release" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/efiloader/lib" />
-      <recent name="$PROJECT_DIR$/cross" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/common" />
@@ -268,11 +270,6 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu (efiloader)" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/efiloader/loader.efi" sysroot="">
       <debugger kind="GDB">/usr/bin/gdb</debugger>
       <method v="2" />
@@ -280,6 +277,11 @@
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
       <method v="2">
@@ -311,7 +313,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="qemu" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="run_qemu.sh" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="qemu" CONFIG_NAME="Debug" RUN_PATH="/bin/bash">
+    <configuration name="qemu" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$ContentRoot$/run_qemu.sh" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$CMakeCurrentBuildDir$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="qemu" CONFIG_NAME="Debug" RUN_PATH="/bin/bash">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -410,14 +412,8 @@
       <workItem from="1641452355076" duration="987000" />
       <workItem from="1641453370552" duration="3633000" />
       <workItem from="1641525487381" duration="12301000" />
-      <workItem from="1641669688056" duration="18477000" />
-    </task>
-    <task id="LOCAL-00051" summary="figured out the right rep movsb prefix">
-      <created>1629848723262</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1629848723262</updated>
+      <workItem from="1641669688056" duration="19923000" />
+      <workItem from="1641864701250" duration="2438000" />
     </task>
     <task id="LOCAL-00052" summary="move a20 detect into stage2">
       <created>1629857517503</created>
@@ -755,7 +751,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641794720871</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="add extra doc">
+      <created>1641795360131</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1641795360131</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -830,7 +833,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="beep" />
     <MESSAGE value="basic uefi example" />
     <MESSAGE value="fixed the example" />
     <MESSAGE value="yknow" />
@@ -855,7 +857,8 @@
     <MESSAGE value="working on calling the kernel" />
     <MESSAGE value="memory mapped" />
     <MESSAGE value="cleanup a bit" />
-    <option name="LAST_COMMIT_MESSAGE" value="cleanup a bit" />
+    <MESSAGE value="add extra doc" />
+    <option name="LAST_COMMIT_MESSAGE" value="add extra doc" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

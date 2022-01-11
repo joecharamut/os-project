@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(os C ASM_NASM)
+project(os)
 
 add_subdirectory(bootloader)
 add_subdirectory(test64)
@@ -49,18 +49,19 @@ add_custom_command(OUTPUT disk.img
         fdisk -l disk.img
         )
 
-add_custom_command(OUTPUT OVMF_CODE.fd
-        COMMAND cp /usr/share/ovmf/x64/OVMF_CODE.fd .
+find_file(OVMF_FIRMWARE OVMF.fd
+        PATHS /usr/share
+        PATH_SUFFIXES ovmf/x64
+        NO_CACHE
+        REQUIRED
         )
-
-add_custom_command(OUTPUT OVMF_VARS.fd
-        COMMAND cp /usr/share/ovmf/x64/OVMF_VARS.fd .
+add_custom_command(OUTPUT OVMF.fd
+        COMMAND cp ${OVMF_FIRMWARE} .
         )
 
 add_custom_target(qemu
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS OVMF.fd
         DEPENDS disk.img
-        DEPENDS OVMF_CODE.fd
-        DEPENDS OVMF_VARS.fd
         DEPENDS run_qemu.sh
         )

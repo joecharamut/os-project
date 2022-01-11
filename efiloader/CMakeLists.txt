@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.18)
 
 find_program(X86_64_PE_COMPILER x86_64-w64-mingw32-gcc REQUIRED)
-
 message(STATUS "x86_64_PE compiler is ${X86_64_PE_COMPILER}")
 
+enable_language(C)
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM Generic)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE SHARED_LIBRARY)
@@ -46,7 +46,7 @@ add_compile_options(
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
         -std=c11
         -fshort-wchar
-        -O0
+        $<IF:$<CONFIG:Debug>,-O0,-O2>
         ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS}
 )
 

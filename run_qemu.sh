@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-cd cmake-build-debug || exit
 qemu-system-x86_64 \
             -s \
             -enable-kvm \

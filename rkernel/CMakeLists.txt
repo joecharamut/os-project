@@ -21,18 +21,14 @@ set(ERROR_FLAGS "-Werror=implicit-function-declaration")
 set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS} -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2")
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -lgcc -zmax-page-size=0x1000")
 
-set(Rust_TOOLCHAIN "nightly")
-set(Rust_CARGO_TARGET "${CMAKE_CURRENT_SOURCE_DIR}/target.json")
-set(CARGO_LINK_LIBRARIES)
-
-set(RKERNEL_C_SOURCE bootstrap.c)
-add_executable(rkernel.bin ${RKERNEL_C_SOURCE})
+set(RUST_TOOLCHAIN "nightly")
+add_executable(rkernel.bin bootstrap.c)
 
 add_custom_target(libkernel.a
         DEPENDS libkernel.a
-        COMMAND ${RUSTUP_EXECUTABLE} run ${Rust_TOOLCHAIN} cargo build
-        --manifest-path ${CMAKE_CURRENT_SOURCE_DIR}/kernel/Cargo.toml
-        --target ${Rust_CARGO_TARGET}
+        COMMAND ${RUSTUP_EXECUTABLE} run ${RUST_TOOLCHAIN} cargo build
+        --manifest-path ${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml
+        --target ${CMAKE_CURRENT_SOURCE_DIR}/target.json
         --out-dir ${CMAKE_CURRENT_BINARY_DIR}
         -Z build-std
         -Z unstable-options

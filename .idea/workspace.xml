@@ -23,19 +23,20 @@
     </configurations>
   </component>
   <component name="CargoProjects">
-    <cargoProject FILE="$PROJECT_DIR$/rkernel/kernel/Cargo.toml" />
+    <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rustin">
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/boot/entry.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/boot/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/io/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/io/port.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/io/serial.rs" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rusting intensifies">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/target.json" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/target.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/boot/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/io/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/io/port.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/port.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/io/serial.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/serial.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -265,7 +266,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="structure.view.defaults.are.configured" value="true" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
@@ -278,8 +279,8 @@
       <recent name="$PROJECT_DIR$/efiloader" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/rkernel/kernel/src/boot" />
       <recent name="$PROJECT_DIR$/rkernel" />
+      <recent name="$PROJECT_DIR$/rkernel/kernel/src/boot" />
       <recent name="$PROJECT_DIR$/common" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/bootloader" />
@@ -445,14 +446,7 @@
       <workItem from="1641525487381" duration="12301000" />
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
-      <workItem from="1641919829403" duration="28369000" />
-    </task>
-    <task id="LOCAL-00056" summary="add a little bootloader check">
-      <created>1629943529080</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1629943529080</updated>
+      <workItem from="1641919829403" duration="28771000" />
     </task>
     <task id="LOCAL-00057" summary="working on fat32">
       <created>1629950220105</created>
@@ -790,7 +784,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641951404177</updated>
     </task>
-    <option name="localTasksCounter" value="105" />
+    <task id="LOCAL-00105" summary="rusting intensifies">
+      <created>1641964019333</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1641964019333</updated>
+    </task>
+    <option name="localTasksCounter" value="106" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -865,7 +866,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="copy over elf.h" />
     <MESSAGE value="move file stuff into a separate unit" />
     <MESSAGE value="idk" />
     <MESSAGE value="video kinda" />
@@ -890,7 +890,8 @@
     <MESSAGE value="fix build system" />
     <MESSAGE value="dont need that define" />
     <MESSAGE value="rustin" />
-    <option name="LAST_COMMIT_MESSAGE" value="rustin" />
+    <MESSAGE value="rusting intensifies" />
+    <option name="LAST_COMMIT_MESSAGE" value="rusting intensifies" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -5,22 +5,15 @@
 
 #include "../common/boot_data.h"
 
-extern void kernel_main();
+extern void kernel_main(boot_data_t *bootData);
 
 section(".bootstrap") attribute(unused) void bootstrap(boot_data_t *bootData) {
     if (bootData->signature != BOOT_DATA_SIGNATURE) {
         return;
     }
 
-    uint32_t *display_buffer = (uint32_t *) bootData->video_info.bufferAddress;
-    for (uint32_t x = 0; x < bootData->video_info.horizontalResolution; ++x) {
-        for (uint32_t y = 0; y < bootData->video_info.verticalResolution; ++y) {
-            display_buffer[y * bootData->video_info.horizontalResolution + x] = 0xFFFF00FF;
-        }
-    }
-
     // todo: setup pagetables properly
-    kernel_main();
+    kernel_main(bootData);
     __asm__ ("cli; hlt; jmp .");
 }
 

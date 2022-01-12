@@ -26,19 +26,16 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/kernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="dont need that define">
-      <change afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/Cargo.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/Cargo.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/linker.ld" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/target.json" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rustin">
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/boot/entry.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/boot/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/io/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/io/port.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/kernel/src/io/serial.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/video.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/target.json" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/target.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +53,7 @@
         <option value="Python Script" />
         <option value="Python Stub" />
         <option value="CMakeLists.txt" />
+        <option value="Rust File" />
       </list>
     </option>
   </component>
@@ -266,6 +264,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="structure.view.defaults.are.configured" value="true" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
@@ -279,11 +278,11 @@
       <recent name="$PROJECT_DIR$/efiloader" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/rkernel/kernel/src/boot" />
       <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/common" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/bootloader" />
-      <recent name="$PROJECT_DIR$/bootstrap/io" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.qemu">
@@ -335,7 +334,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="qemu" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$ContentRoot$/run_qemu.sh" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$CMakeCurrentBuildDir$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="qemu" CONFIG_NAME="Debug" RUN_PATH="/bin/bash">
+    <configuration name="qemu" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$ProjectFileDir$/run_qemu.sh" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$CMakeCurrentBuildDir$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="qemu" CONFIG_NAME="Debug" RUN_PATH="/bin/bash">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -446,21 +445,7 @@
       <workItem from="1641525487381" duration="12301000" />
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
-      <workItem from="1641919829403" duration="14186000" />
-    </task>
-    <task id="LOCAL-00054" summary="workin on fat32">
-      <created>1629938672046</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1629938672047</updated>
-    </task>
-    <task id="LOCAL-00055" summary="save and load boot disk directly instead of using dl">
-      <created>1629940320431</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1629940320431</updated>
+      <workItem from="1641919829403" duration="28369000" />
     </task>
     <task id="LOCAL-00056" summary="add a little bootloader check">
       <created>1629943529080</created>
@@ -791,7 +776,21 @@
       <option name="project" value="LOCAL" />
       <updated>1641869839007</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="rustin">
+      <created>1641935121979</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1641935121979</updated>
+    </task>
+    <task id="LOCAL-00104" summary="rustin">
+      <created>1641951404176</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1641951404177</updated>
+    </task>
+    <option name="localTasksCounter" value="105" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -866,7 +865,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="yknow" />
     <MESSAGE value="copy over elf.h" />
     <MESSAGE value="move file stuff into a separate unit" />
     <MESSAGE value="idk" />
@@ -891,7 +889,8 @@
     <MESSAGE value="add extra doc" />
     <MESSAGE value="fix build system" />
     <MESSAGE value="dont need that define" />
-    <option name="LAST_COMMIT_MESSAGE" value="dont need that define" />
+    <MESSAGE value="rustin" />
+    <option name="LAST_COMMIT_MESSAGE" value="rustin" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

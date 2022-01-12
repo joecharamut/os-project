@@ -10,7 +10,7 @@
   "target-endian": "little",
   "target-pointer-width": "64",
   "target-c-int-width": "32",
-  "features": "-mmx,-fxsr,-sse,-sse2,+soft-float,-crt-static",
+  "features": "",
   "pre-link-args": {
     "gcc": [
       "-Wl,--script=linker.ld",

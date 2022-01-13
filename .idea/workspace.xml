@@ -13,7 +13,6 @@
       <config projectName="os" targetName="linker.ld" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="gnu-efi" />
-      <config projectName="os" targetName="test64.bin" />
       <config projectName="os" targetName="librust_kernel.a" />
     </generated>
   </component>
@@ -27,21 +26,14 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="flatten out a directory">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/ioport/Cargo.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/ioport/src/lib.rs" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="make it build again">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/io/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/io/port.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/io/serial.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/serial.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rkernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/target.json" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/target.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,7 +255,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-debug" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -277,10 +269,10 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/cmake-build-release" />
-      <recent name="$PROJECT_DIR$/cmake-build-debug" />
       <recent name="$PROJECT_DIR$/efiloader" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -370,11 +362,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test64.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="test64.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="test64.bin">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="new" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="new --lib ioport" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -410,7 +397,6 @@
       <item itemvalue="CMake Application.cargo-clean" />
       <item itemvalue="CMake Application.librust_kernel.a" />
       <item itemvalue="CMake Application.rkernel.bin" />
-      <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
       <item itemvalue="Remote Debug.GDB qemu (efiloader)" />
     </list>
@@ -486,14 +472,7 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="4215000" />
-    </task>
-    <task id="LOCAL-00058" summary="more fat32 stuff">
-      <created>1630525319380</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1630525319380</updated>
+      <workItem from="1642023345555" duration="7605000" />
     </task>
     <task id="LOCAL-00059" summary="can actually load a file lets go">
       <created>1630606849156</created>
@@ -831,7 +810,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641964305378</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="make it build again">
+      <created>1642056179103</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1642056179103</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -906,7 +892,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="idk" />
     <MESSAGE value="video kinda" />
     <MESSAGE value="fonts almost work" />
     <MESSAGE value="something i hope" />
@@ -931,7 +916,8 @@
     <MESSAGE value="rustin" />
     <MESSAGE value="rusting intensifies" />
     <MESSAGE value="flatten out a directory" />
-    <option name="LAST_COMMIT_MESSAGE" value="flatten out a directory" />
+    <MESSAGE value="make it build again" />
+    <option name="LAST_COMMIT_MESSAGE" value="make it build again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

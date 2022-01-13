@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.18)
 project(os)
 
 add_subdirectory(bootloader)
-add_subdirectory(test64)
 add_subdirectory(bootstrap)
 add_subdirectory(efiloader)
 add_subdirectory(kernel2)
@@ -19,7 +18,6 @@ add_custom_command(OUTPUT fs.bin
 
 add_custom_command(OUTPUT esp.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS test64/test64.bin
         DEPENDS kernel2/kernel2.bin
         DEPENDS rkernel/rkernel.bin
         DEPENDS efiloader/loader.efi
@@ -32,7 +30,6 @@ add_custom_command(OUTPUT esp.bin
         mcopy -i esp.bin efiloader/loader.efi ::/EFI/BOOT/BOOTX64.EFI &&
         mmd -i esp.bin ::/QOS &&
         mcopy -i esp.bin ${CMAKE_SOURCE_DIR}/efiloader/unifont.sfn ::/QOS/unifont.sfn &&
-        mcopy -i esp.bin test64/test64.bin ::/KERNEL.BIN &&
         mcopy -i esp.bin kernel2/kernel2.bin ::/KERNEL2.BIN &&
         mcopy -i esp.bin rkernel/rkernel.bin ::/RKERNEL.BIN
         )

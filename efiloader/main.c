@@ -1,9 +1,9 @@
+#include "../common/boot_data.h"
 #include "elf.h"
 #include "file.h"
 #include "video.h"
 #include "debug.h"
 #include "mem.h"
-#include "../common/boot_data.h"
 
 #include <efi.h>
 #include <efilib.h>

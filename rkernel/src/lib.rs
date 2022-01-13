@@ -1,16 +1,21 @@
 #![no_std]
+#![no_main]
 
 mod boot;
 mod io;
 
+extern crate rlibc;
+
 use core::arch::asm;
+use crate::boot::BootData;
 use core::fmt::Write;
-use boot::entry::BootData;
 
 #[no_mangle]
 pub unsafe extern "C" fn kernel_main(boot_data_ptr: *mut BootData) {
     let boot_data = &*boot_data_ptr;
     boot::entry(boot_data);
+
+    unimplemented!();
     loop { asm!("pause"); }
 }
 

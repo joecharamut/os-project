@@ -22,27 +22,32 @@ set(CMAKE_C_FLAGS "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=. -O0 -g -std=c11 ${WA
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -lgcc -zmax-page-size=0x1000")
 
 set(RUST_TOOLCHAIN "nightly")
-add_executable(rkernel.bin bootstrap.c)
 
-add_custom_target(libkernel.a
-        DEPENDS libkernel.a
+add_custom_command(OUTPUT __phony librust_kernel.a
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${RUSTUP_EXECUTABLE} run ${RUST_TOOLCHAIN} cargo build
-        --manifest-path ${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml
-        --target ${CMAKE_CURRENT_SOURCE_DIR}/target.json
-        --out-dir ${CMAKE_CURRENT_BINARY_DIR}
-        -Z build-std
-        -Z unstable-options
+            --manifest-path ${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml
+            --target ${CMAKE_CURRENT_SOURCE_DIR}/target.json
+            --target-dir ${CMAKE_CURRENT_BINARY_DIR}
+            --out-dir ${CMAKE_CURRENT_BINARY_DIR}
+            -Z build-std=core
+            -Z unstable-options
         )
+add_custom_target(librust_kernel.a DEPENDS __phony)
 
-add_dependencies(rkernel.bin libkernel.a)
-target_link_libraries(rkernel.bin ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a)
+add_executable(rkernel.bin bootstrap.c)
+add_dependencies(rkernel.bin librust_kernel.a)
+target_link_libraries(rkernel.bin ${CMAKE_CURRENT_BINARY_DIR}/librust_kernel.a)
 
 set_target_properties(rkernel.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/rkernel/linker.ld)
 target_link_options(rkernel.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/rkernel/linker.ld")
 set_source_files_properties(bootstrap.c PROPERTIES COMPILE_OPTIONS "-fno-asynchronous-unwind-tables")
 
-add_custom_command(TARGET rkernel.bin POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/rkernel.bin ${CMAKE_BINARY_DIR}
+add_custom_target(cargo-clean
+        COMMAND ${RUSTUP_EXECUTABLE} run ${RUST_TOOLCHAIN} cargo clean
+            --manifest-path ${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml
+            --target ${CMAKE_CURRENT_SOURCE_DIR}/target.json
+            --target-dir ${CMAKE_CURRENT_BINARY_DIR}
         )
 
 add_custom_command(TARGET rkernel.bin POST_BUILD

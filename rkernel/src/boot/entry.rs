@@ -2,6 +2,7 @@ use core::ffi::c_void;
 use crate::io;
 
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct VideoInfo {
     pub buffer_address: u64,
     pub buffer_size: u64,
@@ -11,12 +12,14 @@ pub struct VideoInfo {
 }
 
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct MemoryInfo {
     pub count: u64,
     pub entries: *mut c_void,
 }
 
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct BootData {
     pub signature: u64,
     pub video_info: VideoInfo,
@@ -37,4 +40,6 @@ pub fn entry(boot_data: &BootData) {
             }
         }
     }
+
+
 }

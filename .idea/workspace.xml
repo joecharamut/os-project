@@ -4,16 +4,17 @@
     <generated>
       <config projectName="os" targetName="rkernel.bin" />
       <config projectName="os" targetName="loader.efi" />
+      <config projectName="os" targetName="cargo-clean" />
       <config projectName="os" targetName="qemu" />
       <config projectName="os" targetName="kernel2.bin" />
       <config projectName="os" targetName="stage2.bin" />
       <config projectName="os" targetName="mbr.bin" />
       <config projectName="os" targetName="scalable-font2" />
       <config projectName="os" targetName="linker.ld" />
-      <config projectName="os" targetName="libkernel.a" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="gnu-efi" />
       <config projectName="os" targetName="test64.bin" />
+      <config projectName="os" targetName="librust_kernel.a" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -26,17 +27,21 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rusting intensifies">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="flatten out a directory">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/ioport/Cargo.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/ioport/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rkernel/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/boot/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/io/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/io/port.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/port.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/io/serial.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/serial.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/kernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/io/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/io/port.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/io/serial.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/serial.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/target.json" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/target.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,7 +263,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/rkernel/kernel" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -266,16 +271,16 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
     <property name="structure.view.defaults.are.configured" value="true" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/cmake-build-release" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/efiloader" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -286,12 +291,12 @@
       <recent name="$PROJECT_DIR$/bootloader" />
     </key>
   </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="cargo new --lib ioport" />
+    </option>
+  </component>
   <component name="RunManager" selected="CMake Application.qemu">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GDB qemu (efiloader)" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/efiloader/loader.efi" sysroot="">
       <debugger kind="GDB">/usr/bin/gdb</debugger>
       <method v="2" />
@@ -299,6 +304,16 @@
     <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cargo-clean" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="cargo-clean" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="gnu-efi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="gnu-efi" CONFIG_NAME="Debug">
       <method v="2">
@@ -315,7 +330,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="libkernel.a" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="libkernel.a" CONFIG_NAME="Debug">
+    <configuration name="librust_kernel.a" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="librust_kernel.a" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -360,12 +375,29 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="new" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="new --lib ioport" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="CompoundRunConfigurationType">
       <toRun name="GDB qemu" type="CLion_Remote" />
       <toRun name="qemu" type="CMakeRunConfiguration" />
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Cargo.new" />
       <item itemvalue="CMake Application.qemu" />
       <item itemvalue="CMake Application.mbr.bin" />
       <item itemvalue="CMake Application.stage2.bin" />
@@ -375,15 +407,22 @@
       <item itemvalue="CMake Application.loader.efi" />
       <item itemvalue="CMake Application.scalable-font2" />
       <item itemvalue="CMake Application.kernel2.bin" />
-      <item itemvalue="CMake Application.libkernel.a" />
+      <item itemvalue="CMake Application.cargo-clean" />
+      <item itemvalue="CMake Application.librust_kernel.a" />
       <item itemvalue="CMake Application.rkernel.bin" />
       <item itemvalue="CMake Application.test64.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
       <item itemvalue="Remote Debug.GDB qemu (efiloader)" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo.new" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+    <option name="version" value="2" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -446,14 +485,8 @@
       <workItem from="1641525487381" duration="12301000" />
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
-      <workItem from="1641919829403" duration="28771000" />
-    </task>
-    <task id="LOCAL-00057" summary="working on fat32">
-      <created>1629950220105</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1629950220105</updated>
+      <workItem from="1641919829403" duration="37409000" />
+      <workItem from="1642023345555" duration="4215000" />
     </task>
     <task id="LOCAL-00058" summary="more fat32 stuff">
       <created>1630525319380</created>
@@ -791,7 +824,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641964019333</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="flatten out a directory">
+      <created>1641964305378</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1641964305378</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -866,7 +906,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="move file stuff into a separate unit" />
     <MESSAGE value="idk" />
     <MESSAGE value="video kinda" />
     <MESSAGE value="fonts almost work" />
@@ -891,7 +930,8 @@
     <MESSAGE value="dont need that define" />
     <MESSAGE value="rustin" />
     <MESSAGE value="rusting intensifies" />
-    <option name="LAST_COMMIT_MESSAGE" value="rusting intensifies" />
+    <MESSAGE value="flatten out a directory" />
+    <option name="LAST_COMMIT_MESSAGE" value="flatten out a directory" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

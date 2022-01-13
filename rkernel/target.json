@@ -5,18 +5,14 @@
   "executables": true,
   "linker": "gcc",
   "linker-flavor": "gcc",
-  "llvm-target": "x86_64-unknown-none-gnu",
-  "os": "none",
+  "linker-is-gnu": true,
+  "llvm-target": "x86_64-unknown-none",
+  "os": "unknown",
   "target-endian": "little",
   "target-pointer-width": "64",
   "target-c-int-width": "32",
   "features": "",
-  "pre-link-args": {
-    "gcc": [
-      "-Wl,--script=linker.ld",
-      "-Wl,--nmagic",
-      "-nostartfiles"
-    ]
-  },
-  "disable-redzone": true
+  "disable-redzone": true,
+  "code-model": "large",
+  "relocation-model": "static"
 }

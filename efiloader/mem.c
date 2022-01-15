@@ -113,11 +113,7 @@ static uint64_t lomem_allocate_ptr = 0x100000; // +1MiB
 void *lomem_allocate(uint64_t size) {
     void *ret = (void *) lomem_allocate_ptr;
     lomem_allocate_ptr += size;
-
-#ifdef DEBUG
-    kmemset(ret, 0xCD, size);
-#endif
-
+    kmemset(ret, 0, size);
     return ret;
 }
 

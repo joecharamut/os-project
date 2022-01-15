@@ -26,14 +26,13 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="make it build again">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="only print panic on debug?">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/boot_data.h" beforeDir="false" afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rkernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test64/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test64/linker.ld" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test64/main.c" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -472,21 +471,7 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="7605000" />
-    </task>
-    <task id="LOCAL-00059" summary="can actually load a file lets go">
-      <created>1630606849156</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1630606849156</updated>
-    </task>
-    <task id="LOCAL-00060" summary="pick compilers automagically">
-      <created>1630641975117</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1630641975117</updated>
+      <workItem from="1642023345555" duration="14771000" />
     </task>
     <task id="LOCAL-00061" summary="split up makefiles">
       <created>1630686380133</created>
@@ -817,7 +802,21 @@
       <option name="project" value="LOCAL" />
       <updated>1642056179103</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="rm test64">
+      <created>1642102904357</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1642102904357</updated>
+    </task>
+    <task id="LOCAL-00109" summary="only print panic on debug?">
+      <created>1642102938366</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1642102938366</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -892,8 +891,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="video kinda" />
-    <MESSAGE value="fonts almost work" />
     <MESSAGE value="something i hope" />
     <MESSAGE value="yep" />
     <MESSAGE value="print to graphics console instead" />
@@ -917,7 +914,9 @@
     <MESSAGE value="rusting intensifies" />
     <MESSAGE value="flatten out a directory" />
     <MESSAGE value="make it build again" />
-    <option name="LAST_COMMIT_MESSAGE" value="make it build again" />
+    <MESSAGE value="rm test64" />
+    <MESSAGE value="only print panic on debug?" />
+    <option name="LAST_COMMIT_MESSAGE" value="only print panic on debug?" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

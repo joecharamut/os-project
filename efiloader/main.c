@@ -14,8 +14,6 @@ static noreturn void halt() {
     __builtin_unreachable();
 }
 
-typedef void (__attribute__((sysv_abi)) *bootstrap_entry_func)(boot_data_t *);
-
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // init gnu-efi
     InitializeLib(ImageHandle, SystemTable);
@@ -278,7 +276,21 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     bootData->signature = BOOT_DATA_SIGNATURE;
     copy_video_info(bootData);
 
-    ((bootstrap_entry_func) header->entry)(bootData);
+    bootData->memory_info.count = mapSize;
+    bootData->memory_info.entries = lomem_allocate(sizeof(memory_descriptor_t) * mapSize);
+    for (UINT64 i = 0; i < mapSize; ++i) {
+        EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
+        bootData->memory_info.entries[i] = (memory_descriptor_t) {
+                .type = entry->Type,
+                .padding = 0,
+                .physical_address = entry->PhysicalStart,
+                .virtual_address = entry->VirtualStart,
+                .number_of_pages = entry->NumberOfPages,
+                .flags = entry->Attribute,
+        };
+    }
+
+    ((bootstrap_fn_ptr_t) header->entry)(bootData);
 
     printf("Kernel returned\n");
     printf("Halted.\n");

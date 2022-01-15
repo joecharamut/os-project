@@ -23,7 +23,23 @@ set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -lgcc -zmax-page-size=0x1000")
 
 set(RUST_TOOLCHAIN "nightly")
 
-add_custom_command(OUTPUT __phony librust_kernel.a
+set(RUST_IOPORT_SOURCES
+        ioport/Cargo.toml
+        ioport/src/lib.rs
+        )
+
+set(RUST_KERNEL_SOURCES
+        Cargo.toml
+        src/lib.rs
+        src/boot/mod.rs
+        src/boot/entry.rs
+        src/io/mod.rs
+        src/io/serial.rs
+        )
+
+set(RUST_SOURCES ${RUST_IOPORT_SOURCES} ${RUST_KERNEL_SOURCES})
+
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${RUSTUP_EXECUTABLE} run ${RUST_TOOLCHAIN} cargo build
             --manifest-path ${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml
@@ -32,12 +48,13 @@ add_custom_command(OUTPUT __phony librust_kernel.a
             --out-dir ${CMAKE_CURRENT_BINARY_DIR}
             -Z build-std=core
             -Z unstable-options
+        DEPENDS ${RUST_SOURCES}
         )
-add_custom_target(librust_kernel.a DEPENDS __phony)
+add_custom_target(libkernel.a DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a)
 
 add_executable(rkernel.bin bootstrap.c)
-add_dependencies(rkernel.bin librust_kernel.a)
-target_link_libraries(rkernel.bin ${CMAKE_CURRENT_BINARY_DIR}/librust_kernel.a)
+add_dependencies(rkernel.bin libkernel.a)
+target_link_libraries(rkernel.bin ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a)
 
 set_target_properties(rkernel.bin PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/rkernel/linker.ld)
 target_link_options(rkernel.bin PRIVATE -T "${CMAKE_SOURCE_DIR}/rkernel/linker.ld")

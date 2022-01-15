@@ -25,10 +25,10 @@ add_custom_command(OUTPUT esp.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=esp.bin bs=1M count=128 &&
         mkfs.vfat -F32 -n "SYSTEM" esp.bin &&
+        mmd -i esp.bin ::/QOS &&
         mmd -i esp.bin ::/EFI &&
         mmd -i esp.bin ::/EFI/BOOT &&
         mcopy -i esp.bin efiloader/loader.efi ::/EFI/BOOT/BOOTX64.EFI &&
-        mmd -i esp.bin ::/QOS &&
         mcopy -i esp.bin ${CMAKE_SOURCE_DIR}/efiloader/unifont.sfn ::/QOS/unifont.sfn &&
         mcopy -i esp.bin kernel2/kernel2.bin ::/KERNEL2.BIN &&
         mcopy -i esp.bin rkernel/rkernel.bin ::/RKERNEL.BIN
@@ -49,19 +49,27 @@ add_custom_command(OUTPUT disk.img
         fdisk -l disk.img
         )
 
-find_file(OVMF_FIRMWARE OVMF.fd
+find_file(OVMF_CODE OVMF_CODE.fd
         PATHS /usr/share
         PATH_SUFFIXES ovmf/x64
-        NO_CACHE
         REQUIRED
         )
-add_custom_command(OUTPUT OVMF.fd
-        COMMAND cp ${OVMF_FIRMWARE} .
+add_custom_command(OUTPUT OVMF_CODE.fd
+        COMMAND cp ${OVMF_CODE} .
+        )
+find_file(OVMF_VARS OVMF_VARS.fd
+        PATHS /usr/share
+        PATH_SUFFIXES ovmf/x64
+        REQUIRED
+        )
+add_custom_command(OUTPUT OVMF_VARS.fd
+        COMMAND cp ${OVMF_VARS} .
         )
 
 add_custom_target(qemu
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS OVMF.fd
+        DEPENDS OVMF_CODE.fd
+        DEPENDS OVMF_VARS.fd
         DEPENDS disk.img
         DEPENDS run_qemu.sh
         )

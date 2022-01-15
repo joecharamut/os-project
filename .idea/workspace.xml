@@ -11,9 +11,9 @@
       <config projectName="os" targetName="mbr.bin" />
       <config projectName="os" targetName="scalable-font2" />
       <config projectName="os" targetName="linker.ld" />
+      <config projectName="os" targetName="libkernel.a" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="gnu-efi" />
-      <config projectName="os" targetName="librust_kernel.a" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -26,13 +26,13 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="only print panic on debug?">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="c my behated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/boot_data.h" beforeDir="false" afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -321,7 +321,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="librust_kernel.a" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="librust_kernel.a" CONFIG_NAME="Debug">
+    <configuration name="libkernel.a" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="libkernel.a" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -394,7 +394,7 @@
       <item itemvalue="CMake Application.scalable-font2" />
       <item itemvalue="CMake Application.kernel2.bin" />
       <item itemvalue="CMake Application.cargo-clean" />
-      <item itemvalue="CMake Application.librust_kernel.a" />
+      <item itemvalue="CMake Application.libkernel.a" />
       <item itemvalue="CMake Application.rkernel.bin" />
       <item itemvalue="Remote Debug.GDB qemu" />
       <item itemvalue="Remote Debug.GDB qemu (efiloader)" />
@@ -471,14 +471,7 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="14771000" />
-    </task>
-    <task id="LOCAL-00061" summary="split up makefiles">
-      <created>1630686380133</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1630686380133</updated>
+      <workItem from="1642023345555" duration="22559000" />
     </task>
     <task id="LOCAL-00062" summary="add loadable segments">
       <created>1630978533549</created>
@@ -816,7 +809,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642102938366</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL-00110" summary="c my behated">
+      <created>1642214620388</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1642214620388</updated>
+    </task>
+    <option name="localTasksCounter" value="111" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -891,7 +891,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="something i hope" />
     <MESSAGE value="yep" />
     <MESSAGE value="print to graphics console instead" />
     <MESSAGE value="print to graphics console instead more" />
@@ -916,7 +915,8 @@
     <MESSAGE value="make it build again" />
     <MESSAGE value="rm test64" />
     <MESSAGE value="only print panic on debug?" />
-    <option name="LAST_COMMIT_MESSAGE" value="only print panic on debug?" />
+    <MESSAGE value="c my behated" />
+    <option name="LAST_COMMIT_MESSAGE" value="c my behated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -53,6 +53,9 @@ pub fn entry(boot_data: &BootData) {
     let mut writer = io::serial::SerialWriter::new(io::serial::com1());
 
     writeln!(&mut writer, "Hello, World!").unwrap();
+    writeln!(&mut writer, "Hello, World!").unwrap();
+    writeln!(&mut writer, "Hello, World!").unwrap();
+    writeln!(&mut writer, "Hello, World!").unwrap();
 
     for y in 0..boot_data.video_info.vertical_resolution {
         for x in 0..boot_data.video_info.horizontal_resolution {

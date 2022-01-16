@@ -38,7 +38,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_DEVICE_ERROR;
     }
 
-    EFI_FILE_HANDLE consoleFont = OpenFile(volume, L"\\qOS\\unifont.sfn");
+    EFI_FILE_HANDLE consoleFont = OpenFile(volume, L"\\QOS\\FONT.SFN");
     if (!consoleFont) {
         return EFI_NOT_FOUND;
     }
@@ -84,7 +84,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_UNSUPPORTED;
     }
 
-    printf("Parsing Kernel Header...\n");
     elf64_header_t *header = buf;
 
     if (header->type != ELF_TYPE_EXEC) {
@@ -128,7 +127,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
     printf("Boot services terminated successfully\n");
 
-    efi_dump_mem_map(mmap, mapSize, descriptorSize);
+//    efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
     UINT64 convMemory = 0;
     UINT64 reclaimMemory = 0;
@@ -218,19 +217,19 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
         if (entry->type == ELF_PTYPE_LOAD) {
             printf("Trying to load segment %d (0x%lx bytes) to phys address 0x%016lx...", i, entry->filesize, entry->paddr);
-            kmemcpy((void *) entry->paddr, ((char *) kernelBuf) + entry->offset, entry->filesize);
+            lmemcpy((void *) entry->paddr, ((char *) kernelBuf) + entry->offset, entry->filesize);
             printf("OK!\n");
         }
     }
 
     printf("Setup complete, calling the kernel!\n");
 
-    boot_data_t *bootData = lomem_allocate(sizeof(boot_data_t));
+    boot_data_t *bootData = allocate(sizeof(boot_data_t));
     bootData->signature = BOOT_DATA_SIGNATURE;
     copy_video_info(bootData);
 
     bootData->memory_info.count = mapSize;
-    bootData->memory_info.entries = lomem_allocate(sizeof(memory_descriptor_t) * mapSize);
+    bootData->memory_info.entries = allocate(sizeof(memory_descriptor_t) * mapSize);
     for (UINT64 i = 0; i < mapSize; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
         bootData->memory_info.entries[i] = (memory_descriptor_t) {

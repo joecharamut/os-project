@@ -118,9 +118,9 @@ extern const char * const EFI_MEMORY_TYPE_STRINGS[];
 const char *efi_mem_type_string(UINT32 type);
 EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *DescriptorSize);
 void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize);
-void *kmemcpy(void *dst, void *src, uint64_t num);
-void *kmemset(void *ptr, unsigned char value, uint64_t num);
-void *lomem_allocate(uint64_t size);
+void *lmemcpy(void *dst, void *src, uint64_t num);
+void *lmemset(void *ptr, unsigned char value, uint64_t num);
+void *allocate(uint64_t size);
 
 void load_page_map();
 void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size);

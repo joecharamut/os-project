@@ -26,12 +26,12 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="i think this makes cmake work finally:tm:">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="condensed mmap did nothing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/boot_data.h" beforeDir="false" afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -470,21 +470,7 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="24145000" />
-    </task>
-    <task id="LOCAL-00063" summary="fix characters not printing">
-      <created>1631145866652</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1631145866652</updated>
-    </task>
-    <task id="LOCAL-00064" summary="cleanup">
-      <created>1631159812363</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1631159812364</updated>
+      <workItem from="1642023345555" duration="24924000" />
     </task>
     <task id="LOCAL-00065" summary="loads long mode now">
       <created>1631568557207</created>
@@ -815,7 +801,21 @@
       <option name="project" value="LOCAL" />
       <updated>1642285793679</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="try to collect more boot data">
+      <created>1642306370910</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1642306370910</updated>
+    </task>
+    <task id="LOCAL-00113" summary="condensed mmap did nothing">
+      <created>1642306498054</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1642306498054</updated>
+    </task>
+    <option name="localTasksCounter" value="114" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -890,8 +890,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="print to graphics console instead" />
-    <MESSAGE value="print to graphics console instead more" />
     <MESSAGE value="screen scrollin" />
     <MESSAGE value="check free mem" />
     <MESSAGE value="lotta stuff" />
@@ -915,7 +913,9 @@
     <MESSAGE value="only print panic on debug?" />
     <MESSAGE value="c my behated" />
     <MESSAGE value="i think this makes cmake work finally:tm:" />
-    <option name="LAST_COMMIT_MESSAGE" value="i think this makes cmake work finally:tm:" />
+    <MESSAGE value="try to collect more boot data" />
+    <MESSAGE value="condensed mmap did nothing" />
+    <option name="LAST_COMMIT_MESSAGE" value="condensed mmap did nothing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

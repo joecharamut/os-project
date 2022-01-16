@@ -88,14 +88,14 @@ void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize) {
     }
 }
 
-void *kmemcpy(void *dst, void *src, uint64_t num) {
+void *lmemcpy(void *dst, void *src, uint64_t num) {
     for (uint64_t i = 0; i < num; ++i) {
         ((char*) dst)[i] = ((char*) src)[i];
     }
     return dst;
 }
 
-void *kmemset(void *ptr, unsigned char value, uint64_t num) {
+void *lmemset(void *ptr, unsigned char value, uint64_t num) {
     for (uint64_t i = 0; i < num; ++i) {
         *((unsigned char *) ptr + i) = value;
     }
@@ -103,10 +103,10 @@ void *kmemset(void *ptr, unsigned char value, uint64_t num) {
 }
 
 static uint64_t lomem_allocate_ptr = 0x100000; // +1MiB
-void *lomem_allocate(uint64_t size) {
+void *allocate(uint64_t size) {
     void *ret = (void *) lomem_allocate_ptr;
     lomem_allocate_ptr += size;
-    kmemset(ret, 0, size);
+    lmemset(ret, 0, size);
     return ret;
 }
 
@@ -124,9 +124,9 @@ void load_page_map() {
 
 void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size) {
     if (!pml4_pointer) {
-        pml4_pointer = lomem_allocate(sizeof(pml4_entry_t) * 512);
+        pml4_pointer = allocate(sizeof(pml4_entry_t) * 512);
         printf("allocating new pml4 at 0x%016llx\n", pml4_pointer);
-        kmemset(pml4_pointer, 0, sizeof(pml4_entry_t) * 512);
+        lmemset(pml4_pointer, 0, sizeof(pml4_entry_t) * 512);
     }
 
     if (!pml4_pointer[vaddr.pml4_index].present) {
@@ -145,9 +145,9 @@ void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t siz
 
     pdpt_entry_t *pdpt = (pdpt_entry_t *) (pml4_pointer[vaddr.pml4_index].page_ppn * 0x1000);
     if (!pdpt) {
-        pdpt = lomem_allocate(sizeof(pdpt_entry_t) * 512);
+        pdpt = allocate(sizeof(pdpt_entry_t) * 512);
         printf("allocating new pdpt at 0x%016llx\n", pdpt);
-        kmemset(pdpt, 0, sizeof(pdpt_entry_t) * 512);
+        lmemset(pdpt, 0, sizeof(pdpt_entry_t) * 512);
         pml4_pointer[vaddr.pml4_index].page_ppn = ((uint64_t) pdpt) / 0x1000;
     }
 

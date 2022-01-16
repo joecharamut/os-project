@@ -8,7 +8,9 @@ use core::ptr::slice_from_raw_parts;
 pub struct BootData {
     pub signature: u64,
     pub video_info: VideoInfo,
-    pub memory_info: MemoryInfo,
+    pub memory_map: MemoryMap,
+    pub image_info: ImageInfo,
+    pub allocation_info: AllocInfo,
 }
 
 #[repr(C)]
@@ -23,9 +25,9 @@ pub struct VideoInfo {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct MemoryInfo {
-    pub count: u64,
-    pub entries: *mut MemoryDescriptor,
+pub struct MemoryMap {
+    pub size: u64,
+    pub ptr: *mut MemoryDescriptor,
 }
 
 #[repr(C)]
@@ -37,6 +39,19 @@ pub struct MemoryDescriptor {
     pub virtual_address: u64,
     pub number_of_pages: u64,
     pub flags: u64,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageInfo {
+    pub base: u64,
+    pub size: u64,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AllocInfo {
+    pub kernel_base: u64,
 }
 
 impl Display for MemoryDescriptor {
@@ -53,9 +68,7 @@ pub fn entry(boot_data: &BootData) {
     let mut writer = io::serial::SerialWriter::new(io::serial::com1());
 
     writeln!(&mut writer, "Hello, World!").unwrap();
-    writeln!(&mut writer, "Hello, World!").unwrap();
-    writeln!(&mut writer, "Hello, World!").unwrap();
-    writeln!(&mut writer, "Hello, World!").unwrap();
+    writeln!(&mut writer, "Kernel base appears to be {:#x}", boot_data.allocation_info.kernel_base).unwrap();
 
     for y in 0..boot_data.video_info.vertical_resolution {
         for x in 0..boot_data.video_info.horizontal_resolution {
@@ -66,8 +79,8 @@ pub fn entry(boot_data: &BootData) {
         }
     }
 
-    let entries = unsafe { slice_from_raw_parts(boot_data.memory_info.entries, boot_data.memory_info.count as usize) };
-    for i in 0..boot_data.memory_info.count {
+    let entries = unsafe { slice_from_raw_parts(boot_data.memory_map.ptr, boot_data.memory_map.size as usize) };
+    for i in 0..boot_data.memory_map.size {
         let entry: MemoryDescriptor = unsafe { (*entries)[i as usize] };
         writeln!(&mut writer, "Entry {}: [{}]", i, entry).unwrap();
     }

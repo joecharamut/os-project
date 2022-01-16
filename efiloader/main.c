@@ -290,6 +290,9 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         };
     }
 
+    bootData->image_info.base = 0x900000;
+    bootData->image_info.size = kernelSize;
+
     ((bootstrap_fn_ptr_t) header->entry)(bootData);
 
     printf("Kernel returned\n");

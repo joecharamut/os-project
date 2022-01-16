@@ -28,9 +28,20 @@ typedef struct {
 } memory_info_t;
 
 typedef struct {
+    uint64_t base;
+    uint64_t size;
+} image_info_t;
+
+typedef struct {
+    uint64_t kernel_base;
+} allocation_info_t;
+
+typedef struct {
     uint64_t signature;
     video_info_t video_info;
     memory_info_t memory_info;
+    image_info_t image_info;
+    allocation_info_t allocation_info;
 } boot_data_t;
 
 typedef void (__attribute__((sysv_abi)) *bootstrap_fn_ptr_t)(boot_data_t *);

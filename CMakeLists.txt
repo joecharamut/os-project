@@ -4,21 +4,18 @@ project(os)
 add_subdirectory(bootloader)
 add_subdirectory(bootstrap)
 add_subdirectory(efiloader)
-add_subdirectory(kernel2)
 add_subdirectory(rkernel)
 
 add_custom_command(OUTPUT fs.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS kernel.bin
         COMMAND dd if=/dev/zero of=fs.bin bs=1M count=64 &&
         mkfs.ext2 -L "RAGU" -M "/" -q fs.bin &&
         e2mkdir fs.bin:/boot &&
-        e2cp ${CMAKE_BINARY_DIR}/kernel.bin fs.bin:/boot
+        e2cp ${CMAKE_BINARY_DIR}/Makefile fs.bin:/boot
         )
 
 add_custom_command(OUTPUT esp.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS kernel2/kernel2.bin
         DEPENDS rkernel/rkernel.bin
         DEPENDS efiloader/loader.efi
         DEPENDS common/unifont.sfn
@@ -30,23 +27,25 @@ add_custom_command(OUTPUT esp.bin
         mmd -i esp.bin ::/EFI/BOOT &&
         mcopy -i esp.bin efiloader/loader.efi ::/EFI/BOOT/BOOTX64.EFI &&
         mcopy -i esp.bin ${CMAKE_SOURCE_DIR}/common/unifont.sfn ::/QOS/FONT.SFN &&
-        mcopy -i esp.bin kernel2/kernel2.bin ::/KERNEL2.BIN &&
         mcopy -i esp.bin rkernel/rkernel.bin ::/RKERNEL.BIN
         )
 
 add_custom_command(OUTPUT disk.img
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS esp.bin
+        DEPENDS fs.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=disk.img bs=1M count=512 &&
         parted -s disk.img -a minimal
             unit MiB
             mklabel gpt
-            mkpart ESP fat32 1MiB 129MiB
+            mkpart ESP fat32 1MiB 129MiB # Part 1 - EFI system partition - 128MiB
             set 1 esp on
+            mkpart root ext2 129MiB 193MiB # Part 2 - root - 64MiB
             print &&
         dd if=esp.bin of=disk.img bs=1M seek=1 count=128 conv=notrunc &&
-        fdisk -l disk.img
+        dd if=fs.bin of=disk.img bs=1M seek=129 count=64 conv=notrunc &&
+        echo
         )
 
 find_file(OVMF_CODE OVMF_CODE.fd

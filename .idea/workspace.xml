@@ -6,7 +6,6 @@
       <config projectName="os" targetName="loader.efi" />
       <config projectName="os" targetName="cargo-clean" />
       <config projectName="os" targetName="qemu" />
-      <config projectName="os" targetName="kernel2.bin" />
       <config projectName="os" targetName="stage2.bin" />
       <config projectName="os" targetName="mbr.bin" />
       <config projectName="os" targetName="scalable-font2" />
@@ -26,9 +25,9 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rename some things">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="jk the font is a common file now">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/unifont.sfn" beforeDir="false" afterPath="$PROJECT_DIR$/common/unifont.sfn" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -307,11 +306,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="kernel2.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel2.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel2.bin">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="kernel.bin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="kernel.bin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="os" RUN_TARGET_NAME="kernel.bin">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -388,7 +382,6 @@
       <item itemvalue="CMake Application.gnu-efi" />
       <item itemvalue="CMake Application.loader.efi" />
       <item itemvalue="CMake Application.scalable-font2" />
-      <item itemvalue="CMake Application.kernel2.bin" />
       <item itemvalue="CMake Application.cargo-clean" />
       <item itemvalue="CMake Application.libkernel.a" />
       <item itemvalue="CMake Application.rkernel.bin" />
@@ -467,14 +460,7 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="25036000" />
-    </task>
-    <task id="LOCAL-00066" summary="whoops it actually loads the disk now">
-      <created>1631669438214</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1631669438214</updated>
+      <workItem from="1642023345555" duration="26641000" />
     </task>
     <task id="LOCAL-00067" summary="add serial console">
       <created>1631753274764</created>
@@ -812,7 +798,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642307193998</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="jk the font is a common file now">
+      <created>1642307283809</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1642307283809</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -887,7 +880,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="check free mem" />
     <MESSAGE value="lotta stuff" />
     <MESSAGE value="remove serial.c" />
     <MESSAGE value="remove printf.c" />
@@ -912,7 +904,8 @@
     <MESSAGE value="try to collect more boot data" />
     <MESSAGE value="condensed mmap did nothing" />
     <MESSAGE value="rename some things" />
-    <option name="LAST_COMMIT_MESSAGE" value="rename some things" />
+    <MESSAGE value="jk the font is a common file now" />
+    <option name="LAST_COMMIT_MESSAGE" value="jk the font is a common file now" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

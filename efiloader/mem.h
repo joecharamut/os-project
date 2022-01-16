@@ -108,22 +108,6 @@ typedef struct {
 static_assert(sizeof(pt_entry_t) == 8, "Invalid Size");
 
 typedef enum {
-    MemoryTypeNull,
-    MemoryTypeFree,
-    MemoryTypeUsed,
-    MemoryTypeReserved,
-} memory_type_t;
-extern const char * const memory_type_t_strings[];
-
-typedef struct {
-    memory_type_t type;
-    UINT64 paddr;
-    UINT64 vaddr;
-    UINT64 pages;
-    UINT64 flags;
-} memory_map_entry_t;
-
-typedef enum {
     PageSize4KiB,
     PageSize2MiB,
     PageSize1GiB,

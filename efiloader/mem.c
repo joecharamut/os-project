@@ -21,13 +21,6 @@ const char * const EFI_MEMORY_TYPE_STRINGS[] = {
         "EfiMaxMemoryType"
 };
 
-const char * const memory_type_t_strings[] = {
-        "MemoryTypeNull",
-        "MemoryTypeFree",
-        "MemoryTypeUsed",
-        "MemoryTypeReserved",
-};
-
 const char *efi_mem_type_string(UINT32 type) {
     if (type < 15) {
         return EFI_MEMORY_TYPE_STRINGS[type];

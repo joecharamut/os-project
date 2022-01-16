@@ -187,53 +187,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         }
     }
 
-    printf("Condensing mmap...\n");
-    UINT64 condensedSize = 0;
-    memory_map_entry_t condensedMmap[mapSize];
-    kmemset(condensedMmap, 0, mapSize * sizeof(memory_map_entry_t));
-
-    for (UINTN i = 0; i < mapSize; ++i) {
-        EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
-
-        memory_type_t entryType = MemoryTypeNull;
-        if (entry->Type == EfiConventionalMemory || entry->Type == EfiBootServicesCode || entry->Type == EfiBootServicesData) {
-            entryType = MemoryTypeFree;
-        } else if (entry->Type == EfiLoaderCode || entry->Type == EfiLoaderData) {
-            entryType = MemoryTypeUsed;
-        } else {
-            entryType = MemoryTypeReserved;
-        }
-
-        if (condensedMmap[condensedSize].type == MemoryTypeNull) {
-            condensedMmap[condensedSize].type = entryType;
-            condensedMmap[condensedSize].paddr = entry->PhysicalStart;
-            condensedMmap[condensedSize].vaddr = entry->VirtualStart;
-            condensedMmap[condensedSize].pages = entry->NumberOfPages;
-            condensedMmap[condensedSize].flags = entry->Attribute;
-        }
-
-        if (condensedMmap[condensedSize].type != entryType) {
-            ++condensedSize;
-            --i;
-            continue;
-        }
-
-        condensedMmap[condensedSize].pages += entry->NumberOfPages;
-    }
-
-    printf("New mmap:\n");
-    for (UINT64 i = 0; i < condensedSize; ++i) {
-        printf("%ld,%s (%d),0x%08lx,0x%08lx,%ld (%ld KiB),[%c%c%c] (0x%lx)\n",
-               i, memory_type_t_strings[condensedMmap[i].type], condensedMmap[i].type,
-               condensedMmap[i].paddr, condensedMmap[i].vaddr,
-               condensedMmap[i].pages, condensedMmap[i].pages * 4,
-
-               (condensedMmap[i].flags & EFI_MEMORY_RP) ? '-' : 'R',
-               (condensedMmap[i].flags & EFI_MEMORY_WP) ? '-' : 'W',
-               (condensedMmap[i].flags & EFI_MEMORY_XP) ? '-' : 'X',
-               condensedMmap[i].flags);
-    }
-
     printf("Identity mapping first 4GiB of address space\n");
     for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
         map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i }, PageSize1GiB);

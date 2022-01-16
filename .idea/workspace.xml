@@ -2,30 +2,29 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="os" targetName="mbr.bin" />
       <config projectName="os" targetName="rkernel.bin" />
+      <config projectName="os" targetName="scalable-font2" />
       <config projectName="os" targetName="loader.efi" />
       <config projectName="os" targetName="cargo-clean" />
-      <config projectName="os" targetName="qemu" />
-      <config projectName="os" targetName="stage2.bin" />
-      <config projectName="os" targetName="mbr.bin" />
-      <config projectName="os" targetName="scalable-font2" />
       <config projectName="os" targetName="linker.ld" />
       <config projectName="os" targetName="libkernel.a" />
       <config projectName="os" targetName="kernel.bin" />
       <config projectName="os" targetName="gnu-efi" />
+      <config projectName="os" targetName="qemu" />
+      <config projectName="os" targetName="stage2.bin" />
     </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=&quot;/opt/cross/bin;/home/joseph/.cargo/bin&quot;" />
-      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_PROGRAM_PATH=&quot;/opt/cross/bin;/home/joseph/.cargo/bin&quot;" />
     </configurations>
   </component>
   <component name="CargoProjects">
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="jk the font is a common file now">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="no more kernel2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
     </list>
@@ -257,7 +256,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="structure.view.defaults.are.configured" value="true" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
@@ -460,14 +459,7 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="26641000" />
-    </task>
-    <task id="LOCAL-00067" summary="add serial console">
-      <created>1631753274764</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1631753274764</updated>
+      <workItem from="1642023345555" duration="26783000" />
     </task>
     <task id="LOCAL-00068" summary="unify division">
       <created>1632231740541</created>
@@ -805,7 +797,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642307283809</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="no more kernel2">
+      <created>1642308893747</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1642308893747</updated>
+    </task>
+    <option name="localTasksCounter" value="117" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -880,7 +879,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="lotta stuff" />
     <MESSAGE value="remove serial.c" />
     <MESSAGE value="remove printf.c" />
     <MESSAGE value="remove strings.c" />
@@ -905,7 +903,8 @@
     <MESSAGE value="condensed mmap did nothing" />
     <MESSAGE value="rename some things" />
     <MESSAGE value="jk the font is a common file now" />
-    <option name="LAST_COMMIT_MESSAGE" value="jk the font is a common file now" />
+    <MESSAGE value="no more kernel2" />
+    <option name="LAST_COMMIT_MESSAGE" value="no more kernel2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

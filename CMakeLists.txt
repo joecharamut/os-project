@@ -16,9 +16,9 @@ add_custom_command(OUTPUT fs.bin
 
 add_custom_command(OUTPUT esp.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS rkernel/rkernel.bin
         DEPENDS efiloader/loader.efi
         DEPENDS common/unifont.sfn
+        DEPENDS rkernel/rkernel.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=esp.bin bs=1M count=128 &&
         mkfs.vfat -F32 -n "SYSTEM" esp.bin &&

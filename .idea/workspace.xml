@@ -26,12 +26,9 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="condensed mmap did nothing">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rename some things">
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/unifont.sfn" beforeDir="false" afterPath="$PROJECT_DIR$/common/unifont.sfn" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -274,9 +271,9 @@
       <recent name="$PROJECT_DIR$/efiloader" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/common" />
       <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/rkernel/kernel/src/boot" />
-      <recent name="$PROJECT_DIR$/common" />
       <recent name="$PROJECT_DIR$/efiloader" />
       <recent name="$PROJECT_DIR$/bootloader" />
     </key>
@@ -470,14 +467,7 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="24924000" />
-    </task>
-    <task id="LOCAL-00065" summary="loads long mode now">
-      <created>1631568557207</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1631568557208</updated>
+      <workItem from="1642023345555" duration="25036000" />
     </task>
     <task id="LOCAL-00066" summary="whoops it actually loads the disk now">
       <created>1631669438214</created>
@@ -815,7 +805,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642306498054</updated>
     </task>
-    <option name="localTasksCounter" value="114" />
+    <task id="LOCAL-00114" summary="rename some things">
+      <created>1642307193998</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1642307193998</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -890,7 +887,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="screen scrollin" />
     <MESSAGE value="check free mem" />
     <MESSAGE value="lotta stuff" />
     <MESSAGE value="remove serial.c" />
@@ -915,7 +911,8 @@
     <MESSAGE value="i think this makes cmake work finally:tm:" />
     <MESSAGE value="try to collect more boot data" />
     <MESSAGE value="condensed mmap did nothing" />
-    <option name="LAST_COMMIT_MESSAGE" value="condensed mmap did nothing" />
+    <MESSAGE value="rename some things" />
+    <option name="LAST_COMMIT_MESSAGE" value="rename some things" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

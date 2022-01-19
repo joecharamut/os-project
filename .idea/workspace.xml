@@ -24,9 +24,21 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="no more kernel2">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="that order makes more sense">
+      <change afterPath="$PROJECT_DIR$/rkernel/src/mm/bump.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rkernel/src/mm/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/boot_data.h" beforeDir="false" afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/file.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/file.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/file.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/file.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/linker.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -269,11 +281,11 @@
       <recent name="$PROJECT_DIR$/efiloader" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/rkernel/src" />
       <recent name="$PROJECT_DIR$/common" />
       <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/rkernel/kernel/src/boot" />
       <recent name="$PROJECT_DIR$/efiloader" />
-      <recent name="$PROJECT_DIR$/bootloader" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -286,7 +298,7 @@
       <debugger kind="GDB">/usr/bin/gdb</debugger>
       <method v="2" />
     </configuration>
-    <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/kernel.bin" sysroot="">
+    <configuration name="GDB qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$PROJECT_DIR$/cmake-build-debug/rkernel/rkernel.bin" sysroot="">
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
     </configuration>
@@ -459,14 +471,9 @@
       <workItem from="1641669688056" duration="19923000" />
       <workItem from="1641864701250" duration="5256000" />
       <workItem from="1641919829403" duration="37409000" />
-      <workItem from="1642023345555" duration="26783000" />
-    </task>
-    <task id="LOCAL-00068" summary="unify division">
-      <created>1632231740541</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1632231740542</updated>
+      <workItem from="1642023345555" duration="43369000" />
+      <workItem from="1642519628789" duration="3599000" />
+      <workItem from="1642553127658" duration="3099000" />
     </task>
     <task id="LOCAL-00069" summary="try to tell bios we want long mode">
       <created>1632231773020</created>
@@ -804,7 +811,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642308893747</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="that order makes more sense">
+      <created>1642309028876</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1642309028876</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -879,7 +893,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove serial.c" />
     <MESSAGE value="remove printf.c" />
     <MESSAGE value="remove strings.c" />
     <MESSAGE value="memory type beat" />
@@ -904,7 +917,8 @@
     <MESSAGE value="rename some things" />
     <MESSAGE value="jk the font is a common file now" />
     <MESSAGE value="no more kernel2" />
-    <option name="LAST_COMMIT_MESSAGE" value="no more kernel2" />
+    <MESSAGE value="that order makes more sense" />
+    <option name="LAST_COMMIT_MESSAGE" value="that order makes more sense" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

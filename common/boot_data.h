@@ -25,22 +25,22 @@ typedef struct {
 typedef struct {
     uint64_t count;
     memory_descriptor_t *entries;
-} memory_info_t;
+} memory_map_t;
 
 typedef struct {
-    uint64_t base;
-    uint64_t size;
-} image_info_t;
+    uint64_t image_base;
+    uint64_t image_size;
 
-typedef struct {
+    uint64_t stack_base;
+    uint64_t stack_size;
+
     uint64_t kernel_base;
 } allocation_info_t;
 
 typedef struct {
     uint64_t signature;
     video_info_t video_info;
-    memory_info_t memory_info;
-    image_info_t image_info;
+    memory_map_t memory_map;
     allocation_info_t allocation_info;
 } boot_data_t;
 

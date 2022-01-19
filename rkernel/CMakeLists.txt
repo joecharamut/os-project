@@ -35,6 +35,8 @@ set(RUST_KERNEL_SOURCES
         src/boot/entry.rs
         src/io/mod.rs
         src/io/serial.rs
+        src/mm/mod.rs
+        src/mm/bump.rs
         )
 
 set(RUST_SOURCES ${RUST_IOPORT_SOURCES} ${RUST_KERNEL_SOURCES})
@@ -46,7 +48,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a
             --target ${CMAKE_CURRENT_SOURCE_DIR}/target.json
             --target-dir ${CMAKE_CURRENT_BINARY_DIR}
             --out-dir ${CMAKE_CURRENT_BINARY_DIR}
-            -Z build-std=core
+            -Z build-std
             -Z unstable-options
         DEPENDS ${RUST_SOURCES}
         )
@@ -68,6 +70,6 @@ add_custom_target(cargo-clean
         )
 
 add_custom_command(TARGET rkernel.bin POST_BUILD
-        COMMAND objdump -Cd ${CMAKE_CURRENT_BINARY_DIR}/rkernel.bin > rkernel.lst
+        COMMAND objdump -C -d -Mintel ${CMAKE_CURRENT_BINARY_DIR}/rkernel.bin > rkernel.lst
         )
 

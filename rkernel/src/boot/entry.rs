@@ -9,7 +9,6 @@ pub struct BootData {
     pub signature: u64,
     pub video_info: VideoInfo,
     pub memory_map: MemoryMap,
-    pub image_info: ImageInfo,
     pub allocation_info: AllocInfo,
 }
 
@@ -43,14 +42,9 @@ pub struct MemoryDescriptor {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ImageInfo {
-    pub base: u64,
-    pub size: u64,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub struct AllocInfo {
+    pub image_base: u64,
+    pub image_size: u64,
     pub kernel_base: u64,
 }
 
@@ -69,6 +63,12 @@ pub fn entry(boot_data: &BootData) {
 
     writeln!(&mut writer, "Hello, World!").unwrap();
     writeln!(&mut writer, "Kernel base appears to be {:#x}", boot_data.allocation_info.kernel_base).unwrap();
+
+    let mut v = alloc::vec::Vec::new();
+    v.push(1);
+    v.push(2);
+    v.push(3);
+    alloc::format!("test string");
 
     for y in 0..boot_data.video_info.vertical_resolution {
         for x in 0..boot_data.video_info.horizontal_resolution {

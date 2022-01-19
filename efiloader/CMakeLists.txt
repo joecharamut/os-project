@@ -12,7 +12,7 @@ set(CMAKE_C_COMPILER ${X86_64_PE_COMPILER})
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(WARNING_FLAGS -Wall -Wextra -Wpedantic -Wformat)
+set(WARNING_FLAGS -Wall -Wextra -pedantic -Wformat)
 set(SUPPRESS_FLAGS "")
 set(ERROR_FLAGS -Werror=implicit-function-declaration)
 
@@ -69,7 +69,7 @@ set(LOADER_SOURCES
 add_executable(loader.efi ${LOADER_SOURCES})
 add_dependencies(loader.efi gnu-efi scalable-font2)
 
-target_include_directories(loader.efi PUBLIC
+target_include_directories(loader.efi SYSTEM PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/x86_64
         ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/protocol

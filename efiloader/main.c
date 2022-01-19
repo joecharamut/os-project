@@ -15,16 +15,21 @@ static noreturn void halt() {
 }
 
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
+    EFI_STATUS status;
+
     // init gnu-efi
     InitializeLib(ImageHandle, SystemTable);
 
     // disable watchdog
-    BS->SetWatchdogTimer(0, 0, 0, NULL);
+    status = BS->SetWatchdogTimer(0, 0, 0, NULL);
+    if (EFI_ERROR(status)) {
+        return status;
+    }
 
-    EFI_STATUS status;
-    EFI_FILE_HANDLE volume = GetVolume(ImageHandle);
-    if (!volume) {
-        return EFI_DEVICE_ERROR;
+    EFI_FILE_HANDLE volume;
+    status = GetVolume(ImageHandle, &volume);
+    if (EFI_ERROR(status)) {
+        return status;
     }
 
     // setup console
@@ -38,12 +43,13 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_DEVICE_ERROR;
     }
 
-    EFI_FILE_HANDLE consoleFont = OpenFile(volume, L"\\QOS\\FONT.SFN");
-    if (!consoleFont) {
-        return EFI_NOT_FOUND;
+    EFI_FILE_HANDLE consoleFont;
+    status = volume->Open(volume, &consoleFont, L"\\QOS\\FONT.SFN", EFI_FILE_MODE_READ, 0);
+    if (EFI_ERROR(status)) {
+        return status;
     }
 
-    UINT64 fontSize = FileSize(consoleFont);
+    uint64_t fontSize = FileSize(consoleFont);
     void *fontBuf = AllocatePool(fontSize);
     status = consoleFont->Read(consoleFont, &fontSize, fontBuf);
     if (EFI_ERROR(status)) {
@@ -59,13 +65,14 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%08X]\n",
            ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
 
-    EFI_FILE_HANDLE kernelHandle = OpenFile(volume, L"RKERNEL.BIN");
-    if (!kernelHandle) {
-        return EFI_NOT_FOUND;
+    EFI_FILE_HANDLE kernelHandle;
+    status = volume->Open(volume, &kernelHandle, L"RKERNEL.BIN", EFI_FILE_MODE_READ, 0);
+    if (EFI_ERROR(status)) {
+        return status;
     }
 
     printf("Loading Kernel Header...");
-    UINTN bufsz = 64;
+    uint64_t bufsz = 64;
     void *buf = AllocatePool(bufsz);
     status = kernelHandle->Read(kernelHandle, &bufsz, buf);
     if (EFI_ERROR(status)) {
@@ -99,10 +106,10 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     FreePool(buf);
     printf("ELF header looks okay... Loading the whole kernel!\n");
 
-    UINT64 kernelSize = FileSize(kernelHandle);
+    uint64_t kernelSize = FileSize(kernelHandle);
     printf("Kernel size is %ld bytes\n", kernelSize);
 
-    UINT64 readSize = kernelSize;
+    uint64_t readSize = kernelSize;
     void *kernelBuf = AllocatePool(kernelSize);
     if (!kernelBuf) {
         printf("Unable to allocate memory\n");
@@ -116,10 +123,10 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         return EFI_DEVICE_ERROR;
     }
 
-    UINTN mapKey = 0;
-    UINTN mapSize = 0;
-    UINTN descriptorSize = 0;
-    UINT8 *mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
+    uint64_t mapKey = 0;
+    uint64_t mapSize = 0;
+    uint64_t descriptorSize = 0;
+    uint8_t *mmap = (uint8_t *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
 
     while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
         FreePool(mmap);
@@ -129,11 +136,14 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
 //    efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
-    UINT64 convMemory = 0;
-    UINT64 reclaimMemory = 0;
-    UINT64 runtimeMemory = 0;
-    UINT64 otherMemory = 0;
-    for (UINT64 i = 0; i < mapSize; ++i) {
+    uint64_t test = 420;
+    printf("%d\n", sizeof(test));
+
+    uint64_t convMemory = 0;
+    uint64_t reclaimMemory = 0;
+    uint64_t runtimeMemory = 0;
+    uint64_t otherMemory = 0;
+    for (uint64_t i = 0; i < mapSize; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
 
         if (entry->Type == EfiConventionalMemory) {
@@ -146,7 +156,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
             otherMemory += entry->NumberOfPages * 4;
         }
     }
-    UINT64 totalMemory = convMemory + reclaimMemory + runtimeMemory + otherMemory;
+    uint64_t totalMemory = convMemory + reclaimMemory + runtimeMemory + otherMemory;
 
     printf("mmap reports %ld KiB of memory:\n", totalMemory);
     printf(" Free: %ld KiB (~%ld%%)\n", convMemory, convMemory * 100 / totalMemory);
@@ -154,7 +164,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     printf(" Runtime Services: %ld KiB (~%ld%%)\n", runtimeMemory, runtimeMemory * 100 / totalMemory);
     printf(" Other: %ld KiB (~%ld%%)\n", otherMemory, otherMemory * 100 / totalMemory);
 
-    UINTN rip, rsp, rbp;
+    uint64_t rip, rsp, rbp;
     __asm__ volatile ("1: lea 1b(%%rip), %0\n\t"
                       "movq %%rsp, %1\n\t"
                       "movq %%rbp, %2\n\t"
@@ -164,10 +174,12 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     printf("rsp is currently: 0x%016lx\n", rsp);
     printf("rbp is currently: 0x%016lx\n", rbp);
 
-    for (UINTN i = 0; i < mapSize; ++i) {
+    printf("boot_data_t is %lld bytes long\n", sizeof(boot_data_t));
+
+    for (uint64_t i = 0; i < mapSize; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
-        UINT64 start = entry->PhysicalStart;
-        UINT64 end = start + (entry->NumberOfPages * 4096);
+        uint64_t start = entry->PhysicalStart;
+        uint64_t end = start + (entry->NumberOfPages * 4096);
 
         if (rip > start && rip < end) {
             printf("rip is in mmap descriptor %ld\n", i);
@@ -181,7 +193,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
             printf("rbp is in mmap descriptor %ld\n", i);
         }
 
-        if (((UINT64) kernelBuf) > start && ((UINT64) kernelBuf) < end) {
+        if (((uint64_t) kernelBuf) > start && ((uint64_t) kernelBuf) < end) {
             printf("kernel image is in mmap descriptor %ld\n", i);
         }
     }
@@ -228,11 +240,11 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     bootData->signature = BOOT_DATA_SIGNATURE;
     copy_video_info(bootData);
 
-    bootData->memory_info.count = mapSize;
-    bootData->memory_info.entries = allocate(sizeof(memory_descriptor_t) * mapSize);
-    for (UINT64 i = 0; i < mapSize; ++i) {
+    bootData->memory_map.count = mapSize;
+    bootData->memory_map.entries = allocate(sizeof(memory_descriptor_t) * mapSize);
+    for (uint64_t i = 0; i < mapSize; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (EFI_MEMORY_DESCRIPTOR *) (mmap + (i * descriptorSize));
-        bootData->memory_info.entries[i] = (memory_descriptor_t) {
+        bootData->memory_map.entries[i] = (memory_descriptor_t) {
                 .type = entry->Type,
                 .padding = 0,
                 .physical_address = entry->PhysicalStart,
@@ -242,12 +254,12 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         };
     }
 
-    bootData->image_info.base = 0x900000;
-    bootData->image_info.size = kernelSize;
+    bootData->allocation_info.image_base = 0x900000;
+    bootData->allocation_info.image_size = kernelSize;
+
+    bootData->allocation_info.stack_base = 0x200000;
+    bootData->allocation_info.stack_size = 0;
 
     ((bootstrap_fn_ptr_t) header->entry)(bootData);
-
-    printf("Kernel returned\n");
-    printf("Halted.\n");
     halt();
 }

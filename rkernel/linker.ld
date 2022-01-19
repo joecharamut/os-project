@@ -8,36 +8,37 @@ SECTIONS
 {
     . = KERNEL_LMA;
 
-    kernel_base_addr = .;
-
     init_base_addr = .;
 
     .bootstrap : ALIGN(4K) {
         *(.bootstrap)
+        *(.bootstrap_data)
     }
 
     init_end_addr = .;
 
     . += KERNEL_VMA;
 
+    kernel_base_addr = .;
+
     .text ALIGN(4K) : AT(ADDR(.text) - KERNEL_VMA) {
         kernel_code_base = .;
-        *(.text)
+        *(.text .text.*)
     }
 
     .rodata ALIGN(4K) : AT(ADDR(.rodata) - KERNEL_VMA) {
-        *(.rodata)
+        *(.rodata .rodata.*)
         kernel_code_end = .;
     }
 
     .data ALIGN(4K) : AT(ADDR(.data) - KERNEL_VMA) {
         kernel_data_base = .;
-        *(.data)
+        *(.data .data.*)
     }
 
     .bss ALIGN(4K) : AT(ADDR(.bss) - KERNEL_VMA) {
-        *(COMMON)
         *(.bss)
+        *(COMMON)
         kernel_data_end = .;
     }
 

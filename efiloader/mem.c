@@ -72,10 +72,10 @@ EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *Des
 }
 
 void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize) {
-    printf("Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
+    dbg_print("Index,Type,Physical Address,Virtual Address,Pages,Attributes\n");
     for (UINTN i = 0; i < size; ++i) {
         EFI_MEMORY_DESCRIPTOR *entry = (void *) (((char *) mmap) + (i * descriptorSize));
-        printf("%s%lld,%s (%lld),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
+        dbg_print("%s%lld,%s (%lld),0x%08llx,0x%08llx,%lld (%lld KiB),[%c%c%c] (0x%llx)\n",
                entry->NumberOfPages == 0 ? "!!! " : "",
                i, efi_mem_type_string(entry->Type), entry->Type,
                entry->PhysicalStart, entry->VirtualStart,
@@ -125,7 +125,7 @@ void load_page_map() {
 void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size) {
     if (!pml4_pointer) {
         pml4_pointer = allocate(sizeof(pml4_entry_t) * 512);
-        printf("allocating new pml4 at 0x%016llx\n", pml4_pointer);
+        dbg_print("allocating new pml4 at 0x%016llx\n", pml4_pointer);
         lmemset(pml4_pointer, 0, sizeof(pml4_entry_t) * 512);
     }
 
@@ -146,7 +146,7 @@ void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t siz
     pdpt_entry_t *pdpt = (pdpt_entry_t *) (pml4_pointer[vaddr.pml4_index].page_ppn * 0x1000);
     if (!pdpt) {
         pdpt = allocate(sizeof(pdpt_entry_t) * 512);
-        printf("allocating new pdpt at 0x%016llx\n", pdpt);
+        dbg_print("allocating new pdpt at 0x%016llx\n", pdpt);
         lmemset(pdpt, 0, sizeof(pdpt_entry_t) * 512);
         pml4_pointer[vaddr.pml4_index].page_ppn = ((uint64_t) pdpt) / 0x1000;
     }

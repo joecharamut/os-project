@@ -46,13 +46,13 @@ static void emit_char(char c) {
     serial_write(c);
 }
 
-static void emit_str(char *str) {
+static void print_str(char *str) {
     while (*str) {
         emit_char(*str++);
     }
 }
 
-static void emit_wstr(CHAR16 *wstr) {
+static void print_wstr(CHAR16 *wstr) {
     while (*wstr) {
         emit_char((char) *wstr++);
     }
@@ -125,10 +125,13 @@ static void print_num(va_list *args_ptr, uint8_t width, uint32_t base, bool use_
     }
 
     if (sign) emit_char('-');
-    emit_str(buf);
+    print_str(buf);
 }
 
-static void vprintf(const char *fmt, va_list args) {
+void dbg_print(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
     bool in_format = false;
     bool hex_prefix;
     uint8_t width;
@@ -145,9 +148,9 @@ static void vprintf(const char *fmt, va_list args) {
 
                 case 's':
                     if (width == 0) {
-                        emit_str(va_arg(args, char *));
+                        print_str(va_arg(args, char *));
                     } else {
-                        emit_wstr(va_arg(args, CHAR16 *));
+                        print_wstr(va_arg(args, CHAR16 *));
                     }
                     in_format = false;
                     break;
@@ -169,7 +172,7 @@ static void vprintf(const char *fmt, va_list args) {
                     break;
 
                 case 'x':
-                    if (hex_prefix) emit_str("0x");
+                    if (hex_prefix) print_str("0x");
                     print_num(&args, width, 16, false, pad_char, min_length);
                     in_format = false;
                     break;
@@ -208,8 +211,7 @@ static void vprintf(const char *fmt, va_list args) {
                     break;
 
                 default:
-                    emit_char('%');
-                    emit_char(c);
+                    emit_char('?');
                     in_format = false;
                     break;
             }
@@ -223,13 +225,6 @@ static void vprintf(const char *fmt, va_list args) {
             emit_char(c);
         }
     }
-}
 
-void printf(const char *fmt, ...) {
-    va_list argp;
-    va_start(argp, fmt);
-
-    vprintf(fmt, argp);
-
-    va_end(argp);
+    va_end(args);
 }

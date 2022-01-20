@@ -8,6 +8,6 @@ uint8_t inb(uint16_t port);
 
 int serial_init();
 
-void printf(const char *fmt, ...);
+void dbg_print(const char *fmt, ...);
 
 #endif //LOADER_DEBUG_H

@@ -45,7 +45,7 @@ EFI_STATUS video_init() {
         numModes = GOP->Mode->MaxMode;
     }
 
-    printf("Framebuffer address: 0x%llx, size 0x%llx, width %lld, height %lld, pixelsperline %lld\n",
+    dbg_print("Framebuffer address: 0x%llx, size 0x%llx, width %lld, height %lld, pixelsperline %lld\n",
            GOP->Mode->FrameBufferBase,
            GOP->Mode->FrameBufferSize,
            GOP->Mode->Info->HorizontalResolution,

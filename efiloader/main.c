@@ -62,7 +62,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     set_font(fontBuf);
 
     printf("Starting EFILoader!\n");
-    printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%08X]\n",
+    printf("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%x]\n",
            ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
 
     EFI_FILE_HANDLE kernelHandle;
@@ -136,8 +136,8 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
 //    efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
-    uint64_t test = 420;
-    printf("%d\n", sizeof(test));
+    printf("int: %x, long: %x, long long: %x\n", sizeof(int), sizeof(long), sizeof(long long));
+    printf("-1: %#x, -1: %d, -1: %u\n", -1, -1, -1);
 
     uint64_t convMemory = 0;
     uint64_t reclaimMemory = 0;

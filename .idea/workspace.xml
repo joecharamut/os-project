@@ -24,21 +24,13 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="that order makes more sense">
-      <change afterPath="$PROJECT_DIR$/rkernel/src/mm/bump.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/src/mm/mod.rs" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rename serial port">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/boot_data.h" beforeDir="false" afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/file.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/file.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/file.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/file.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/linker.ld" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -473,21 +465,7 @@
       <workItem from="1641919829403" duration="37409000" />
       <workItem from="1642023345555" duration="43369000" />
       <workItem from="1642519628789" duration="3599000" />
-      <workItem from="1642553127658" duration="3099000" />
-    </task>
-    <task id="LOCAL-00069" summary="try to tell bios we want long mode">
-      <created>1632231773020</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1632231773020</updated>
-    </task>
-    <task id="LOCAL-00070" summary="box drawin">
-      <created>1632314051894</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1632314051894</updated>
+      <workItem from="1642553127658" duration="13718000" />
     </task>
     <task id="LOCAL-00071" summary="box drawin 2">
       <created>1638143837902</created>
@@ -818,7 +796,21 @@
       <option name="project" value="LOCAL" />
       <updated>1642309028876</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="trying out some stuff">
+      <created>1642561237988</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1642561237989</updated>
+    </task>
+    <task id="LOCAL-00119" summary="rename serial port">
+      <created>1642561303946</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1642561303947</updated>
+    </task>
+    <option name="localTasksCounter" value="120" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -893,8 +885,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove printf.c" />
-    <MESSAGE value="remove strings.c" />
     <MESSAGE value="memory type beat" />
     <MESSAGE value="no memset allowed" />
     <MESSAGE value="fix printf specifiers" />
@@ -918,7 +908,9 @@
     <MESSAGE value="jk the font is a common file now" />
     <MESSAGE value="no more kernel2" />
     <MESSAGE value="that order makes more sense" />
-    <option name="LAST_COMMIT_MESSAGE" value="that order makes more sense" />
+    <MESSAGE value="trying out some stuff" />
+    <MESSAGE value="rename serial port" />
+    <option name="LAST_COMMIT_MESSAGE" value="rename serial port" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

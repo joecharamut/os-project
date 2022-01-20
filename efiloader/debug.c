@@ -4,12 +4,12 @@
 #include "video.h"
 
 void outb(uint16_t port, uint8_t value) {
-    asm volatile("outb %0, %1" :: "a" (value), "dN" (port));
+    __asm__ volatile ("outb %0, %1" :: "a" (value), "dN" (port));
 }
 
 uint8_t inb(uint16_t port) {
     uint8_t value;
-    asm volatile("inb %1, %0" : "=a" (value) : "dN" (port));
+    __asm__ volatile ("inb %1, %0" : "=a" (value) : "dN" (port));
     return value;
 }
 
@@ -37,7 +37,7 @@ int serial_init() {
     return 0;
 }
 
-void serial_write(char c) {
+static void serial_write(char c) {
     outb(SERIAL_PORT, c);
 }
 
@@ -58,9 +58,6 @@ static void emit_wstr(CHAR16 *wstr) {
     }
 }
 
-static const char *alphabet_lower = "0123456789abcdef";
-static const char *alphabet_upper = "0123456789ABCDEF";
-
 static uint32_t num_digits(uint64_t num, uint32_t base) {
     uint32_t digits = 1;
     while (num >= base) {
@@ -70,44 +67,75 @@ static uint32_t num_digits(uint64_t num, uint32_t base) {
     return digits;
 }
 
-static void print_num(uint64_t num, uint32_t base, bool uppercase) {
+static const char *print_num_alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
+static const int max_number_length = 32;
+
+static void print_num(va_list *args_ptr, uint8_t width, uint32_t base, bool use_sign, char pad_char, uint8_t min_length) {
+    bool sign = false;
+    uint64_t num;
+
+    if (width == 1) {
+        long x = va_arg(*args_ptr, long);
+
+        if (use_sign && x < 0) {
+            sign = true;
+            num = ((uint64_t) -x);
+        } else {
+            num = (uint64_t) x;
+        }
+    } else if (width == 2) {
+        long long x = va_arg(*args_ptr, long long);
+
+        if (use_sign && x < 0) {
+            sign = true;
+            num = ((uint64_t) -x);
+        } else {
+            num = (uint64_t) x;
+        }
+    } else {
+        int x = va_arg(*args_ptr, int);
+
+        if (use_sign && x < 0) {
+            sign = true;
+            num = ((uint64_t) -x);
+        } else {
+            num = (uint64_t) x;
+        }
+    }
+
     uint32_t digits = num_digits(num, base);
-    char buf[32] = { 0 };
+    if (digits < min_length && min_length < max_number_length-1) {
+        digits = min_length;
+    }
+
+    char buf[max_number_length];
+    for (int i = 0; i < max_number_length; ++i) {
+        buf[i] = pad_char;
+    }
+    buf[digits] = 0;
+
 
     uint32_t i = digits - 1;
     while (1) {
-        buf[i] = (uppercase ? alphabet_upper : alphabet_lower)[num % base];
+        buf[i] = print_num_alphabet[num % base];
         num /= base;
 
         if (i == 0) break;
         --i;
     }
 
+    if (sign) emit_char('-');
     emit_str(buf);
-}
-
-static uint64_t get_number(va_list *arg, int width) {
-    switch (width) {
-        case 1:
-            return (uint64_t) va_arg(*arg, long);
-        case 2:
-            return (uint64_t) va_arg(*arg, long long);
-        default:
-            return (uint64_t) va_arg(*arg, int);
-    }
 }
 
 static void vprintf(const char *fmt, va_list args) {
     bool in_format = false;
-    char c;
-
-    uint64_t n;
-    int width;
-    bool is_signed;
+    bool hex_prefix;
+    uint8_t width;
     char pad_char;
-    uint32_t pad_length;
+    uint8_t min_length;
 
-    while ((c = *fmt)) {
+    for (char c; (c = *fmt); fmt++) {
         if (in_format) {
             switch (c) {
                 case '%':
@@ -131,15 +159,18 @@ static void vprintf(const char *fmt, va_list args) {
 
                 case 'd':
                 case 'i':
-                    n = get_number(&args, width);
-                    print_num(n, 10, false);
+                    print_num(&args, width, 10, true, pad_char, min_length);
+                    in_format = false;
+                    break;
+
+                case 'u':
+                    print_num(&args, width, 10, false, pad_char, min_length);
                     in_format = false;
                     break;
 
                 case 'x':
-                case 'X':
-                    n = get_number(&args, width);
-                    print_num(n, 16, (c == 'X'));
+                    if (hex_prefix) emit_str("0x");
+                    print_num(&args, width, 16, false, pad_char, min_length);
                     in_format = false;
                     break;
 
@@ -147,10 +178,20 @@ static void vprintf(const char *fmt, va_list args) {
                     width++;
                     break;
 
+                case '#':
+                    hex_prefix = true;
+                    break;
+
                 case ' ':
-                case '0':
                     pad_char = c;
-                    pad_length = 0;
+                    break;
+
+                case '0':
+                    if (!pad_char) {
+                        pad_char = c;
+                    } else {
+                        min_length *= 10;
+                    }
                     break;
 
                 case '1':
@@ -162,8 +203,8 @@ static void vprintf(const char *fmt, va_list args) {
                 case '7':
                 case '8':
                 case '9':
-                    pad_length *= 10;
-                    pad_length += c - '0';
+                    min_length *= 10;
+                    min_length += c - '0';
                     break;
 
                 default:
@@ -174,16 +215,13 @@ static void vprintf(const char *fmt, va_list args) {
             }
         } else if (c == '%') {
             in_format = true;
-            n = 0;
             width = 0;
-            is_signed = true;
-            pad_char = ' ';
-            pad_length = 0;
+            hex_prefix = false;
+            pad_char = 0;
+            min_length = 0;
         } else {
-            emit_char(*fmt);
+            emit_char(c);
         }
-
-        fmt++;
     }
 }
 

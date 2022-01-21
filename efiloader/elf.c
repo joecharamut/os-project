@@ -1,15 +1,27 @@
 #include "elf.h"
 
-const char * const elf_ptype_strings[] = {
-        "ELF_PTYPE_NULL",
-        "ELF_PTYPE_LOAD",
-        "ELF_PTYPE_DYNAMIC",
-        "ELF_PTYPE_INTERP",
-        "ELF_PTYPE_NOTE",
-        "ELF_PTYPE_SHLIB",
-        "ELF_PTYPE_PHDR",
-        "ELF_PTYPE_TLS",
+static const char * const elf_ptype_strings[] = {
+        "PT_NULL",
+        "PT_LOAD",
+        "PT_DYNAMIC",
+        "PT_INTERP",
+        "PT_NOTE",
+        "PT_SHLIB",
+        "PT_PHDR",
+        "PT_TLS",
 };
+
+const char *elf_ptype_string(uint64_t type) {
+    if (type < sizeof(elf_ptype_strings)) {
+        return elf_ptype_strings[type];
+    }
+
+    if (type == 0x6474e550) return "PT_GNU_EH_FRAME";
+    if (type == 0x6474e551) return "PT_GNU_STACK";
+    if (type == 0x6474e552) return "PT_GNU_RELRO";
+
+    return "PT_UNKNOWN";
+}
 
 bool elf_is_header_valid(void *header_buf) {
     elf_identifier_t *ident = header_buf;

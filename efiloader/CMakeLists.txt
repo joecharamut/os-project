@@ -58,6 +58,16 @@ add_link_options(
         -e efi_main
 )
 
+include_directories(SYSTEM PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/x86_64
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/protocol
+        ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2
+        )
+link_directories(PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/x86_64/lib
+        )
+
 set(LOADER_SOURCES
         main.c
         elf.c elf.h
@@ -68,15 +78,9 @@ set(LOADER_SOURCES
 
 add_executable(loader.efi ${LOADER_SOURCES})
 add_dependencies(loader.efi gnu-efi scalable-font2)
-
-target_include_directories(loader.efi SYSTEM PUBLIC
-        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc
-        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/x86_64
-        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/inc/protocol
-        ${CMAKE_CURRENT_BINARY_DIR}/scalable-font2/src/scalable-font2
-        )
-target_link_directories(loader.efi PUBLIC
-        ${CMAKE_CURRENT_BINARY_DIR}/gnu-efi/src/gnu-efi/x86_64/lib
-        )
 target_link_libraries(loader.efi efi gcc)
 
+add_executable(stub.efi stub.c)
+add_dependencies(stub.efi gnu-efi)
+target_link_libraries(stub.efi efi)
+add_custom_command(TARGET stub.efi POST_BUILD COMMAND strip stub.efi)

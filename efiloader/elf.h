@@ -52,16 +52,17 @@ static_assert(sizeof(elf64_header_t) == 64, "Invalid Size");
 #define ELF_PFLAG_W 2
 #define ELF_PFLAG_X 1
 
-#define ELF_PTYPE_NULL      0x00000000
-#define ELF_PTYPE_LOAD      0x00000001
-#define ELF_PTYPE_DYNAMIC   0x00000002
-#define ELF_PTYPE_INTERP    0x00000003
-#define ELF_PTYPE_NOTE      0x00000004
-#define ELF_PTYPE_SHLIB     0x00000005
-#define ELF_PTYPE_PHDR      0x00000006
-#define ELF_PTYPE_TLS       0x00000007
-
-extern const char * const elf_ptype_strings[];
+#define ELF_PTYPE_NULL          0x00000000
+#define ELF_PTYPE_LOAD          0x00000001
+#define ELF_PTYPE_DYNAMIC       0x00000002
+#define ELF_PTYPE_INTERP        0x00000003
+#define ELF_PTYPE_NOTE          0x00000004
+#define ELF_PTYPE_SHLIB         0x00000005
+#define ELF_PTYPE_PHDR          0x00000006
+#define ELF_PTYPE_TLS           0x00000007
+#define ELF_PTYPE_GNU_EH_FRAME  0x6474e550
+#define ELF_PTYPE_GNU_STACK     0x6474e551
+#define ELF_PTYPE_GNU_RELRO     0x6474e552
 
 typedef struct {
     uint32_t type;
@@ -89,6 +90,7 @@ typedef struct {
 } __attribute__((packed)) elf64_sht_entry_t;
 static_assert(sizeof(elf64_sht_entry_t) == 64, "Invalid Size");
 
+const char *elf_ptype_string(uint64_t type);
 bool elf_is_header_valid(void *header_buf);
 bool elf_is_64_bit(void *header_buf);
 

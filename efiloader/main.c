@@ -214,17 +214,16 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     for (uint16_t i = 0; i < header->pht_entry_count; ++i) {
         elf64_pht_entry_t *entry = (void *) (((char *) kernelBuf) + header->pht_offset + (i * header->pht_entry_size));
-        if (entry->type != ELF_PTYPE_LOAD) continue;
 
-        dbg_print("Header %d:\n Type: %s (%d)\n Flags: [%c%c%c]\n Offset: 0x%lx\n Virtual: 0x%lx\n Physical: 0x%lx\n",
-               i,
-               elf_ptype_strings[entry->type], entry->type,
-               (entry->flags & ELF_PFLAG_R ? 'R' : '-'),
-               (entry->flags & ELF_PFLAG_W ? 'W' : '-'),
-               (entry->flags & ELF_PFLAG_X ? 'X' : '-'),
-               entry->offset,
-               entry->vaddr,
-               entry->paddr
+        dbg_print("Header %d:\n Type: %s (%#llx)\n Flags: [%c%c%c]\n Offset: 0x%lx\n Virtual: 0x%lx\n Physical: 0x%lx\n",
+                  i,
+                  elf_ptype_string(entry->type), entry->type,
+                  (entry->flags & ELF_PFLAG_R ? 'R' : '-'),
+                  (entry->flags & ELF_PFLAG_W ? 'W' : '-'),
+                  (entry->flags & ELF_PFLAG_X ? 'X' : '-'),
+                  entry->offset,
+                  entry->vaddr,
+                  entry->paddr
         );
 
         if (entry->type == ELF_PTYPE_LOAD) {

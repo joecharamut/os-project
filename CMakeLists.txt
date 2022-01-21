@@ -16,17 +16,19 @@ add_custom_command(OUTPUT fs.bin
 
 add_custom_command(OUTPUT esp.bin
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS efiloader/stub.efi
         DEPENDS efiloader/loader.efi
         DEPENDS common/unifont.sfn
         DEPENDS rkernel/rkernel.bin
         VERBATIM
         COMMAND dd if=/dev/zero of=esp.bin bs=1M count=128 &&
         mkfs.vfat -F32 -n "SYSTEM" esp.bin &&
-        mmd -i esp.bin ::/QOS &&
+        mmd -i esp.bin ::/qOS &&
         mmd -i esp.bin ::/EFI &&
-        mmd -i esp.bin ::/EFI/BOOT &&
-        mcopy -i esp.bin efiloader/loader.efi ::/EFI/BOOT/BOOTX64.EFI &&
-        mcopy -i esp.bin ${CMAKE_SOURCE_DIR}/common/unifont.sfn ::/QOS/FONT.SFN &&
+        mmd -i esp.bin ::/EFI/Boot &&
+        mcopy -i esp.bin efiloader/stub.efi ::/EFI/Boot/bootx64.EFI &&
+        mcopy -i esp.bin efiloader/loader.efi ::/qOS/loader.efi &&
+        mcopy -i esp.bin ${CMAKE_SOURCE_DIR}/common/unifont.sfn ::/qOS/font.sfn &&
         mcopy -i esp.bin rkernel/rkernel.bin ::/RKERNEL.BIN
         )
 

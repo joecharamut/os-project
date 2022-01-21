@@ -134,7 +134,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
     dbg_print("Boot services terminated successfully\n");
 
-//    efi_dump_mem_map(mmap, mapSize, descriptorSize);
+    efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
     dbg_print("int: %x, long: %x, long long: %x\n", sizeof(int), sizeof(long), sizeof(long long));
     dbg_print("-1: %#x, -1: %d, -1: %u\n", -1, -1, -1);
@@ -254,9 +254,18 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         };
     }
 
+    // basic mmap as far as i understand
+    // 0x0000'0000 - 0x007F'FFFF: Available ~8 MiB
+    // 0x0080'0000 - 0x008F'FFFF: Fragmented ACPIMemoryNVS & ConventionalMemory
+    // 0x0090'0000 - 0x????'????: Available (Depending on RAM size)
+    // 0x????'???? - 0x????'????: Misc EfiRuntimeServices & ACPIMemory Regions (upper ~8 MiB i think?)
+    // 0xFFE0'0000 - 0xFFFF'FFFF: MemoryMappedIO ~2 MiB
+
+    // todo: see if uefi has a way to see where the start of physical memory is / where it is safe to load to
     bootData->allocation_info.image_base = 0x900000;
     bootData->allocation_info.image_size = kernelSize;
 
+    // todo: make sure this area is fine to use for stack
     bootData->allocation_info.stack_base = 0x200000;
     bootData->allocation_info.stack_size = 0;
 

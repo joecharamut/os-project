@@ -24,12 +24,12 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="condensing code and printf actually does width now">
-      <change beforePath="$PROJECT_DIR$/efiloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.h" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rename printf to dbg_print">
+      <change beforePath="$PROJECT_DIR$/.idea/os.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/os.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/linker.ld" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,10 +44,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="Python Stub" />
         <option value="CMakeLists.txt" />
         <option value="Rust File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -259,7 +259,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="structure.view.defaults.are.configured" value="true" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
@@ -464,14 +464,7 @@
       <workItem from="1641919829403" duration="37409000" />
       <workItem from="1642023345555" duration="43369000" />
       <workItem from="1642519628789" duration="3599000" />
-      <workItem from="1642553127658" duration="14094000" />
-    </task>
-    <task id="LOCAL-00072" summary="box drawin kinda useless">
-      <created>1638162941708</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1638162941708</updated>
+      <workItem from="1642553127658" duration="22036000" />
     </task>
     <task id="LOCAL-00073" summary="beep">
       <created>1638230828127</created>
@@ -809,7 +802,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642644028183</updated>
     </task>
-    <option name="localTasksCounter" value="121" />
+    <task id="LOCAL-00121" summary="rename printf to dbg_print">
+      <created>1642644356189</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1642644356189</updated>
+    </task>
+    <option name="localTasksCounter" value="122" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -884,7 +884,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="no memset allowed" />
     <MESSAGE value="fix printf specifiers" />
     <MESSAGE value="working on calling the kernel" />
     <MESSAGE value="memory mapped" />
@@ -909,7 +908,8 @@
     <MESSAGE value="trying out some stuff" />
     <MESSAGE value="rename serial port" />
     <MESSAGE value="condensing code and printf actually does width now" />
-    <option name="LAST_COMMIT_MESSAGE" value="condensing code and printf actually does width now" />
+    <MESSAGE value="rename printf to dbg_print" />
+    <option name="LAST_COMMIT_MESSAGE" value="rename printf to dbg_print" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

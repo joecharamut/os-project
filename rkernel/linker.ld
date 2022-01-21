@@ -19,7 +19,7 @@ SECTIONS
 
     . += KERNEL_VMA;
 
-    kernel_base_addr = .;
+    _kernel_base_addr = .;
 
     .text ALIGN(4K) : AT(ADDR(.text) - KERNEL_VMA) {
         kernel_code_base = .;

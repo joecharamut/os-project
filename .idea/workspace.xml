@@ -25,15 +25,21 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="touch up some code">
-      <change afterPath="$PROJECT_DIR$/common/boot.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/efiloader/stub.c" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="add a stub to load the real loader and not have to rename it to bootx64 each time">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/boot_data.h" beforeDir="false" afterPath="$PROJECT_DIR$/common/boot_data.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/elf.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/elf.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/efiloader/elf.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/elf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/debug.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/debug.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/mem.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/mem.h" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/mem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/video.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/video.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/bootstrap.c" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/bootstrap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/linker.ld" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/linker.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -255,7 +261,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/efiloader_stub" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-debug" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -269,8 +275,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/efiloader_stub" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
+      <recent name="$PROJECT_DIR$/efiloader_stub" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/rkernel" />
       <recent name="$PROJECT_DIR$/cmake-build-release" />
@@ -475,6 +481,7 @@
       <workItem from="1642023345555" duration="43369000" />
       <workItem from="1642519628789" duration="3599000" />
       <workItem from="1642553127658" duration="32344000" />
+      <workItem from="1643129987292" duration="3190000" />
     </task>
     <task id="LOCAL-00074" summary="basic uefi example">
       <created>1638256934461</created>
@@ -867,6 +874,16 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.cfg" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

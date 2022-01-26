@@ -11,6 +11,7 @@ extern void kernel_main(boot_data_t *bootData);
 extern char _kernel_base_addr;
 
 const section(".bootstrap_data") attribute(used) uint64_t stack_base_offset = offsetof(boot_data_t, allocation_info.stack_base);
+const section(".bootstrap_data") attribute(used) uint64_t page_map_base_offset = offsetof(boot_data_t, allocation_info.page_map_base);
 
 // sysv_abi calling convention
 // arguments: RDI, RSI, RDX, RCX, R8, R9, stack
@@ -39,6 +40,21 @@ section(".bootstrap") attribute(naked, used) void bootstrap(attribute(unused) bo
             // %rbp = 0
             "mov %rax, %rsp;"
             "xor %rbp, %rbp;"
+
+            // save bootData and %rbx again
+            "push %rdi;"
+            "push %rbx;"
+
+            // load the page table setup by the bootloader
+            // %rax = bootData->allocation_info.page_map_base
+            "mov %rdi, %rbx;"
+            "mov page_map_base_offset, %rdi;"
+            "mov (%rbx,%rdi), %rax;" // (%rbx,%rdi) => *(bootData+page_map_base_offset)
+            "mov %rax, %cr3;"
+
+            // restore bootData and %rbx again
+            "pop %rbx;"
+            "pop %rdi;"
 
             // call the actual bootstrap
             // stage2_bootstrap(bootData)

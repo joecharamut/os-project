@@ -14,6 +14,89 @@ static noreturn void halt() {
     __builtin_unreachable();
 }
 
+typedef struct {
+    uint16_t size;
+    uint64_t offset;
+} __attribute__((packed)) idt_descriptor_t;
+
+typedef struct {
+    uint16_t offset_1;
+    uint16_t selector;
+    uint8_t ist;
+    uint8_t attributes;
+    uint16_t offset_2;
+    uint32_t offset_3;
+    uint32_t _reserved;
+} __attribute__((packed)) idt_gate_t;
+
+typedef struct {
+    uint64_t r11;
+    uint64_t r10;
+    uint64_t r9;
+    uint64_t r8;
+    uint64_t rdx;
+    uint64_t rcx;
+    uint64_t rax;
+
+    uint64_t rip;
+    uint64_t cs;
+    union {
+        uint64_t value;
+    } flags;
+    uint64_t rsp;
+    uint64_t ss;
+} __attribute__((packed)) asdinterrupt_frame_t;
+
+typedef struct {
+    uint64_t ss;
+    uint64_t rsp;
+    union {
+        uint64_t value;
+    } flags;
+    uint64_t cs;
+    uint64_t rip;
+
+    uint64_t rax;
+    uint64_t rcx;
+    uint64_t rdx;
+    uint64_t r8;
+    uint64_t r9;
+    uint64_t r10;
+    uint64_t r11;
+} __attribute__((packed)) interrupt_frame_t;
+const uint64_t interrupt_frame_t_size = sizeof(interrupt_frame_t);
+
+__attribute__((naked, used)) void isr_thunk() {
+    asm (
+            "push %rax;"
+            "push %rcx;"
+            "push %rdx;"
+            "push %r8;"
+            "push %r9;"
+            "push %r10;"
+            "push %r11;"
+
+            "mov %rsp, %rcx;"
+            "sub $8*12, %rcx;"
+
+            "call interrupt_handler;"
+
+            "pop %r11;"
+            "pop %r10;"
+            "pop %r9;"
+            "pop %r8;"
+            "pop %rdx;"
+            "pop %rcx;"
+            "pop %rax;"
+
+            "iretq;"
+    );
+}
+
+__attribute__((used)) void interrupt_handler(interrupt_frame_t *frame) {
+    dbg_print("INTERRUPT IN %#016llx\n", frame->rip);
+}
+
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     EFI_STATUS status;
 
@@ -23,29 +106,34 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     // disable watchdog
     status = BS->SetWatchdogTimer(0, 0, 0, NULL);
     if (EFI_ERROR(status)) {
+        beep(1);
         return status;
     }
 
     EFI_FILE_HANDLE volume;
     status = GetVolume(ImageHandle, &volume);
     if (EFI_ERROR(status)) {
+        beep(2);
         return status;
     }
 
     // setup console
     status = video_init();
     if (EFI_ERROR(status)) {
+        beep(3);
         return status;
     }
 
     // init serial
-    if (serial_init()) {
-        return EFI_DEVICE_ERROR;
+    // dont fail on error because computer might not have serial
+    if (serial_init(0x3f8)) {
+        // todo: something
     }
 
     EFI_FILE_HANDLE consoleFont;
     status = volume->Open(volume, &consoleFont, L"\\QOS\\FONT.SFN", EFI_FILE_MODE_READ, 0);
     if (EFI_ERROR(status)) {
+        beep(5);
         return status;
     }
 
@@ -53,6 +141,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     void *fontBuf = AllocatePool(fontSize);
     status = consoleFont->Read(consoleFont, &fontSize, fontBuf);
     if (EFI_ERROR(status)) {
+        beep(6);
         return status;
     }
 
@@ -64,6 +153,77 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     dbg_print("Starting EFILoader!\n");
     dbg_print("UEFI Version %d.%d [Vendor: %ls, Revision: 0x%x]\n",
            ST->Hdr.Revision >> 16, ST->Hdr.Revision & 0xFFFF, ST->FirmwareVendor, ST->FirmwareRevision);
+
+    EFI_LOADED_IMAGE *LoadedImage = NULL;
+    status = BS->HandleProtocol(ImageHandle, &gEfiLoadedImageProtocolGuid, (void **) &LoadedImage);
+    if (EFI_ERROR(status)) {
+        return status;
+    }
+
+    dbg_print("UEFI Image Base is %#016llx\n", LoadedImage->ImageBase);
+
+    /*volatile int wait = 1;
+    while (wait) {
+        asm ("pause");
+    }
+
+    idt_descriptor_t idtr;
+    __asm__ ("sidt %0" : "=m" (idtr));
+    idt_gate_t *gates = (idt_gate_t *) idtr.offset;
+    gates[3].offset_1 = ((uint64_t) &isr_thunk) & 0xFFFF;
+    gates[3].offset_2 = ((uint64_t) &isr_thunk >> 16) & 0xFFFF;
+    gates[3].offset_3 = ((uint64_t) &isr_thunk >> 32) & 0xFFFFFFFF;
+    __asm__ (
+            "mov $0x4141424241414242, %%rax;"
+            "mov $0x4343444443434444, %%rcx;"
+            "int $0x3;"
+            ::: "rax", "rcx");*/
+
+    for (uint64_t i = 0; i < SystemTable->NumberOfTableEntries; ++i) {
+        dbg_print("ConfigTable[%lld]: {%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}", i,
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data1,
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data2,
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data3,
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[0],
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[1],
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[2],
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[3],
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[4],
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[5],
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[6],
+                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[7]
+        );
+
+        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) MPS_TABLE_GUID)) == 0) {
+            dbg_print(" => MPS_TABLE_GUID");
+        }
+
+        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) ACPI_TABLE_GUID)) == 0) {
+            dbg_print(" => ACPI_TABLE_GUID");
+        }
+
+        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) ACPI_20_TABLE_GUID)) == 0) {
+            dbg_print(" => ACPI_20_TABLE_GUID");
+        }
+
+        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) SMBIOS_TABLE_GUID)) == 0) {
+            dbg_print(" => SMBIOS_TABLE_GUID");
+        }
+
+        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) SMBIOS3_TABLE_GUID)) == 0) {
+            dbg_print(" => SMBIOS3_TABLE_GUID");
+        }
+
+        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) SAL_SYSTEM_TABLE_GUID)) == 0) {
+            dbg_print(" => SAL_SYSTEM_TABLE_GUID");
+        }
+
+        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) EFI_DTB_TABLE_GUID)) == 0) {
+            dbg_print(" => EFI_DTB_TABLE_GUID");
+        }
+
+        dbg_print("\n");
+    }
 
     EFI_FILE_HANDLE kernelHandle;
     status = volume->Open(volume, &kernelHandle, L"RKERNEL.BIN", EFI_FILE_MODE_READ, 0);
@@ -128,6 +288,8 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     uint64_t descriptorSize = 0;
     uint8_t *mmap = (uint8_t *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
 
+    efi_dump_mem_map_to_file(mmap, mapSize, descriptorSize, volume);
+
     while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
         FreePool(mmap);
         mmap = (void *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
@@ -135,9 +297,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     dbg_print("Boot services terminated successfully\n");
 
     efi_dump_mem_map(mmap, mapSize, descriptorSize);
-
-    dbg_print("int: %x, long: %x, long long: %x\n", sizeof(int), sizeof(long), sizeof(long long));
-    dbg_print("-1: %#x, -1: %d, -1: %u\n", -1, -1, -1);
 
     uint64_t convMemory = 0;
     uint64_t reclaimMemory = 0;
@@ -198,16 +357,16 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         }
     }
 
-    dbg_print("Identity mapping first 4GiB of address space\n");
-    for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
-        map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i }, PageSize1GiB);
+    dbg_print("Identity mapping the heap\n");
+    for (uint64_t i = 0x100000; i < 0x200000; i += 0x1000) {
+        map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i }, PageSize4KiB);
     }
-    dbg_print("Mapping last 4GiB of address space\n");
-    for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
-        map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i + 0xFFFFFFF800000000 }, PageSize1GiB);
-    }
-    dbg_print("Enabling the new page map\n");
-    load_page_map();
+//    dbg_print("Mapping last 4GiB of address space\n");
+//    for (uint64_t i = 0; i < 0x100000000; i += 0x40000000) {
+//        map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i + 0xFFFFFFF800000000 }, PageSize1GiB);
+//    }
+//    dbg_print("Enabling the new page map\n");
+//    load_page_map();
 
     header = kernelBuf;
     dbg_print("Parsing kernel phdrs...\n");
@@ -227,17 +386,36 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         );
 
         if (entry->type == ELF_PTYPE_LOAD) {
-            dbg_print("Trying to load segment %d (0x%lx bytes) to phys address 0x%016lx...", i, entry->filesize, entry->paddr);
+            dbg_print("Loading segment %d (0x%lx bytes) to physical address 0x%016lx...\n", i, entry->filesize, entry->paddr);
             lmemcpy((void *) entry->paddr, ((char *) kernelBuf) + entry->offset, entry->filesize);
-            dbg_print("OK!\n");
+
+            dbg_print("Mapping segment %d (0x%lx bytes) to virtual address 0x%016lx...\n", i, entry->filesize, entry->paddr);
+            for (uint64_t i = 0; i < entry->memsize; i += 0x1000) {
+                map_page(
+                        (physical_address_t) { .value=entry->paddr + i },
+                        (virtual_address_t){ .value=entry->vaddr + i },
+                        PageSize4KiB
+                );
+            }
+            dbg_print("Done!\n");
         }
     }
 
-    dbg_print("Setup complete, calling the kernel!\n");
+    dbg_print("Writing boot data...\n");
 
     boot_data_t *bootData = allocate(sizeof(boot_data_t));
     bootData->signature = BOOT_DATA_SIGNATURE;
     copy_video_info(bootData);
+
+    dbg_print("Mapping the framebuffer\n");
+    for (uint64_t i = 0; i < bootData->video_info.bufferSize; i += 0x1000) {
+//        dbg_print(" at %#llx\n", bootData->video_info.bufferAddress+i);
+        map_page(
+                (physical_address_t) { .value=bootData->video_info.bufferAddress+i },
+                (virtual_address_t){ .value=bootData->video_info.bufferAddress+i },
+                PageSize4KiB
+        );
+    }
 
     bootData->memory_map.count = mapSize;
     bootData->memory_map.entries = allocate(sizeof(memory_descriptor_t) * mapSize);
@@ -261,13 +439,21 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     // 0xFFE0'0000 - 0xFFFF'FFFF: MemoryMappedIO ~2 MiB
 
     // todo: see if uefi has a way to see where the start of physical memory is / where it is safe to load to
-    bootData->allocation_info.image_base = 0x900000;
+    bootData->allocation_info.image_base = 0x200000;
     bootData->allocation_info.image_size = kernelSize;
 
     // todo: make sure this area is fine to use for stack
-    bootData->allocation_info.stack_base = 0x200000;
-    bootData->allocation_info.stack_size = 0;
+    // stack at 2 MiB growing down should be fine for setup
+    // pairing with slab alloc at 1 MiB
+    bootData->allocation_info.stack_base = 0x1FFFF0;
+    bootData->allocation_info.stack_size = 0x100000;
+
+    bootData->allocation_info.page_map_base = (uint64_t) pml4_pointer;
+
+    dbg_print("Kernel entrypoint is at %#016llx\n", header->entry);
+    dbg_print("Setup complete, calling the kernel!\n");
 
     ((bootstrap_fn_ptr_t) header->entry)(bootData);
+
     halt();
 }

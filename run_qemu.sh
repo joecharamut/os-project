@@ -4,9 +4,10 @@ qemu-system-x86_64 \
             -s \
             -enable-kvm \
             -no-shutdown \
-            -d cpu_reset \
-            -serial stdio \
-            -m 128M \
+            -no-reboot \
+            -d cpu_reset,int,mmu,pcall \
+            -serial file:/dev/stdout \
+            -m 2G \
             -vga std \
             -net none \
             -audiodev id=pa,driver=pa \

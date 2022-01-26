@@ -36,6 +36,8 @@ typedef struct {
     uint64_t stack_base;
     uint64_t stack_size;
 
+    uint64_t page_map_base;
+
     uint64_t kernel_base;
 } allocation_info_t;
 

@@ -32,26 +32,29 @@ EFI_STATUS video_init() {
     }
 
     status = GOP->QueryMode(GOP, currentMode, &infoSize, &modeInfo);
-
-    if (status == EFI_NOT_STARTED) {
-        GOP->SetMode(GOP, 0);
-    }
-
     if (EFI_ERROR(status)) {
-//        Print(L"Unable to get native graphics mode\n");
         return status;
-    } else {
-        nativeMode = GOP->Mode->Mode;
-        numModes = GOP->Mode->MaxMode;
     }
 
-    dbg_print("Framebuffer address: 0x%llx, size 0x%llx, width %lld, height %lld, pixelsperline %lld\n",
-           GOP->Mode->FrameBufferBase,
-           GOP->Mode->FrameBufferSize,
-           GOP->Mode->Info->HorizontalResolution,
-           GOP->Mode->Info->VerticalResolution,
-           GOP->Mode->Info->PixelsPerScanLine
-           );
+    nativeMode = GOP->Mode->Mode;
+    numModes = GOP->Mode->MaxMode;
+
+    uint64_t mode = 0;
+    for (UINTN i = 0; i < numModes; ++i) {
+        status = GOP->QueryMode(GOP, i, &infoSize, &modeInfo);
+        if (EFI_ERROR(status)) {
+            return status;
+        }
+
+        if (modeInfo->HorizontalResolution == 800 && modeInfo->VerticalResolution == 600) {
+            mode = i;
+        }
+    }
+
+    status = GOP->SetMode(GOP, mode);
+    if (EFI_ERROR(status)) {
+        return status;
+    }
 
     background_color = make_color(0x00, 0x00, 0x00);
     foreground_color = make_color(0xff, 0xff, 0xff);
@@ -76,14 +79,28 @@ void write_char(char c) {
         uint8_t *dst = (uint8_t *) ssfn_dst.ptr;
 
         // copy buffer up by one line
-        for (int i = 0; i < ssfn_dst.h * ssfn_dst.p; ++i) {
-            dst[i] = src[i];
-        }
+//        for (int i = 0; i < ssfn_dst.h * ssfn_dst.p; ++i) {
+//            dst[i] = src[i];
+//        }
+        __asm__ volatile (
+                "cld;"
+                "rep movsq;"
+                :
+                : "S" (src), "D" (dst), "c" (ssfn_dst.h * ssfn_dst.p / 8)
+                : "memory"
+        );
 
         // blank out the last line
-        for (int i = (ssfn_dst.y - ssfn_src->height) * ssfn_dst.p / 4; i < ssfn_dst.h * ssfn_dst.p / 4; ++i) {
-            ((uint32_t *) dst)[i] = background_color;
-        }
+//        for (int i = (ssfn_dst.y - ssfn_src->height) * ssfn_dst.p / 4; i < ssfn_dst.h * ssfn_dst.p / 4; ++i) {
+//            ((uint32_t *) dst)[i] = background_color;
+//        }
+        __asm__ volatile (
+                "cld;"
+                "rep stosq;"
+                :
+                : "a" (((uint64_t) background_color << 32) | background_color), "D" (dst + ((ssfn_dst.y - ssfn_src->height) * ssfn_dst.p)), "c" (ssfn_dst.h * ssfn_dst.p / 8)
+                : "memory"
+        );
 
         ssfn_dst.y -= ssfn_src->height;
         ssfn_dst.x = 0;
@@ -100,9 +117,16 @@ void write_char(char c) {
 void clear_screen() {
     UINT32 *framebuffer = (UINT32 *) GOP->Mode->FrameBufferBase;
     UINT32 pixels = GOP->Mode->Info->PixelsPerScanLine * GOP->Mode->Info->VerticalResolution;
-    for (UINT32 i = 0; i < pixels; ++i) {
-        framebuffer[i] = background_color;
-    }
+//    for (UINT32 i = 0; i < pixels; ++i) {
+//        framebuffer[i] = background_color;
+//    }
+    __asm__ volatile (
+        "cld;"
+        "rep stosq;"
+        :
+        : "a" (((uint64_t) background_color << 32) | background_color), "D" (framebuffer), "c" (pixels/2)
+        : "memory"
+    );
 }
 
 void set_background_color(UINT32 color) {
@@ -131,6 +155,7 @@ UINT32 make_color(UINT8 r, UINT8 g, UINT8 b) {
 
 void copy_video_info(boot_data_t *bootData) {
     bootData->video_info.bufferAddress = GOP->Mode->FrameBufferBase;
+    bootData->video_info.bufferSize = GOP->Mode->FrameBufferSize;
     bootData->video_info.horizontalResolution = GOP->Mode->Info->HorizontalResolution;
     bootData->video_info.verticalResolution = GOP->Mode->Info->VerticalResolution;
     bootData->video_info.pixelsPerScanLine = GOP->Mode->Info->PixelsPerScanLine;

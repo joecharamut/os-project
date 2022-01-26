@@ -114,9 +114,12 @@ typedef enum {
 } page_size_t;
 
 extern const char * const EFI_MEMORY_TYPE_STRINGS[];
+extern pml4_entry_t *pml4_pointer;
 
 const char *efi_mem_type_string(UINT32 type);
+const CHAR16 *efi_mem_type_wstring(UINT32 type);
 EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *DescriptorSize);
+void efi_dump_mem_map_to_file(void *mmap, UINTN size, UINTN descriptorSize, EFI_FILE_HANDLE volume);
 void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize);
 void *lmemcpy(void *dst, void *src, uint64_t num);
 void *lmemset(void *ptr, unsigned char value, uint64_t num);

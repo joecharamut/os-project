@@ -46,6 +46,7 @@ add_compile_options(
         -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.
         -std=c11
         -fshort-wchar
+        -g3
         $<IF:$<CONFIG:Debug>,-O0,-O2>
         ${WARNING_FLAGS} ${SUPPRESS_FLAGS} ${ERROR_FLAGS}
 )
@@ -56,6 +57,7 @@ add_link_options(
         -shared
         -Wl,--subsystem,10
         -e efi_main
+        -g3
 )
 
 include_directories(SYSTEM PUBLIC
@@ -79,6 +81,9 @@ set(LOADER_SOURCES
 add_executable(loader.efi ${LOADER_SOURCES})
 add_dependencies(loader.efi gnu-efi scalable-font2)
 target_link_libraries(loader.efi efi gcc)
+add_custom_command(TARGET loader.efi POST_BUILD
+        COMMAND objdump -C -d -Mintel ${CMAKE_CURRENT_BINARY_DIR}/loader.efi > loader.lst
+        )
 
 add_executable(stub.efi stub.c)
 add_dependencies(stub.efi gnu-efi)

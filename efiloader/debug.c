@@ -1,5 +1,7 @@
 #include "debug.h"
 
+#include <efi.h>
+#include <efilib.h>
 #include <stdarg.h>
 #include "video.h"
 
@@ -13,12 +15,66 @@ uint8_t inb(uint16_t port) {
     return value;
 }
 
-const uint16_t SERIAL_PORT = 0x3f8;
+const uint16_t KBC_DATA = 0x60;
+const uint16_t KBC_STATUS = 0x64;
+const uint16_t KBC_COMMAND = 0x64;
 
-int serial_init() {
+void play_sound(uint32_t freq) {
+    uint32_t divisor = 1193180 / freq;
+    outb(0x43, 0xB6);
+    outb(0x42, ((uint8_t) (divisor)));
+    outb(0x42, ((uint8_t) (divisor >> 8)));
+
+    uint8_t tmp = inb(0x61);
+    if (tmp != (tmp | 3)) {
+        outb(0x61, tmp | 3);
+    }
+}
+
+void stop_sound() {
+    uint8_t state = inb(0x61);
+    outb(0x61, state & 0xFC);
+}
+
+void set_keyboard_leds(uint8_t state) {
+    do {
+        outb(KBC_COMMAND, 0xED);
+        while (inb(KBC_STATUS) & 2); // wait for input buffer clear
+        outb(KBC_DATA, state);
+        while (inb(KBC_STATUS) & 1); // wait for output buffer clear
+    } while (0 && inb(KBC_DATA) == 0xFE);
+}
+
+
+const uint64_t MS = 1000;
+void beep(uint64_t count) {
+
+    for (uint64_t i = 0; i < count; ++i) {
+        play_sound(1000);
+        set_keyboard_leds(3);
+
+//        for (int i = 0; i < 0x1000; ++i) __asm__ volatile ("pause");
+        BS->Stall(150*MS);
+
+//        RT->GetNextHighMonotonicCount(&time, NULL);
+//        time.
+
+        set_keyboard_leds(0);
+        stop_sound();
+
+        BS->Stall(200*MS);
+//        for (int i = 0; i < 0x1000; ++i) __asm__ volatile ("pause");
+    }
+}
+
+static uint16_t SERIAL_PORT = 0;
+static bool serial_works = false;
+
+int serial_init(uint16_t port) {
+    SERIAL_PORT = port;
     outb(SERIAL_PORT + 1, 0x00);    // Disable all interrupts
     outb(SERIAL_PORT + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-    outb(SERIAL_PORT + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
+    outb(SERIAL_PORT + 0, 0x01);    // Set divisor to 3 (lo byte) 38400 baud
     outb(SERIAL_PORT + 1, 0x00);    //                  (hi byte)
     outb(SERIAL_PORT + 3, 0x03);    // 8 bits, no parity, one stop bit
     outb(SERIAL_PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
@@ -34,6 +90,7 @@ int serial_init() {
     // If serial is not faulty set it in normal operation mode
     // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
     outb(SERIAL_PORT + 4, 0x0F);
+    serial_works = true;
     return 0;
 }
 
@@ -43,7 +100,7 @@ static void serial_write(char c) {
 
 static void emit_char(char c) {
     write_char(c);
-    serial_write(c);
+    if (serial_works) serial_write(c);
 }
 
 static void print_str(char *str) {
@@ -72,35 +129,30 @@ static const int max_number_length = 32;
 
 static void print_num(va_list *args_ptr, uint8_t width, uint32_t base, bool use_sign, char pad_char, uint8_t min_length) {
     bool sign = false;
-    uint64_t num;
+    uint64_t num = 0;
 
-    if (width == 1) {
-        long x = va_arg(*args_ptr, long);
-
-        if (use_sign && x < 0) {
-            sign = true;
-            num = ((uint64_t) -x);
-        } else {
-            num = (uint64_t) x;
-        }
-    } else if (width == 2) {
-        long long x = va_arg(*args_ptr, long long);
+    if (width == 0) {
+        int32_t x = va_arg(*args_ptr, int32_t);
 
         if (use_sign && x < 0) {
             sign = true;
-            num = ((uint64_t) -x);
+            num = (uint64_t) (-x);
         } else {
             num = (uint64_t) x;
         }
+
+        num &= 0xFFFFFFFF;
     } else {
-        int x = va_arg(*args_ptr, int);
+        int64_t x = va_arg(*args_ptr, int64_t);
 
         if (use_sign && x < 0) {
             sign = true;
-            num = ((uint64_t) -x);
+            num = (uint64_t) (-x);
         } else {
             num = (uint64_t) x;
         }
+
+        num &= 0xFFFFFFFFFFFFFFFF;
     }
 
     uint32_t digits = num_digits(num, base);
@@ -128,10 +180,7 @@ static void print_num(va_list *args_ptr, uint8_t width, uint32_t base, bool use_
     print_str(buf);
 }
 
-void dbg_print(const char *fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-
+void dbg_vprint(const char *fmt, va_list args) {
     bool in_format = false;
     bool hex_prefix;
     uint8_t width;
@@ -225,6 +274,13 @@ void dbg_print(const char *fmt, ...) {
             emit_char(c);
         }
     }
+}
+
+void dbg_print(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    dbg_vprint(fmt, args);
 
     va_end(args);
 }

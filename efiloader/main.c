@@ -179,52 +179,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
             "int $0x3;"
             ::: "rax", "rcx");*/
 
-    for (uint64_t i = 0; i < SystemTable->NumberOfTableEntries; ++i) {
-        dbg_print("ConfigTable[%lld]: {%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}", i,
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data1,
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data2,
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data3,
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[0],
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[1],
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[2],
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[3],
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[4],
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[5],
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[6],
-                  SystemTable->ConfigurationTable[i].VendorGuid.Data4[7]
-        );
-
-        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) MPS_TABLE_GUID)) == 0) {
-            dbg_print(" => MPS_TABLE_GUID");
-        }
-
-        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) ACPI_TABLE_GUID)) == 0) {
-            dbg_print(" => ACPI_TABLE_GUID");
-        }
-
-        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) ACPI_20_TABLE_GUID)) == 0) {
-            dbg_print(" => ACPI_20_TABLE_GUID");
-        }
-
-        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) SMBIOS_TABLE_GUID)) == 0) {
-            dbg_print(" => SMBIOS_TABLE_GUID");
-        }
-
-        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) SMBIOS3_TABLE_GUID)) == 0) {
-            dbg_print(" => SMBIOS3_TABLE_GUID");
-        }
-
-        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) SAL_SYSTEM_TABLE_GUID)) == 0) {
-            dbg_print(" => SAL_SYSTEM_TABLE_GUID");
-        }
-
-        if (CompareGuid(&SystemTable->ConfigurationTable[i].VendorGuid, &((EFI_GUID) EFI_DTB_TABLE_GUID)) == 0) {
-            dbg_print(" => EFI_DTB_TABLE_GUID");
-        }
-
-        dbg_print("\n");
-    }
-
     EFI_FILE_HANDLE kernelHandle;
     status = volume->Open(volume, &kernelHandle, L"RKERNEL.BIN", EFI_FILE_MODE_READ, 0);
     if (EFI_ERROR(status)) {
@@ -409,7 +363,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     dbg_print("Mapping the framebuffer\n");
     for (uint64_t i = 0; i < bootData->video_info.bufferSize; i += 0x1000) {
-//        dbg_print(" at %#llx\n", bootData->video_info.bufferAddress+i);
         map_page(
                 (physical_address_t) { .value=bootData->video_info.bufferAddress+i },
                 (virtual_address_t){ .value=bootData->video_info.bufferAddress+i },
@@ -429,6 +382,94 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
                 .number_of_pages = entry->NumberOfPages,
                 .flags = entry->Attribute,
         };
+    }
+
+    EFI_GUID acpi20_guid = ACPI_20_TABLE_GUID;
+    const char *rsdp_sig = "RSD PTR ";
+    acpi_rsdp_t *the_rsdp = NULL;
+
+    EFI_GUID smbios_guid = SMBIOS_TABLE_GUID;
+    EFI_GUID smbios3_guid = SMBIOS3_TABLE_GUID;
+    const char *smbios_sig = "_SM_";
+    const char *smbios3_sig = "_SM3_";
+    smbios_entrypoint_t *the_smbios = NULL;
+
+    for (uint64_t i = 0x000F0000; i < 0x00100000; i += 16) {
+        if (lmemcmp((void *) i, smbios3_sig, 5) == 0) {
+            dbg_print("found smbios3 entry point: %#016x\n", i);
+        }
+    }
+
+    for (uint64_t i = 0; i < SystemTable->NumberOfTableEntries; ++i) {
+        EFI_CONFIGURATION_TABLE *entry = &SystemTable->ConfigurationTable[i];
+
+        if (lmemcmp(&entry->VendorGuid, &acpi20_guid, 16) == 0) {
+            dbg_print("Found ACPI 2.0 table @ %#016llx\n", entry->VendorTable);
+            acpi_rsdp_t *rsdp = (acpi_rsdp_t *) entry->VendorTable;
+
+            if (lmemcmp(rsdp->signature, rsdp_sig, 8) == 0) {
+                uint8_t checksum = 0;
+                for (uint32_t j = 0; j < rsdp->length; ++j) {
+                    checksum += ((uint8_t *) rsdp)[j];
+                }
+
+                if ((checksum & 0xFF) == 0) {
+                    the_rsdp = rsdp;
+                    dbg_print("RSDP signature and checksum are valid, oemid='%c%c%c%c%c%c', rev=%d\n",
+                              the_rsdp->oemid[0], the_rsdp->oemid[1], the_rsdp->oemid[2],
+                              the_rsdp->oemid[3], the_rsdp->oemid[4], the_rsdp->oemid[5],
+                              the_rsdp->revision
+                    );
+                } else {
+                    dbg_print("Invalid RSDP checksum\n");
+                }
+            } else {
+                dbg_print("Invalid RSDP signature\n");
+            }
+
+            continue;
+        }
+
+        if (lmemcmp(&entry->VendorGuid, &smbios_guid, 16) == 0) {
+            dbg_print("SMBIOS ptr->%#016llx\n", entry->VendorTable);
+
+            if (lmemcmp(entry->VendorTable, smbios_sig, 4) == 0) {
+                dbg_print("Valid SMBIOS Signature!\n");
+                the_smbios = entry->VendorTable;
+            } else {
+                dbg_print("Invalid SMBIOS Signature\n");
+            }
+
+            continue;
+        }
+
+        if (lmemcmp(&entry->VendorGuid, &smbios3_guid, 16) == 0) {
+            dbg_print("SMBIOS 3 ptr->%#016llx\n", entry->VendorTable);
+
+            if (lmemcmp(entry->VendorTable, &smbios_sig, 4) == 0) {
+                dbg_print("Valid Signature!\n");
+            } else {
+                dbg_print("Invalid Signature\n");
+            }
+
+            continue;
+        }
+    }
+
+    if (!the_rsdp) {
+        dbg_print("ACPI RSDP was not found, cannot continue booting.\n");
+        halt();
+    }
+
+    if (the_rsdp->revision < 2) {
+        dbg_print("ACPI Revision < 2.0, cannot continue booting.\n");
+        halt();
+    }
+
+    lmemcpy(&bootData->rsdp, the_rsdp, sizeof(acpi_rsdp_t));
+
+    if (the_smbios) {
+        lmemcpy(&bootData->smbios_entry, the_smbios, sizeof(smbios_entrypoint_t));
     }
 
     // basic mmap as far as i understand
@@ -453,6 +494,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     dbg_print("Kernel entrypoint is at %#016llx\n", header->entry);
     dbg_print("Setup complete, calling the kernel!\n");
 
+    halt();
     ((bootstrap_fn_ptr_t) header->entry)(bootData);
 
     halt();

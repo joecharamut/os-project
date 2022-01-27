@@ -22,7 +22,7 @@ pub unsafe fn inw(port: u16) -> u16 {
     value
 }
 
-pub unsafe fn ind(port: u16) -> u32 {
+pub unsafe fn inl(port: u16) -> u32 {
     let value: u32;
     asm!(
         "in eax, dx",
@@ -48,7 +48,7 @@ pub unsafe fn outw(port: u16, value: u16) {
     );
 }
 
-pub unsafe fn outd(port: u16, value: u32) {
+pub unsafe fn outl(port: u16, value: u32) {
     asm!(
         "out dx, eax",
         in("dx") port,

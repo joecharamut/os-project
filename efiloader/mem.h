@@ -121,6 +121,8 @@ const CHAR16 *efi_mem_type_wstring(UINT32 type);
 EFI_MEMORY_DESCRIPTOR *efi_get_mem_map(UINTN *MapKey, UINTN *Entries, UINTN *DescriptorSize);
 void efi_dump_mem_map_to_file(void *mmap, UINTN size, UINTN descriptorSize, EFI_FILE_HANDLE volume);
 void efi_dump_mem_map(void *mmap, UINTN size, UINTN descriptorSize);
+
+int lmemcmp(const void *ptr1, const void *ptr2, uint64_t num);
 void *lmemcpy(void *dst, void *src, uint64_t num);
 void *lmemset(void *ptr, unsigned char value, uint64_t num);
 void *allocate(uint64_t size);

@@ -157,6 +157,19 @@ void efi_dump_mem_map_to_file(void *mmap, UINTN size, UINTN descriptorSize, EFI_
     dumpFile->Close(dumpFile);
 }
 
+int lmemcmp(const void *ptr1, const void *ptr2, uint64_t num) {
+    const unsigned char *p1 = ptr1;
+    const unsigned char *p2 = ptr2;
+    unsigned char tmp;
+
+    for (uint64_t i = 0; i < num; ++i) {
+        tmp = p1[i] - p2[i];
+        if (tmp) return tmp;
+    }
+
+    return 0;
+}
+
 void *lmemcpy(void *dst, void *src, uint64_t num) {
     for (uint64_t i = 0; i < num; ++i) {
         ((char*) dst)[i] = ((char*) src)[i];

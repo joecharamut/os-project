@@ -10,6 +10,8 @@ pub struct BootData {
     pub video_info: VideoInfo,
     pub memory_map: MemoryMap,
     pub allocation_info: AllocInfo,
+    pub acpi_rsdp: AcpiRsdp,
+    pub smbios_entry: SmbiosEntrypoint,
 }
 
 #[repr(C)]
@@ -45,7 +47,46 @@ pub struct MemoryDescriptor {
 pub struct AllocInfo {
     pub image_base: u64,
     pub image_size: u64,
+
+    pub stack_base: u64,
+    pub stack_size: u64,
+
+    pub page_map_base: u64,
+
     pub kernel_base: u64,
+}
+
+#[repr(C, packed)]
+#[derive(Copy, Clone)]
+pub struct AcpiRsdp {
+    signature: [u8; 8],
+    checksum: u8,
+    oemid: [u8; 6],
+    revision: u8,
+    rsdt_address: u32,
+
+    length: u32,
+    xsdt_address: u64,
+    extended_checksum: u8,
+    _reserved: [u8; 3],
+}
+
+#[repr(C, packed)]
+#[derive(Copy, Clone)]
+pub struct SmbiosEntrypoint {
+    anchor: [u8; 4],
+    checksum: u8,
+    length: u8,
+    major_version: u8,
+    minor_version: u8,
+    max_structure_size: u16,
+    entry_point_revision: u8,
+    _reserved: [u8; 5],
+    intermediate_anchor: [u8; 5],
+    structure_table_length: u16,
+    structure_table_address: u32,
+    number_of_structures: u16,
+    bcd_revision: u8,
 }
 
 impl Display for MemoryDescriptor {
@@ -68,14 +109,13 @@ pub fn entry(boot_data: &BootData) {
             }
         }
     }
-    todo!();
-
 
     let mut writer = io::serial::SerialWriter::new(io::serial::com1());
 
     writeln!(&mut writer, "Hello, World!").unwrap();
     writeln!(&mut writer, "Kernel base appears to be {:#x}", boot_data.allocation_info.kernel_base).unwrap();
 
+    todo!();
     // let mut v = alloc::vec::Vec::new();
     // v.push(1);
     // v.push(2);

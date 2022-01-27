@@ -28,6 +28,11 @@ set(RUST_IOPORT_SOURCES
         ioport/src/lib.rs
         )
 
+set(RUST_PCI_SOURCES
+        pci/Cargo.toml
+        pci/src/lib.rs
+        )
+
 set(RUST_KERNEL_SOURCES
         Cargo.toml
         src/lib.rs
@@ -39,7 +44,7 @@ set(RUST_KERNEL_SOURCES
         src/mm/bump.rs
         )
 
-set(RUST_SOURCES ${RUST_IOPORT_SOURCES} ${RUST_KERNEL_SOURCES})
+set(RUST_SOURCES ${RUST_IOPORT_SOURCES} ${RUST_PCI_SOURCES} ${RUST_KERNEL_SOURCES})
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

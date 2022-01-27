@@ -8,10 +8,12 @@ edition = "2021"
 [workspace]
 members = [
     "ioport",
+    "pci",
 ]
 
 [dependencies]
 ioport = { path = "ioport" }
+pci = { path = "pci" }
 rlibc = "1.0.0"
 
 [lib]

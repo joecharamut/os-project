@@ -11,15 +11,7 @@ name = "kernel"
 version = "0.1.0"
 dependencies = [
  "ioport",
- "pci",
  "rlibc",
-]
-
-[[package]]
-name = "pci"
-version = "0.1.0"
-dependencies = [
- "ioport",
 ]
 
 [[package]]

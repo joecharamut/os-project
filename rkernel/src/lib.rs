@@ -5,6 +5,7 @@
 mod boot;
 mod io;
 mod mm;
+mod pci;
 
 extern crate rlibc;
 extern crate alloc;
@@ -17,11 +18,14 @@ use crate::boot::BootData;
 #[no_mangle]
 pub unsafe extern "C" fn kernel_main(boot_data_ptr: *mut BootData) -> ! {
     let boot_data = &*boot_data_ptr;
+    if boot_data.signature != 0x534B52554E4B4C59 {
+        panic!("Invalid boot signature");
+    }
 
     boot::entry(boot_data);
 
     todo!();
-    loop { asm!("pause"); }
+    loop { asm!("hlt"); }
 }
 
 #[panic_handler]

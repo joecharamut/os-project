@@ -431,13 +431,15 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         }
 
         if (lmemcmp(&entry->VendorGuid, &smbios_guid, 16) == 0) {
-            dbg_print("SMBIOS ptr->%#016llx\n", entry->VendorTable);
+            dbg_print("SMBIOS entry @ %#016llx\n", entry->VendorTable);
 
             if (lmemcmp(entry->VendorTable, smbios_sig, 4) == 0) {
-                dbg_print("Valid SMBIOS Signature!\n");
                 the_smbios = entry->VendorTable;
+                dbg_print("Valid SMBIOS signature [table: @ %#08x, %d bytes long, %d structs]\n",
+                          the_smbios->structure_table_address, the_smbios->structure_table_length,
+                          the_smbios->number_of_structures);
             } else {
-                dbg_print("Invalid SMBIOS Signature\n");
+                dbg_print("Invalid SMBIOS signature\n");
             }
 
             continue;
@@ -494,7 +496,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     dbg_print("Kernel entrypoint is at %#016llx\n", header->entry);
     dbg_print("Setup complete, calling the kernel!\n");
 
-    halt();
     ((bootstrap_fn_ptr_t) header->entry)(bootData);
 
     halt();

@@ -28,11 +28,6 @@ set(RUST_IOPORT_SOURCES
         ioport/src/lib.rs
         )
 
-set(RUST_PCI_SOURCES
-        pci/Cargo.toml
-        pci/src/lib.rs
-        )
-
 set(RUST_KERNEL_SOURCES
         Cargo.toml
         src/lib.rs
@@ -42,6 +37,8 @@ set(RUST_KERNEL_SOURCES
         src/io/serial.rs
         src/mm/mod.rs
         src/mm/bump.rs
+        src/pci/mod.rs
+        src/pci/pciconfig.rs
         )
 
 set(RUST_SOURCES ${RUST_IOPORT_SOURCES} ${RUST_PCI_SOURCES} ${RUST_KERNEL_SOURCES})

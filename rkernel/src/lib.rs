@@ -6,6 +6,7 @@ mod boot;
 mod io;
 mod mm;
 mod pci;
+mod acpi;
 
 extern crate rlibc;
 extern crate alloc;

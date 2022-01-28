@@ -3,6 +3,8 @@ use crate::io;
 use core::fmt::{Display, Formatter, Write};
 use core::ptr::slice_from_raw_parts;
 
+use crate::acpi::structs::AcpiRsdp;
+
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct BootData {
@@ -58,21 +60,6 @@ pub struct AllocInfo {
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
-pub struct AcpiRsdp {
-    signature: [u8; 8],
-    checksum: u8,
-    oemid: [u8; 6],
-    revision: u8,
-    rsdt_address: u32,
-
-    length: u32,
-    xsdt_address: u64,
-    extended_checksum: u8,
-    _reserved: [u8; 3],
-}
-
-#[repr(C, packed)]
-#[derive(Copy, Clone)]
 pub struct SmbiosEntrypoint {
     anchor: [u8; 4],
     checksum: u8,
@@ -115,7 +102,7 @@ pub fn entry(boot_data: &BootData) {
     writeln!(&mut writer, "Hello, World!").unwrap();
     writeln!(&mut writer, "Kernel base appears to be {:#x}", boot_data.allocation_info.kernel_base).unwrap();
 
-    todo!();
+    // todo!();
     // let mut v = alloc::vec::Vec::new();
     // v.push(1);
     // v.push(2);
@@ -131,9 +118,20 @@ pub fn entry(boot_data: &BootData) {
         }
     }
 
-    let entries = unsafe { slice_from_raw_parts(boot_data.memory_map.ptr, boot_data.memory_map.size as usize) };
+    let memory_map = unsafe {
+        slice_from_raw_parts(boot_data.memory_map.ptr, boot_data.memory_map.size as usize)
+    };
     for i in 0..boot_data.memory_map.size {
-        let entry: MemoryDescriptor = unsafe { (*entries)[i as usize] };
+        let entry: MemoryDescriptor = unsafe { (*memory_map)[i as usize] };
         writeln!(&mut writer, "Entry {}: [{}]", i, entry).unwrap();
     }
+
+    unsafe {
+        let xsdt = boot_data.acpi_rsdp.get_xsdt();
+        todo!()
+    };
+    // for i in 0..boot_data.memory_map.size {
+    //     let entry: MemoryDescriptor = unsafe { (*entries)[i as usize] };
+    //     writeln!(&mut writer, "Entry {}: [{}]", i, entry).unwrap();
+    // }
 }

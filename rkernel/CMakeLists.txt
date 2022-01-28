@@ -36,7 +36,7 @@ set(RUST_KERNEL_SOURCES
         src/io/mod.rs
         src/io/serial.rs
         src/mm/mod.rs
-        src/mm/bump.rs
+        src/mm/kheap.rs
         src/pci/mod.rs
         src/pci/pciconfig.rs
         )

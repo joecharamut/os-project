@@ -1,6 +1,4 @@
-use core::ffi::c_void;
-use core::intrinsics::transmute;
-use crate::panic;
+use crate::x86_64::PhysAddr;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -12,17 +10,17 @@ pub struct AcpiRsdp {
     pub rsdt_address: u32,
 
     pub length: u32,
-    pub xsdt_address: u64,
+    pub xsdt_address: PhysAddr,
     pub extended_checksum: u8,
     _reserved: [u8; 3],
 }
 
 impl AcpiRsdp {
     pub unsafe fn get_xsdt(&self) -> *const ExtendedSystemDescriptionTable {
-        let xsdt = self.xsdt_address as *const SystemDescriptionTableHeader;
-        if (*xsdt).signature != "XSDT".as_bytes() {
-            panic!("Invalid XSDT Header");
-        }
+        // let xsdt = self.xsdt_address;
+        // if (*xsdt).signature != "XSDT".as_bytes() {
+        //     panic!("Invalid XSDT Header");
+        // }
         todo!()
     }
 }

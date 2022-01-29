@@ -7,8 +7,8 @@ mod io;
 mod mm;
 mod pci;
 mod acpi;
+mod x86_64;
 
-extern crate rlibc;
 extern crate alloc;
 
 use core::arch::asm;

@@ -23,25 +23,31 @@ set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -lgcc -zmax-page-size=0x1000")
 
 set(RUST_TOOLCHAIN "nightly")
 
-set(RUST_IOPORT_SOURCES
-        ioport/Cargo.toml
-        ioport/src/lib.rs
-        )
-
 set(RUST_KERNEL_SOURCES
         Cargo.toml
         src/lib.rs
+
+        src/acpi/mod.rs
+        src/acpi/structs.rs
+
         src/boot/mod.rs
         src/boot/entry.rs
+
         src/io/mod.rs
         src/io/serial.rs
+
         src/mm/mod.rs
         src/mm/kheap.rs
+        src/mm/pager.rs
+
         src/pci/mod.rs
         src/pci/pciconfig.rs
+
+        src/x86_64/mod.rs
+        src/x86_64/addr.rs
         )
 
-set(RUST_SOURCES ${RUST_IOPORT_SOURCES} ${RUST_PCI_SOURCES} ${RUST_KERNEL_SOURCES})
+set(RUST_SOURCES ${RUST_KERNEL_SOURCES})
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -50,7 +56,8 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libkernel.a
             --target ${CMAKE_CURRENT_SOURCE_DIR}/target.json
             --target-dir ${CMAKE_CURRENT_BINARY_DIR}
             --out-dir ${CMAKE_CURRENT_BINARY_DIR}
-            -Z build-std
+            -Z build-std=core,alloc,compiler_builtins
+            -Z build-std-features=compiler-builtins-mem
             -Z unstable-options
         DEPENDS ${RUST_SOURCES}
         )

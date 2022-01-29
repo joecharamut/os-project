@@ -1,5 +1,4 @@
-extern crate ioport;
-use ioport::{outl, inl};
+use crate::io::port::{outl, inl};
 
 pub unsafe fn pci_cfg_read_word(bus: u8, slot: u8, function: u8, offset: u8) -> u16 {
     const CONFIG_ADDRESS_PORT: u16 = 0xCF8;

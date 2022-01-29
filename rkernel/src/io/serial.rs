@@ -1,5 +1,5 @@
 use core::fmt::Write;
-use ioport::{outb, inb};
+use crate::io::port::{outb, inb};
 
 pub struct SerialPort {
     port_base: u16,

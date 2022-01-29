@@ -1,5 +1,4 @@
-use core::ffi::c_void;
-use crate::io;
+use crate::io::serial;
 use core::fmt::{Display, Formatter, Write};
 use core::ptr::slice_from_raw_parts;
 
@@ -97,7 +96,7 @@ pub fn entry(boot_data: &BootData) {
         }
     }
 
-    let mut writer = io::serial::SerialWriter::new(io::serial::com1());
+    let mut writer = serial::SerialWriter::new(serial::com1());
 
     writeln!(&mut writer, "Hello, World!").unwrap();
     writeln!(&mut writer, "Kernel base appears to be {:#x}", boot_data.allocation_info.kernel_base).unwrap();

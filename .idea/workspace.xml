@@ -25,25 +25,10 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="h">
-      <change afterPath="$PROJECT_DIR$/rkernel/src/io/port.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/src/mm/pager.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/src/x86_64/addr.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/src/x86_64/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rkernel/src/x86_64/paging/mod.rs" afterDir="false" />
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rusty">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/ioport/Cargo.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/ioport/src/lib.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/acpi/structs.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/acpi/structs.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/boot/entry.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/io/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/io/serial.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/io/serial.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/mm/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/mm/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rkernel/src/pci/pciconfig.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/pci/pciconfig.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/x86_64/addr.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/x86_64/addr.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rkernel/src/x86_64/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/rkernel/src/x86_64/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -307,11 +292,6 @@
       <debugger kind="GDB" isBundled="true" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="cargo-clean" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="os" TARGET_NAME="cargo-clean" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -485,14 +465,9 @@
       <workItem from="1642023345555" duration="43369000" />
       <workItem from="1642519628789" duration="3599000" />
       <workItem from="1642553127658" duration="32344000" />
-      <workItem from="1643129987292" duration="48085000" />
-    </task>
-    <task id="LOCAL-00078" summary="move file stuff into a separate unit">
-      <created>1638761477627</created>
-      <option name="number" value="00078" />
-      <option name="presentableId" value="LOCAL-00078" />
-      <option name="project" value="LOCAL" />
-      <updated>1638761477627</updated>
+      <workItem from="1643129987292" duration="51324000" />
+      <workItem from="1643510373398" duration="1158000" />
+      <workItem from="1643595225798" duration="2000" />
     </task>
     <task id="LOCAL-00079" summary="move file stuff into a separate unit">
       <created>1638893127948</created>
@@ -830,7 +805,14 @@
       <option name="project" value="LOCAL" />
       <updated>1643379193922</updated>
     </task>
-    <option name="localTasksCounter" value="127" />
+    <task id="LOCAL-00127" summary="rusty">
+      <created>1643486761919</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1643486761919</updated>
+    </task>
+    <option name="localTasksCounter" value="128" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -915,7 +897,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix build system" />
     <MESSAGE value="dont need that define" />
     <MESSAGE value="rustin" />
     <MESSAGE value="rusting intensifies" />
@@ -940,7 +921,8 @@
     <MESSAGE value="detect some boot structs and pass them to the kernel" />
     <MESSAGE value="push pciconfig into tree" />
     <MESSAGE value="h" />
-    <option name="LAST_COMMIT_MESSAGE" value="h" />
+    <MESSAGE value="rusty" />
+    <option name="LAST_COMMIT_MESSAGE" value="rusty" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

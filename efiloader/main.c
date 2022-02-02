@@ -14,89 +14,6 @@ static noreturn void halt() {
     __builtin_unreachable();
 }
 
-typedef struct {
-    uint16_t size;
-    uint64_t offset;
-} __attribute__((packed)) idt_descriptor_t;
-
-typedef struct {
-    uint16_t offset_1;
-    uint16_t selector;
-    uint8_t ist;
-    uint8_t attributes;
-    uint16_t offset_2;
-    uint32_t offset_3;
-    uint32_t _reserved;
-} __attribute__((packed)) idt_gate_t;
-
-typedef struct {
-    uint64_t r11;
-    uint64_t r10;
-    uint64_t r9;
-    uint64_t r8;
-    uint64_t rdx;
-    uint64_t rcx;
-    uint64_t rax;
-
-    uint64_t rip;
-    uint64_t cs;
-    union {
-        uint64_t value;
-    } flags;
-    uint64_t rsp;
-    uint64_t ss;
-} __attribute__((packed)) asdinterrupt_frame_t;
-
-typedef struct {
-    uint64_t ss;
-    uint64_t rsp;
-    union {
-        uint64_t value;
-    } flags;
-    uint64_t cs;
-    uint64_t rip;
-
-    uint64_t rax;
-    uint64_t rcx;
-    uint64_t rdx;
-    uint64_t r8;
-    uint64_t r9;
-    uint64_t r10;
-    uint64_t r11;
-} __attribute__((packed)) interrupt_frame_t;
-const uint64_t interrupt_frame_t_size = sizeof(interrupt_frame_t);
-
-__attribute__((naked, used)) void isr_thunk() {
-    asm (
-            "push %rax;"
-            "push %rcx;"
-            "push %rdx;"
-            "push %r8;"
-            "push %r9;"
-            "push %r10;"
-            "push %r11;"
-
-            "mov %rsp, %rcx;"
-            "sub $8*12, %rcx;"
-
-            "call interrupt_handler;"
-
-            "pop %r11;"
-            "pop %r10;"
-            "pop %r9;"
-            "pop %r8;"
-            "pop %rdx;"
-            "pop %rcx;"
-            "pop %rax;"
-
-            "iretq;"
-    );
-}
-
-__attribute__((used)) void interrupt_handler(interrupt_frame_t *frame) {
-    dbg_print("INTERRUPT IN %#016llx\n", frame->rip);
-}
-
 __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     EFI_STATUS status;
 
@@ -162,23 +79,6 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     dbg_print("UEFI Image Base is %#016llx\n", LoadedImage->ImageBase);
 
-    /*volatile int wait = 1;
-    while (wait) {
-        asm ("pause");
-    }
-
-    idt_descriptor_t idtr;
-    __asm__ ("sidt %0" : "=m" (idtr));
-    idt_gate_t *gates = (idt_gate_t *) idtr.offset;
-    gates[3].offset_1 = ((uint64_t) &isr_thunk) & 0xFFFF;
-    gates[3].offset_2 = ((uint64_t) &isr_thunk >> 16) & 0xFFFF;
-    gates[3].offset_3 = ((uint64_t) &isr_thunk >> 32) & 0xFFFFFFFF;
-    __asm__ (
-            "mov $0x4141424241414242, %%rax;"
-            "mov $0x4343444443434444, %%rcx;"
-            "int $0x3;"
-            ::: "rax", "rcx");*/
-
     EFI_FILE_HANDLE kernelHandle;
     status = volume->Open(volume, &kernelHandle, L"RKERNEL.BIN", EFI_FILE_MODE_READ, 0);
     if (EFI_ERROR(status)) {
@@ -242,7 +142,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     uint64_t descriptorSize = 0;
     uint8_t *mmap = (uint8_t *) efi_get_mem_map(&mapKey, &mapSize, &descriptorSize);
 
-    efi_dump_mem_map_to_file(mmap, mapSize, descriptorSize, volume);
+//    efi_dump_mem_map_to_file(mmap, mapSize, descriptorSize, volume);
 
     while (BS->ExitBootServices(ImageHandle, mapKey) == EFI_INVALID_PARAMETER) {
         FreePool(mmap);
@@ -250,7 +150,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
     }
     dbg_print("Boot services terminated successfully\n");
 
-    efi_dump_mem_map(mmap, mapSize, descriptorSize);
+//    efi_dump_mem_map(mmap, mapSize, descriptorSize);
 
     uint64_t convMemory = 0;
     uint64_t reclaimMemory = 0;
@@ -495,6 +395,7 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
 
     dbg_print("Kernel entrypoint is at %#016llx\n", header->entry);
     dbg_print("Setup complete, calling the kernel!\n");
+    dbg_print("=================================[END OF LOADER]================================\n");
 
     ((bootstrap_fn_ptr_t) header->entry)(bootData);
 

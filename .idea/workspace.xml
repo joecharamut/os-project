@@ -25,9 +25,9 @@
     <cargoProject FILE="$PROJECT_DIR$/rkernel/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="rusty">
+    <list default="true" id="e862a396-07a0-423b-8bf8-a20147ca3ea7" name="Default Changelist" comment="clean up the command">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/efiloader/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/efiloader/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_qemu.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_qemu.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -490,13 +490,6 @@
       <workItem from="1643510373398" duration="1158000" />
       <workItem from="1643595225798" duration="2000" />
     </task>
-    <task id="LOCAL-00079" summary="move file stuff into a separate unit">
-      <created>1638893127948</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1638893127949</updated>
-    </task>
     <task id="LOCAL-00080" summary="idk">
       <created>1638893139711</created>
       <option name="number" value="00080" />
@@ -833,7 +826,14 @@
       <option name="project" value="LOCAL" />
       <updated>1643486761919</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <task id="LOCAL-00128" summary="clean up the command">
+      <created>1643735515814</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1643735515814</updated>
+    </task>
+    <option name="localTasksCounter" value="129" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -918,7 +918,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="dont need that define" />
     <MESSAGE value="rustin" />
     <MESSAGE value="rusting intensifies" />
     <MESSAGE value="flatten out a directory" />
@@ -943,7 +942,8 @@
     <MESSAGE value="push pciconfig into tree" />
     <MESSAGE value="h" />
     <MESSAGE value="rusty" />
-    <option name="LAST_COMMIT_MESSAGE" value="rusty" />
+    <MESSAGE value="clean up the command" />
+    <option name="LAST_COMMIT_MESSAGE" value="clean up the command" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

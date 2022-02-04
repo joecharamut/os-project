@@ -9,6 +9,7 @@ edition = "2021"
 members = []
 
 [dependencies]
+bit_field = "0.10.1"
 
 [lib]
 crate-type=["staticlib"]

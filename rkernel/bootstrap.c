@@ -70,9 +70,6 @@ section(".bootstrap") attribute(used) void stage2_bootstrap(boot_data_t *bootDat
     if (bootData->signature != BOOT_DATA_SIGNATURE) {
         return;
     }
-
     bootData->allocation_info.kernel_base = (uint64_t) &_kernel_base_addr;
-
-    // todo: setup pagetables properly
     kernel_main(bootData);
 }

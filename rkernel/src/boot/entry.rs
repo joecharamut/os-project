@@ -3,6 +3,7 @@ use core::fmt::{Display, Formatter, Write};
 use core::ptr::slice_from_raw_parts;
 
 use crate::acpi::structs::AcpiRsdp;
+use crate::mm::pager::Pager;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -85,6 +86,12 @@ impl Display for MemoryDescriptor {
 }
 
 pub fn entry(boot_data: &BootData) {
+
+
+
+
+
+
     let framebuffer = boot_data.video_info.buffer_address as *mut u32;
 
     for y in 0..boot_data.video_info.vertical_resolution {

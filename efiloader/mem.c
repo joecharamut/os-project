@@ -201,20 +201,29 @@ void *allocate(uint64_t size) {
 
 pml4_entry_t *pml4_pointer = NULL;
 
-void load_page_map() {
-    __asm__ volatile (
-            "mov %%rax, %%cr3\n\t"
-            :
-            : "a" (pml4_pointer)
-            :
-    );
-}
-
-void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size) {
+void poke_pml4() {
     if (!pml4_pointer) {
         pml4_pointer = allocate(sizeof(pml4_entry_t) * 512);
         dbg_print("allocating new pml4 at 0x%016llx\n", pml4_pointer);
         lmemset(pml4_pointer, 0, sizeof(pml4_entry_t) * 512);
+
+        pml4_pointer[511] = (pml4_entry_t) {
+            .present = true,
+            .writeable = true,
+            .user_access = false,
+            .write_through = true,
+            .cache_disabled = true,
+            .accessed = false,
+            .size = 0,
+            .page_ppn = ((uint64_t) pml4_pointer) / 1000,
+            .execution_disabled = false,
+        };
+    }
+}
+
+void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size) {
+    if (!pml4_pointer) {
+        poke_pml4();
     }
 
     if (!pml4_pointer[vaddr.pml4_index].present) {

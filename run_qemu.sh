@@ -11,6 +11,7 @@ ARGS=(
   -d pcall                  # protected mode calls
 #  -d guest_errors           # detect some errors, but also OVMF spews these at boot
   -nodefaults               # no default devices
+  -monitor vc               # qemu monitor on virtual console
   -serial file:/dev/stdout  # redirect serial to stdout
   -m 128M                   # 128mb ram
   -vga std                  # standard vga card

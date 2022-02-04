@@ -127,7 +127,7 @@ void *lmemcpy(void *dst, void *src, uint64_t num);
 void *lmemset(void *ptr, unsigned char value, uint64_t num);
 void *allocate(uint64_t size);
 
-void load_page_map();
+void poke_pml4();
 void map_page(physical_address_t paddr, virtual_address_t vaddr, page_size_t size);
 
 #endif //LOADER_MEM_H

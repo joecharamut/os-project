@@ -211,6 +211,8 @@ __attribute__((used)) EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TAB
         }
     }
 
+    dbg_print("Setting up the pml4\n");
+    poke_pml4();
     dbg_print("Identity mapping the heap\n");
     for (uint64_t i = 0x100000; i < 0x200000; i += 0x1000) {
         map_page((physical_address_t) { .value=i }, (virtual_address_t){ .value=i }, PageSize4KiB);
